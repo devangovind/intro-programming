@@ -37,8 +37,11 @@ class Admin:
     try:
         camps = self.read_csv(self.camps_file)
         for camp in camps:
+            # print(f"Checking camp: {camp}")  # Debugging print
             if 'camp_id' in camp and camp['camp_id'] == self.camp_id:
-                return int(camp['population'])
+                population = int(camp['population'])
+                # print(f"Population of {self.camp_id}: {population}")  # Show population
+                return population
         print(f"Camp ID: {self.camp_id} not found.")
         return 0
     except Exception as e:
@@ -108,4 +111,6 @@ class Admin:
 if __name__ == "__main__":
     admin = Admin()
     admin.set_camp_id()  # Set camp_id once
+    x = admin.get_camp_population()
+    print(f"Population of {admin.camp_id}: {x}")
     admin.manual_resource_allocation() 
