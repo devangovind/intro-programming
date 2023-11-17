@@ -1,17 +1,28 @@
 # Admin Class File
 import csv
+import datetime
 
 
 class Admin:
   # add functions here
   # remember for functions added the first parameter has to be a self
+
   def create_humanitarian_plan(self):
     pass
+
+
+
 
   def __init__(self):
         self.camps_file = 'files/camps.csv'
         self.resources_file = 'files/resources.csv'
         self.camp_id = None
+        self.sdate_save = None
+        self.date_save = None
+        self.month = None
+        self.year = None
+
+
 
   def read_csv(self, filepath):
     try:
@@ -105,7 +116,72 @@ class Admin:
           quantity = int(user_input) if user_input else suggested_quantity
           self.update_resource_allocation(resource_type, quantity)
 
+# This code is for set date of the plan,but still a draft(something need to revise) because without the whole plan table
+  def set_valid_sdate(self):
+        current_date = datetime.datetime.now()
+        cur_year = current_date.year
+        cur_month = current_date.month
+        cur_day = current_date.day
+        self.year = int(input('choose the year of the start date'))
+        while self.year < cur_year:
+            self.year = int(input('the year is invalid,please choose the year again'))
+        self.month = int(input('choose the month of the start date'))
+        while self.month < cur_month:
+            self.month = int(input('the month is invalid,please choose the year again'))
+        self.day = int(input('choose the day of the start date '))
+        while self.day < cur_day:
+            self.day = int(input('the day is invalid,please choose the year again'))
+
+        date_s = datetime.datetime(self.year, self.month, self.day)
+
+        return date_s
+
+  def set_valid_eedate(self, sdate_):
+        current_date = datetime.datetime.now()
+        sdate_year = sdate_.year
+        sdate_month = sdate_.month
+        sdate_day = sdate_.day
+        print(sdate_year)
+        self.year = int(input('choose the year of the start date'))
+        while self.year < sdate_year:
+            self.year = int(input(f'the start year of this plan is {sdate_year},please choose the year again'))
+        self.month = int(input('choose the month of the start date'))
+        while self.month < sdate_month:
+            self.month = int(input(f'the start month of this plan is {sdate_month},please choose the month again'))
+        self.day = int(input('choose the day of the start date '))
+        while self.day < sdate_day:
+            self.day = int(input(f'the start day of this plan is {sdate_day},please choose the day again'))
+
+        date_e = datetime.datetime(self.year, self.month, self.day)
+
+        return date_e
+
+  def read_date(self):
+        with open('plan_date.CSV', 'r') as date_file:
+            read = csv.DictReader(date_file)
+            for row in read:
+                print(row['start_date'], row['end_date'])
+
+def save_date(sdate_save, edate_save):
+    sdate_save = sdate_save.strftime('%Y-%m-%d')
+    edate_save = edate_save.strftime('%Y-%m-%d')
+    print(sdate_save)
+    print(edate_save)
+
+    with open('plan_date.CSV', 'w') as date_file:
+        headers = ['start_date', 'end_date']
+        save_date_ = csv.DictWriter(date_file, fieldnames=headers)
+        save_date_.writeheader()
+        date_dic = {'start_date': sdate_save, 'end_date': edate_save}
+        save_date_.writerow(date_dic)
+
+
 if __name__ == "__main__":
     admin = Admin()
     admin.set_camp_id()  # Set camp_id once
     admin.manual_resource_allocation() 
+
+    sdate = Admin().set_valid_sdate()
+    edate = Admin().set_valid_eedate(sdate)
+    save_date(sdate, edate)
+    Admin().read_date()
