@@ -11,20 +11,32 @@ class Admin:
 
     def __init__(self):
         self.login_file = '..file/logindetails.csv'
-        self.volunteer_account = None
+        self.users = pd.read_csv(self.login_file)
 
-    def activate_account(self, volunteer):
-        users = pd.read_csv(self.login_file)
-        for volunteer in users:
-            pass
-        return self.volunteer_account == True
+    def save_changes(self):
+        self.users.to_csv(self.login_file)
 
-    def deactivate_account(self):
-        if self.volunteer_account == False:
-            return print("Your account has been deactivated, contact the administator.")
-        pass
+    def activate_account(self, username):
+        if username in self.users['Username'].values:
+            self.users.loc[self.users['Username'] == username, 'Active'] = True
+            self.save_changes()
+            return 'Account has been activated'
+        else:
+            return "Account doesn't exist"
 
-    def delete_account(self):
-        if self.volunteer == None:
-            print("Account doesn't exist")
-        pass
+    def deactivate_account(self, username):
+        if username in self.users['Username'].values:
+            if self.users.loc[self.users['Username'] == username, 'Active'] == True:
+                self.users.loc[self.users['Username'] == username, 'Active'] = False
+                self.save_changes()
+            return "Your account has been deactivated, contact the administator."
+        else:
+            return "Account doesn't exist"
+        
+    def delete_account(self, username):
+        if username in self.users['Username'].values:
+            self.users = self.users[self.users['Username'] == None]
+            self.save_changes()
+            return 
+        else:
+            return "Account doesn't exist"
