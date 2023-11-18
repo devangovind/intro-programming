@@ -2,6 +2,11 @@
 import pandas as pd
 import re
 from Camps import Camps
+
+
+# need to work on how we are to set this out
+# the variables self.volunteer_file and self.volunteer_data i think should be part of the __init__
+# also need to think about how this will work in the gui (loops on validation etc.)
 class Volunteer:
     def __init__(self, username):
         self.username = username
