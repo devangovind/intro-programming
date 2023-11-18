@@ -67,6 +67,8 @@ class Volunteer:
         pass
 
 volunteer = Volunteer('volunteer1')
+# need to think about order of functions here. get_vol_data needs to be called before edit so maybe needs to be in __init__
+# if no volunteer data do we then do a create_data function?
 volunteer.get_volunteer_data()
 volunteer.edit_volunteer_data("dev", "gov", 1, 3, "camp_01", "01")
 # volunteer.edit_volunteer_data("dev2", "A", "3", "cap", "01")
