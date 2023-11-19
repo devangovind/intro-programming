@@ -7,7 +7,7 @@ def main():
     register_gui()
 
 def register_gui():
-    root = tk.TK()
+    root = tk.Tk()
     root.title("User Registration")
 
     username_label = tk.Label(root, text = "Username:")
