@@ -6,36 +6,49 @@ import csv
 class Admin:
   # add functions here
   # remember for functions added the first parameter has to be a self
-    def __init__(self, filename = "humanitarian_plans.csv"):
-        self.filename = filename
+    def __init__(self):
+        self.plans_file = '/Users/geruiyi/Desktop/Python project/intro-programming/files/plans.csv'
 
-    def save_plan_to_csv(self, plan):
-        fieldnames = ["Description", "Geographical Location", "Start Date"]
-
-        with open(self.filename, mode = 'a', newline = '') as file:
-            writer = csv.DictWriter(file, fieldnames = fieldnames)
-
-            if file.tell() == 0:
-                writer.writeheader()
-
-            writer.writerow(plan.display_plan())
-        print(f"The newly humanitarian plan saved successfully in {self.filename}")
-
-    def display_plans(self):
-        with open(self.filename, mode='r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                print(row)
     
+    def read_csv(self, filepath):
+        try:
+            with open(filepath, mode='r', encoding='utf-8-sig') as file:  
+                return list(csv.DictReader(file))
+        except Exception as e:
+            print(f"Error reading file {filepath}: {e}")
+            return []
+
     
+    def write_csv(self, filepath, data):
+        try:
+            with open(filepath, mode='a', newline='') as file:
+                writer = csv.DictWriter(file, fieldnames=data.keys())
+
+                if file.tell() == 0:
+                    writer.writeheader()
+                
+                writer.writerows(data)
+        except Exception as e:
+            print(f"Error writing file {filepath}: {e}")
+
+
     def create_humanitarian_plan(self):
         description = input("Enter the description of the plan: ")
         geographical_location = input("Enter the geographical location of the plan: ")
         start_date = input("Enter the start date of the plan (YYYY/MM/DD): ")
-    
+        
         plan = humanitarian_plan(description, geographical_location, start_date)
+        plan_data = plan.display_plan()
     
-        self.save_plan_to_csv(plan)
+        self.write_csv(self.plans_file, plan_data)
+
+    
+    def display_plans(self):
+        existing_data = self.read_csv(self.plans_file)
+
+        for row in existing_data:
+            print(row)
+
 
     def menu(self):
         while True:
