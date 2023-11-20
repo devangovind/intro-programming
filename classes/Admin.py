@@ -7,7 +7,7 @@ class Admin:
   # add functions here
   # remember for functions added the first parameter has to be a self
     def __init__(self):
-        self.plans_file = '/Users/geruiyi/Desktop/Python project/intro-programming/files/plans.csv'
+        self.plans_file = '../files/plans.csv'
 
     
     def read_csv(self, filepath):
