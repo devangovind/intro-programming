@@ -3,6 +3,8 @@ from tkinter import messagebox
 import csv
 import re
 
+# draft (have some errors and haven't been defined as a class.)
+
 def main():
     register_gui()
 
