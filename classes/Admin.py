@@ -1,14 +1,11 @@
 # Admin Class File
-<<<<<<< HEAD
 import datetime
 import csv
 import pandas as pd
 from datetime import date
 from datetime import datetime
-=======
 import csv
 
->>>>>>> b12b277db9588306e24cbd55b86a6d9afb893088
 
 class Admin:
   # add functions here
@@ -17,11 +14,12 @@ class Admin:
     pass
 
   def __init__(self):
-<<<<<<< HEAD
       self.camps_file = '../files/camps_file.csv'
       self.plans_file = '../files/plans_file.csv'
+      self.resources_file = '../files/resources.csv'
+      self.camp_id = None
 
-
+  # FOR (C) DISPLAY PLAN
   def check_event_ended(self, plan_id):
      plans = pd.read_csv(self.plans_file)
      plan_details = plans[plans["Plan_ID"]== plan_id]
@@ -45,12 +43,7 @@ class Admin:
         else:
            return plan_details[["Camp_ID","Num_Of_Refugees","Num_Of_Volunteers"]]
 
-     
-=======
-        self.camps_file = 'files/camps.csv'
-        self.resources_file = 'files/resources.csv'
-        self.camp_id = None
-
+  # FOR RESOURCE ALLOCATION
   def read_csv(self, filepath):
     try:
         with open(filepath, mode='r', encoding='utf-8-sig') as file:  # 'utf-8-sig' handles the BOM
@@ -152,4 +145,4 @@ if __name__ == "__main__":
     x = admin.get_camp_population()
     print(f"Population of {admin.camp_id}: {x}")
     admin.manual_resource_allocation() 
->>>>>>> b12b277db9588306e24cbd55b86a6d9afb893088
+
