@@ -26,9 +26,9 @@ class AdminGui:
         self.create_plan_btn.grid(row=0, column=1)
         self.display_plans_btn = tk.Button(self.headerarea, text="Display Existing Plans", font=('Arial', 16), command=self.display_plans)
         self.display_plans_btn.grid(row=0, column=2)
-        self.manage_camps_btn = tk.Button(self.headerarea, text="Manage Camps", font=('Arial', 16))
+        self.manage_camps_btn = tk.Button(self.headerarea, text="Manage Camps", font=('Arial', 16), command=self.manage_camps)
         self.manage_camps_btn.grid(row=0, column=3)
-        self.manage_volunteers_btn = tk.Button(self.headerarea, text="Manage Volunteers", font=('Arial', 16))
+        self.manage_volunteers_btn = tk.Button(self.headerarea, text="Manage Volunteers", font=('Arial', 16), command=self.manage_volunteers)
         self.manage_volunteers_btn.grid(row=0, column=4)
         self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 16))
         self.logout_btn.grid(row=0, column=5)
@@ -47,13 +47,16 @@ class AdminGui:
         # add code here:
         # somewhere in here will be the end button for the individual plans which will maybe go to another function 
 
-    def manage_volunteers(self):
-        self.clear_content()
-        # add code here to edit volunteer data
 
     def manage_camps(self):
         self.clear_content()
         # code here to manage camp (alllocate resources etc.)
+        
+    def manage_volunteers(self):
+        self.clear_content()
+        # add code here to edit volunteer data
+
+    
 
     def clear_content(self):
         for widget in self.root.winfo_children():
