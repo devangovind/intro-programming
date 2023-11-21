@@ -10,10 +10,10 @@ from Camps import Camps
 class Volunteer:
     def __init__(self, username):
         self.username = username
-        self.camp_path = "intro-programming/files/camps.csv"
-        self.refugee_path = "intro-programming/files/refugee.csv"
-        self.resource_path = "intro-programming/files/resources.csv"
-        self.volunteer_path = 'intro-programming/files/volunteers.csv'
+        self.camp_path = "../files/camps.csv"
+        self.refugee_path = "../files/refugee.csv"
+        self.resource_path = "../files/resources.csv"
+        self.volunteer_path = '../files/volunteers.csv'
 
     def get_volunteer_data(self):
         self.volunteer_file = pd.read_csv(self.volunteer_path)
