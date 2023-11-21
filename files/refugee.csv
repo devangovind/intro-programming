@@ -1,0 +1,7 @@
+RefugeeID,CampID,MedicalCondition,NumberOfRelatives
+R001,camp_01,Healthy,3
+R002,camp_02,Needs attention,5
+R003,camp_01,Healthy,2
+R004,camp_01,Healthy,4
+R005,camp_01,Healthy,4
+R006,camp_03,Healthy,5
