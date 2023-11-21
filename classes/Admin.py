@@ -7,7 +7,7 @@ class Admin:
   # add functions here
   # remember for functions added the first parameter has to be a self
     def __init__(self):
-        self.plans_file = '../files/plans.csv'
+        self.plans_file = 'intro-programming/files/plans.csv'
 
     
     def read_csv(self, filepath):
@@ -27,7 +27,7 @@ class Admin:
                 if file.tell() == 0:
                     writer.writeheader()
                 
-                writer.writerows(data)
+                writer.writerow(data)
         except Exception as e:
             print(f"Error writing file {filepath}: {e}")
 
@@ -40,6 +40,8 @@ class Admin:
         plan = humanitarian_plan(description, geographical_location, start_date)
         plan_data = plan.display_plan()
     
+        plan_dict = {'description': description, 'geographical_location': geographical_location, 'start_date': start_date}
+
         self.write_csv(self.plans_file, plan_data)
 
     
@@ -67,4 +69,3 @@ class Admin:
 if __name__ == "__main__":
     test = Admin()
     test.menu()
-  
