@@ -1,5 +1,4 @@
 # Admin Class File
-import csv
 import pandas as pd
 
 
@@ -10,11 +9,11 @@ class Admin:
         pass
 
     def __init__(self):
-        self.login_file = '..file/logindetails.csv'
+        self.login_file = '../file/logindetails.csv'
         self.users = pd.read_csv(self.login_file)
 
     def save_changes(self):
-        self.users.to_csv(self.login_file)
+        self.users.to_csv(self.login_file, index=0)
 
     def activate_account(self, username):
         if username in self.users['Username'].values:
@@ -27,7 +26,7 @@ class Admin:
     def deactivate_account(self, username):
         if username in self.users['Username'].values:
             if self.users.loc[self.users['Username'] == username, 'Active'] == True:
-                self.users.loc[self.users['Username'] == username, 'Active'] = False
+                self.users.replace[self.users['Username'] == username, 'Active'] = False # replace the data onto the data frame
                 self.save_changes()
             return "Your account has been deactivated, contact the administator."
         else:
@@ -37,6 +36,6 @@ class Admin:
         if username in self.users['Username'].values:
             self.users = self.users[self.users['Username'] == None]
             self.save_changes()
-            return 
+            return "Account deleted"
         else:
             return "Account doesn't exist"
