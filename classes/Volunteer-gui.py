@@ -78,7 +78,7 @@ class VolunteerGui:
         submit_btn = tk.Button(self.root, text="Submit", font=('Arial', 20), command=lambda: self.submit_details(first_name_inp.get(), last_name_inp.get(), phone_inp.get(), age_inp.get()))
         submit_btn.pack()
     def submit_details(self, fname, lname, phone, age):
-        res = self.volunteer.edit_volunteer_details(fname,lname,phone,age, "camp_01", "00000")
+        res = self.volunteer.edit_volunteer_details(fname,lname,phone,age)
         if res == True:
             self.first_name_error.config(text="First Name Saved", fg="green")
             self.last_name_error.config(text="Last Name Saved", fg="green")
