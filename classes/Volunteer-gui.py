@@ -44,7 +44,6 @@ class VolunteerGui:
         self.clear_content()
         title = tk.Label(self.root, text="Edit Details", font=('Arial', 24))
         title.pack(pady=20)
-        
         first_name_lbl = tk.Label(self.root, text="Edit First Name:", font=('Arial', 18))
         first_name_inp = tk.Entry(self.root)
         first_name_inp.insert(0, self.volunteer_data['First Name'].values[0])
