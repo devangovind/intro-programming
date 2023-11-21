@@ -35,7 +35,7 @@ def register (username, password,root):
         validate_username(username)
         validate_password(password)
          
-        with open ("./files/logindetails.csv", "a") as file:
+        with open ("../files/logindetails.csv", "a") as file:
             file.write(f"{username},{password},{True}\n")
         
         messagebox.showinfo("Success", "Registration successful!")
@@ -45,7 +45,7 @@ def register (username, password,root):
         messagebox.showerror("Error", str(e))
 
 def validate_username(username):
-    with open("./files/logindetails.csv", "r") as file:
+    with open("../files/logindetails.csv", "r") as file:
         file_reader = csv.reader(file)
         next(file_reader)
         for row in file_reader:
