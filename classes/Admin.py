@@ -1,12 +1,29 @@
 # Admin Class File
 import pandas as pd
+import csv
+import datetime
 
 class Admin:
-
     def __init__(self):
+            with open('files\plans_file.csv', 'r', encoding='utf-8') as plan_file:
+                read = csv.DictReader(plan_file)
+                self.plan_list = []
+                for row in read:
+                    self.plan_list.append(row)
+            # print(plan_list)
             self.camps_file = 'intro-programming/files/camps_file.csv'
             self.resources_file = 'intro-programming/files/resources.csv'
             self.camp_id = None
+
+        # with open('../plan_file.csv', 'r', encoding='utf-8') as plan_file:
+        #     read = csv.DictReader(plan_file)
+        #     self.plan_list = []
+        #     for row in read:
+        #         self.plan_list.append(row)
+        #     # print(plan_list)
+
+    def is_date(self,date):
+        return isinstance(date,datetime.date)
 
 
     def set_camp_id(self):
