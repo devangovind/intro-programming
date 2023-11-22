@@ -1,7 +1,10 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
+import tkinter.font as tkFont
 from Volunteer import Volunteer
 from Camps import Camps
+from Refugee import Refugee
 
 class VolunteerGui:
     def __init__(self, volunteer):
@@ -9,10 +12,17 @@ class VolunteerGui:
         self.root.geometry("800x600")
         self.root.title("Volunteer View")
         self.volunteer = volunteer
+        self.camps = Camps()
+        self.refugee = Refugee()
         self.volunteer_data = self.volunteer.get_volunteer_data()
-        self.create_nav_bar()
-        self.welcome_message()
-        # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
+        
+        self.create_nav_bar()  # Creates the navigation bar at the top
+        self.create_content_frame()  # Creates the content frame below the navigation bar
+        
+        self.welcome_message()  # Adds the welcome message to the content frame
+        self.tree_view = None
+
+
     def create_nav_bar(self):
         self.headerarea = tk.Frame(self.root)
         self.headerarea.columnconfigure(0, weight=1)
@@ -21,62 +31,73 @@ class VolunteerGui:
         self.headerarea.columnconfigure(3, weight=1)
         self.headerarea.columnconfigure(4, weight=1)
         self.headerarea.columnconfigure(5, weight=1)
-        self.home_btn = tk.Button(self.headerarea, text="Home", font=('Arial', 16), command=self.welcome_message)
+        self.home_btn = tk.Button(self.headerarea, text="Home", font=('Arial', 14), command=self.welcome_message)
         self.home_btn.grid(row=0, column=0)
-        self.edit_details_btn = tk.Button(self.headerarea, text="Edit Personal Details", font=('Arial', 16), command=self.edit_details)
+        self.edit_details_btn = tk.Button(self.headerarea, text="Edit Personal Details", font=('Arial', 14), command=self.edit_details)
         self.edit_details_btn.grid(row=0, column=1)
-        self.edit_camp_btn = tk.Button(self.headerarea, text="Edit Camp Details", font=('Arial', 16), command=self.edit_camp)
+        self.edit_camp_btn = tk.Button(self.headerarea, text="Edit Camp Details", font=('Arial', 14), command=self.edit_camp)
         self.edit_camp_btn.grid(row=0, column=2)
-        self.view_camp_btn = tk.Button(self.headerarea, text="View Camp Details", font=('Arial', 16))
+        self.view_camp_btn = tk.Button(self.headerarea, text="View Camp Details", font=('Arial', 14),command=self.display_resources)
         self.view_camp_btn.grid(row=0, column=3)
-        self.add_refugee_btn = tk.Button(self.headerarea, text="Create Refugee Profile", font=('Arial', 16), command=self.add_refugee)
+        self.add_refugee_btn = tk.Button(self.headerarea, text="Create Refugee Profile", font=('Arial', 14), command=self.add_refugee)
         self.add_refugee_btn.grid(row=0, column=4)
-        self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 16))
+        self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 14))
         self.logout_btn.grid(row=0, column=5)
         self.headerarea.pack(padx=20)
         self.nav_bar = [self.headerarea, self.home_btn,self.edit_camp_btn, self.edit_details_btn, self.view_camp_btn, self.add_refugee_btn, self.logout_btn]
+    
+
+    def create_content_frame(self):
+        self.content_frame = tk.Frame(self.root)
+        self.content_frame.pack(fill='both', expand=True, pady=10)
+
+
     def welcome_message(self):
         self.clear_content()
         welcome_back = f'Welcome Back, {self.volunteer.username}'
-        label = tk.Label(self.root, text=welcome_back, font=('Arial', 24))
+        label = tk.Label(self.content_frame, text=welcome_back, font=('Arial', 24))
         label.pack(pady=100)
+    
+    
     def edit_details(self):
         self.clear_content()
-        title = tk.Label(self.root, text="Edit Details", font=('Arial', 24))
+        title = tk.Label(self.content_frame, text="Edit Personal Details", font=('Arial', 24))
         title.pack(pady=20)
         
-        first_name_lbl = tk.Label(self.root, text="Edit First Name:", font=('Arial', 18))
-        first_name_inp = tk.Entry(self.root)
+        first_name_lbl = tk.Label(self.content_frame, text="Edit First Name:", font=('Arial', 18))
+        first_name_inp = tk.Entry(self.content_frame)
         first_name_inp.insert(0, self.volunteer_data['First Name'].values[0])
-        self.first_name_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
+        self.first_name_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 16))
         first_name_lbl.pack(pady=10)
         first_name_inp.pack()
         self.first_name_error.pack()
-        last_name_lbl = tk.Label(self.root, text="Edit Last Name:", font=('Arial', 18))
-        last_name_inp = tk.Entry(self.root)
+        last_name_lbl = tk.Label(self.content_frame, text="Edit Last Name:", font=('Arial', 18))
+        last_name_inp = tk.Entry(self.content_frame)
         last_name_inp.insert(0, self.volunteer_data['Last Name'].values[0])
-        self.last_name_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
+        self.last_name_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 16))
         last_name_lbl.pack()
         last_name_inp.pack()
         self.last_name_error.pack()
-        phone_lbl = tk.Label(self.root, text="Edit Phone Number:", font=('Arial', 18))
-        phone_inp = tk.Entry(self.root)
+        phone_lbl = tk.Label(self.content_frame, text="Edit Phone Number:", font=('Arial', 18))
+        phone_inp = tk.Entry(self.content_frame)
         phone_inp.insert(0, self.volunteer_data['Phone'].values[0])
-        self.phone_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
+        self.phone_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 16))
         phone_lbl.pack()
         phone_inp.pack()
         self.phone_error.pack()
-        age_lbl = tk.Label(self.root, text="Edit Age:", font=('Arial', 18))
-        age_inp = tk.Entry(self.root)
+        age_lbl = tk.Label(self.content_frame, text="Edit Age:", font=('Arial', 18))
+        age_inp = tk.Entry(self.content_frame)
         age_inp.insert(0, self.volunteer_data['Age'].values[0])
-        self.age_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
+        self.age_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 16))
         age_lbl.pack()
         age_inp.pack()
         self.age_error.pack()
-        cancel_btn = tk.Button(self.root, text="Cancel", font=('Arial', 20), command=self.welcome_message)
-        cancel_btn.pack(pady=30)
-        submit_btn = tk.Button(self.root, text="Submit", font=('Arial', 20), command=lambda: self.submit_details(first_name_inp.get(), last_name_inp.get(), phone_inp.get(), age_inp.get()))
+        cancel_btn = tk.Button(self.content_frame, text="Cancel", font=('Arial', 14), command=self.welcome_message)
+        cancel_btn.pack(pady=20)
+        submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 14), command=lambda: self.submit_details(first_name_inp.get(), last_name_inp.get(), phone_inp.get(), age_inp.get()))
         submit_btn.pack()
+    
+    
     def submit_details(self, fname, lname, phone, age):
         res = self.volunteer.edit_volunteer_details(fname,lname,phone,age)
         if res == True:
@@ -84,7 +105,7 @@ class VolunteerGui:
             self.last_name_error.config(text="Last Name Saved", fg="green")
             self.phone_error.config(text="Phone Number Saved", fg="green")
             self.age_error.config(text="Age Saved", fg="green")
-            self.root.update_idletasks() 
+            self.content_frame.update_idletasks() 
             messagebox.showinfo("Success", "Details successfully updated!")
             self.welcome_message()
             
@@ -93,29 +114,31 @@ class VolunteerGui:
             self.last_name_error.config(text=res[1])
             self.phone_error.config(text=res[2])
             self.age_error.config(text=res[3])
+    
+    
     def edit_camp(self):
         self.clear_content()
-        title = tk.Label(self.root, text="Edit Camp Details", font=('Arial', 24))
+        title = tk.Label(self.content_frame, text="Edit Camp Details", font=('Arial', 24))
         title.pack(pady=20)
         camps = Camps()
         camps_data = camps.get_data()
         camps_ids = []
         i = 0
-        for val in camps_data['camp_id']:
+        for val in camps_data['Camp_ID']:
             if val in camps_ids:
                 continue
             else:
-                if val == self.volunteer_data['CampID'].values[0]:
+                if val == self.volunteer_data['Camp_ID'].values[0]:
                     saved_idx= i
                 camps_ids.append(val)
                 i += 1
-        selected_camp = tk.StringVar(self.root)
+        selected_camp = tk.StringVar(self.content_frame)
         selected_camp.set(camps_ids[saved_idx])
-        camps_menu_lbl = tk.Label(self.root, text="Edit Camp:", font=('Arial', 18))
-        camps_menu = tk.OptionMenu(self.root, selected_camp, *camps_ids)
+        camps_menu_lbl = tk.Label(self.content_frame, text="Edit Camp:", font=('Arial', 18))
+        camps_menu = tk.OptionMenu(self.content_frame, selected_camp, *camps_ids)
         camps_menu_lbl.pack()
         camps_menu.pack()
-        availability_lbl = tk.Label(self.root, text="Edit Availability:", font=('Arial', 18))
+        availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 18))
         availability_lbl.pack(pady=10)
         volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
         availability_array = []
@@ -133,7 +156,7 @@ class VolunteerGui:
         self.sat_var = tk.BooleanVar(value=availability_array[5])
         self.sun_var = tk.BooleanVar(value=availability_array[6])
         self.availability_variables = [self.mon_var, self.tue_var, self.wed_var, self.thu_var, self.fri_var, self.sat_var, self.sun_var]
-        availability_frame = tk.Frame(self.root)
+        availability_frame = tk.Frame(self.content_frame)
         availability_frame.columnconfigure(0, weight=1)
         availability_frame.columnconfigure(1, weight=1)
         availability_frame.columnconfigure(2, weight=1)
@@ -152,81 +175,167 @@ class VolunteerGui:
         sat_box.grid(row=1, column=2)
         sun_box.grid(row=2, column=2)
         availability_frame.pack()
-        current_capacity = camps_data.loc[camps_data['camp_id'] == camps_ids[saved_idx], 'population'].iloc[0]
+        current_capacity = camps_data.loc[camps_data['Camp_ID'] == camps_ids[saved_idx], 'population'].iloc[0]
         capacity_string = f'Edit Current Camp ({camps_ids[saved_idx]}) Capacity:'
-        capacity_lbl = tk.Label(self.root, text=capacity_string, font=('Arial', 18))
+        capacity_lbl = tk.Label(self.content_frame, text=capacity_string, font=('Arial', 18))
         capacity_lbl.pack()
-        capacity_inp = tk.Entry(self.root)
+        capacity_inp = tk.Entry(self.content_frame)
         capacity_inp.insert(0, current_capacity)
         capacity_inp.pack()
-        self.capacity_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
+        self.capacity_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 16))
         self.capacity_error.pack()
         
 
-        cancel_btn = tk.Button(self.root, text="Cancel", font=('Arial', 20), command=self.welcome_message)
+        cancel_btn = tk.Button(self.content_frame, text="Cancel", font=('Arial', 20), command=self.welcome_message)
         cancel_btn.pack(pady=30)
-        submit_btn = tk.Button(self.root, text="Submit", font=('Arial', 20), command=lambda: self.submit_camp(selected_camp.get(), capacity_inp.get()))
+        submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 20), command=lambda: self.submit_camp(selected_camp.get(), capacity_inp.get()))
         submit_btn.pack()
 
-    def submit_camp(self, camp_id, capacity):
+    
+    def submit_camp(self, Camp_ID, capacity):
         new_availability = ""
         for i in range(len(self.availability_variables)):
             if self.availability_variables[i].get() == True: new_availability += "1"
             else: new_availability += "0"
-        res = self.volunteer.edit_camp_details(camp_id, new_availability, capacity)
+        res = self.volunteer.edit_camp_details(Camp_ID, new_availability, capacity)
         if res == True:
             self.capacity_error.config(text="Capacity Saved", fg="green")
-            self.root.update_idletasks()
+            self.content_frame.update_idletasks()
             messagebox.showinfo("Success", "Camp details successfully updated!")
             self.welcome_message()
         else:
             self.capacity_error.config(text=res[0])
     
+
     def add_refugee(self):
         self.clear_content()
+        title = tk.Label(self.content_frame, text="Create Refugee Profile", font=('Arial', 24))
+        title.pack(pady=20)
         
-        # Create labels and entry widgets for refugee details
-        refugee_id_lbl = tk.Label(self.root, text="Refugee ID:", font=('Arial', 18))
-        refugee_id_inp = tk.Entry(self.root)
-        camp_id_lbl = tk.Label(self.root, text="Camp ID:", font=('Arial', 18))
-        camp_id_inp = tk.Entry(self.root)
-        medical_condition_lbl = tk.Label(self.root, text="Medical Condition:", font=('Arial', 18))
-        medical_condition_inp = tk.Entry(self.root)
-        num_relatives_lbl = tk.Label(self.root, text="Number of Relatives:", font=('Arial', 18))
-        num_relatives_inp = tk.Entry(self.root)
+        # Generate and suggest a Refugee ID
+        suggested_refugee_id = self.refugee.generate_refugee_id()
+        
+        # Dropdown for Camp ID
+        Camp_ID_lbl = tk.Label(self.content_frame, text="Camp ID:", font=('Arial', 18))
+        Camp_IDs = self.camps.get_camp_ids()  # Get the list of camp IDs
+        Camp_ID_var = tk.StringVar(self.content_frame)
+        Camp_ID_var.set(Camp_IDs[0])  # Set default value
+        Camp_ID_dropdown = tk.OptionMenu(self.content_frame, Camp_ID_var, *Camp_IDs)
+        Camp_ID_dropdown.config(width=17)
+        Camp_ID_lbl.pack(pady=10)
+        Camp_ID_dropdown.pack()
 
-        # Packing the labels and entry widgets
+        # Create input fields for Refugee ID, Medical Condition, and Number of Relatives
+        refugee_id_lbl = tk.Label(self.content_frame, text="Refugee ID:", font=('Arial', 18))
+        refugee_id_inp = tk.Entry(self.content_frame)
+        refugee_id_inp.insert(0, suggested_refugee_id)
+        medical_condition_lbl = tk.Label(self.content_frame, text="Medical Condition:", font=('Arial', 18))
+        medical_condition_inp = tk.Entry(self.content_frame)
+        num_relatives_lbl = tk.Label(self.content_frame, text="Number of Relatives:", font=('Arial', 18))
+        num_relatives_inp = tk.Entry(self.content_frame)
+
+        # Pack the new widgets
         refugee_id_lbl.pack(pady=10)
         refugee_id_inp.pack()
-        camp_id_lbl.pack(pady=10)
-        camp_id_inp.pack()
         medical_condition_lbl.pack(pady=10)
         medical_condition_inp.pack()
         num_relatives_lbl.pack(pady=10)
         num_relatives_inp.pack()
 
         # Submit Button
-        submit_btn = tk.Button(self.root, text="Create Refugee Profile", font=('Arial', 20), 
-                            command=lambda: self.submit_refugee_profile(refugee_id_inp.get(), 
-                                                                        camp_id_inp.get(), 
-                                                                        medical_condition_inp.get(), 
-                                                                        num_relatives_inp.get()))
+        submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 14), 
+                            command=lambda: self.submit_refugee_profile(
+                                refugee_id_inp.get(),
+                                Camp_ID_var.get(),
+                                medical_condition_inp.get(),
+                                num_relatives_inp.get()))
         submit_btn.pack(pady=20)
 
 
-    def submit_refugee_profile(self, refugee_id, camp_id, medical_condition, num_relatives):
-        result = self.volunteer.create_refugee_profile(refugee_id, camp_id, medical_condition, num_relatives)
+    def submit_refugee_profile(self, refugee_id, Camp_ID, medical_condition, num_relatives):
+        # Call create_refugee_profile from Refugee class
+        result = self.refugee.create_refugee_profile(Camp_ID, medical_condition, 
+                                                     num_relatives, refugee_id)
         messagebox.showinfo("Result", result)
         if result == "Refugee profile created successfully":
             self.welcome_message()
 
-    def clear_content(self):
-        for widget in self.root.winfo_children():
-            if widget not in self.nav_bar:
-                widget.destroy()
-    def run(self):
     
-        self.root.mainloop()
+    def display_resources(self):
+        self.clear_content()
+        self.content_frame['background'] = '#f0f0f0'
+
+        title = tk.Label(self.content_frame, text="View Camp Details", font=('Arial', 24), background='#f0f0f0')
+        title.pack(pady=(20, 10))
+
+        # Assuming 'volunteer_camp_id' is set elsewhere after login
+        self.volunteer_camp_id = "C12345"  # Replace with dynamic retrieval of the volunteer's camp ID
+
+        # Create Treeview widget if it does not exist
+        if self.tree_view is None:
+            self.tree_view_frame = tk.Frame(self.content_frame, background='#f0f0f0')
+            self.tree_view_frame.pack(fill='both', expand=True, pady=10)
+            
+            # Scrollbars for the Treeview
+            tree_scroll = tk.Scrollbar(self.tree_view_frame)
+            tree_scroll.pack(side='right', fill='y')
+            tree_xscroll = tk.Scrollbar(self.tree_view_frame, orient='horizontal')
+            tree_xscroll.pack(side='bottom', fill='x')
+
+            # Create the Treeview widget
+            self.tree_view = ttk.Treeview(self.tree_view_frame, yscrollcommand=tree_scroll.set, 
+                                          xscrollcommand=tree_xscroll.set, show='headings')
+            self.tree_view.pack(side='left', fill='both', expand=True)
+
+            # Configure the scrollbars
+            tree_scroll.config(command=self.tree_view.yview)
+            tree_xscroll.config(command=self.tree_view.xview)
+
+            # Define columns
+            columns = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'food_pac', 'medical_sup', 'tents']
+            self.tree_view['columns'] = columns
+
+            # Create column headings
+            for col in columns:
+                self.tree_view.heading(col, text=col, anchor='center')
+                self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
+
+            # Style configuration
+            style = ttk.Style(self.content_frame)
+            style.theme_use("default")
+            style.configure("Treeview",
+                            background="#D3D3D3",
+                            foreground="black",
+                            rowheight=25,
+                            fieldbackground="#D3D3D3")
+            style.map('Treeview', background=[('selected', '#347083')])
+
+        # Clear the existing entries in the Treeview, if any
+        for item in self.tree_view.get_children():
+            self.tree_view.delete(item)
+
+        try:
+            # Retrieve the camp resources
+            df_output = self.camps.display_camp_resources(self.volunteer_camp_id)  # Assume this returns a DataFrame
+
+            # Add data to the treeview
+            for index, row in df_output.iterrows():
+                self.tree_view.insert("", 'end', values=list(row))
+
+        except Exception as e:
+            print("Failed to display camp")
+
+
+    
+    def clear_content(self):
+    # Destroy all widgets in the content frame
+        for widget in self.content_frame.winfo_children():
+            widget.destroy()
+
+
+
+    def run(self):
+        self.content_frame.mainloop()
 
 dummy = Volunteer("volunteer1")
 VGui = VolunteerGui(dummy)

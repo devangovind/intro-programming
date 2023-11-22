@@ -1,4 +1,4 @@
-Username,First Name,Last Name,Phone,Age,CampID,Availability
-volunteer1,Devanbn,Govan,133114,12,camp_01,1001001
-volunteer2,Dave,Smith,2,25,camp_02,1001
-volunteer3,Sara,Johnson,3,40,camp_03,1001
+Username,First Name,Last Name,Phone,Age,Camp_ID,Availability
+volunteer1,Devanbn,Govan,133114,18,C12345,1001001
+volunteer2,Dave,Smith,2,25,C23456,1001
+volunteer3,Sara,Johnson,3,40,C34567,1001
