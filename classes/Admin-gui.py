@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import END
 from tkinter import messagebox
 from tkcalendar import *
+from tkinter import ttk
+
 
 class AdminGui:
     def __init__(self, admin):
@@ -10,6 +12,7 @@ class AdminGui:
         self.root.geometry("800x600")
         self.root.title("Volunteer View")
         self.admin = admin
+        self.plan_data_ = self.admin.plan_list
         # self.volunteer_data = self.volunteer.get_volunteer_data()
         self.create_nav_bar()
         self.welcome_message()
