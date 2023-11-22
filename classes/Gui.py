@@ -1,4 +1,0 @@
-import tkinter as tk
-from tkinter import messagebox
-import csv
-import re
