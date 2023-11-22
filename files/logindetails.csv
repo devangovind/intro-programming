@@ -1,6 +1,5 @@
-// logindetails
 Username,Password,Active
-admin,111,True
-volunteer1,111,False
-volunteer2,111,True
-volunteer3,111,True
+admin,111,TRUE
+volunteer1,111,FALSE
+volunteer2,111,TRUE
+volunteer3,111,TRUE
