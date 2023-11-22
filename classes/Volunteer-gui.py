@@ -5,6 +5,8 @@ import tkinter.font as tkFont
 from Volunteer import Volunteer
 from Camps import Camps
 from Refugee import Refugee
+from Data_visulistaion import create_pie_chart
+import matplotlib.pyplot as plt
 
 class VolunteerGui:
     def __init__(self, volunteer):
@@ -175,7 +177,7 @@ class VolunteerGui:
         sat_box.grid(row=1, column=2)
         sun_box.grid(row=2, column=2)
         availability_frame.pack()
-        current_capacity = camps_data.loc[camps_data['Camp_ID'] == camps_ids[saved_idx], 'population'].iloc[0]
+        current_capacity = camps_data.loc[camps_data['Camp_ID'] == camps_ids[saved_idx], 'Num_Of_Refugees'].iloc[0]
         capacity_string = f'Edit Current Camp ({camps_ids[saved_idx]}) Capacity:'
         capacity_lbl = tk.Label(self.content_frame, text=capacity_string, font=('Arial', 18))
         capacity_lbl.pack()
@@ -263,9 +265,7 @@ class VolunteerGui:
     
     def display_resources(self):
         self.clear_content()
-        self.content_frame['background'] = '#f0f0f0'
-
-        title = tk.Label(self.content_frame, text="View Camp Details", font=('Arial', 24), background='#f0f0f0')
+        title = tk.Label(self.content_frame, text="View Camp Details", font=('Arial', 24))
         title.pack(pady=(20, 10))
 
         # Assuming 'volunteer_camp_id' is set elsewhere after login
@@ -273,7 +273,7 @@ class VolunteerGui:
 
         # Create Treeview widget if it does not exist
         if self.tree_view is None:
-            self.tree_view_frame = tk.Frame(self.content_frame, background='#f0f0f0')
+            self.tree_view_frame = tk.Frame(self.content_frame)
             self.tree_view_frame.pack(fill='both', expand=True, pady=10)
             
             # Scrollbars for the Treeview
@@ -322,16 +322,36 @@ class VolunteerGui:
             for index, row in df_output.iterrows():
                 self.tree_view.insert("", 'end', values=list(row))
 
+            # Show 'Show Pie Chart' button only if camp details are successfully displayed
+            show_chart_btn = tk.Button(self.content_frame, text="Show Pie Chart", command=self.show_pie_chart_of_resources)
+            show_chart_btn.pack(pady=10)
+
         except Exception as e:
-            print("Failed to display camp")
+            print("Failed to display camp resources:", e)
+            error_label = tk.Label(self.content_frame, text="Error displaying camp resources.", background='#f0f0f0', font=('Arial', 14))
+            error_label.pack(pady=10)
 
 
-    
+    def show_pie_chart_of_resources(self):
+        # Retrieve values for food_pac, medical_sup, tents from the Treeview
+        # Assume the Treeview has one row with these values at indices 4, 5, 6
+        item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
+        row = self.tree_view.item(item, 'values')
+        resource_values = [int(row[4]), int(row[5]), int(row[6])]  # Convert to int
+        resource_labels = ['food_pac', 'medical_sup', 'tents']
+
+        # Call the create_pie_chart function
+        create_pie_chart(resource_values, resource_labels, 'Camp Resource Distribution')
+
+
+
     def clear_content(self):
-    # Destroy all widgets in the content frame
+        # Destroy all widgets in the content frame
         for widget in self.content_frame.winfo_children():
             widget.destroy()
-
+        
+        # Reset the tree_view to None to allow re-creation
+        self.tree_view = None
 
 
     def run(self):
