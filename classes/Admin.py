@@ -1,18 +1,51 @@
 # Admin Class File
+
 from Plans import humanitarian_plan
+import datetime
 import csv
 import pandas as pd
-
+from datetime import date
+from datetime import datetime
 
 class Admin:
-  # add functions here
-  # remember for functions added the first parameter has to be a self
+    # add functions here
+    # remember for functions added the first parameter has to be a self
+    def create_humanitarian_plan(self):
+    pass
+  
     def __init__(self):
         self.plans_file = 'intro-programming/files/plans.csv'
         self.camps_file = 'intro-programming/files/camps_file.csv'
         self.resources_file = 'intro-programming/files/resources.csv'
         self.camp_id = None
-    
+
+ # FOR (C) DISPLAY PLAN
+
+    def check_event_ended(self, plan_id):
+        plans = pd.read_csv(self.plans_file)
+        plan_details = plans[plans["Plan_ID"]== plan_id]
+        plan_end_date_str = plan_details.iloc[0,-1]
+        today = date.today()
+        plan_end_date = datetime.strptime(plan_end_date_str, "%d/%m/%Y").date()
+        #returns True if end date has occured and False if end date has not
+        return today > plan_end_date 
+     
+
+    def display_plan(self, plan_id):
+        camps = pd.read_csv(self.camps_file)
+        plans = pd.read_csv(self.plans_file)
+
+        if self.check_event_ended(plan_id):
+            return "This humanitarian plan has ended."
+        else:
+            plan_details = camps[camps['Plan_ID']== plan_id]
+            if plan_details.empty:
+            return "This humanitarian plan does not exist."
+        else:
+           return plan_details[["Camp_ID","Num_Of_Refugees","Num_Of_Volunteers"]]
+          
+ # FOR (E) RESOURCE ALLOCATION
+
     def read_csv(self, filepath):
         try:
             with open(filepath, mode='r', encoding='utf-8-sig') as file:  
@@ -20,7 +53,7 @@ class Admin:
         except Exception as e:
             print(f"Error reading file {filepath}: {e}")
             return []
-
+          
     
     def write_csv(self, filepath, data):
         try:
@@ -102,6 +135,7 @@ class Admin:
             if self.camp_id in camps['Camp_ID'].values and self.camp_id in resources['Camp_ID'].values:
                 if resource_type in resources.columns:
                     resources.loc[resources['Camp_ID'] == self.camp_id, resource_type] = quantity
+
                     print(f"Updated {resource_type} for {self.camp_id} to {quantity}.")
                     resources.to_csv(self.resources_file, index=False)
                 else:
