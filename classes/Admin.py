@@ -26,6 +26,21 @@ class Admin:
         return isinstance(date,datetime.date)
 
 
+    def check_start_day(self, date):
+
+        today = date.today()
+        plan_start_date = date
+        if today <= plan_start_date:
+            return False
+        else:
+            return True
+    def check_end_date(self,end_date,start_day):
+        if end_date > start_day:
+            return False
+        else:
+            return True
+
+
     def set_camp_id(self):
         self.camp_id = input("Enter camp ID (Not case sensitive)): ").upper()
 
