@@ -16,6 +16,7 @@ class AdminGui:
         self.welcome_message()
         self.camps = Camps()
         self.plans = Plans()
+        self.camps_data = self.camps.get_data()
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
     def create_nav_bar(self):
         self.headerarea = tk.Frame(self.root)
@@ -57,7 +58,6 @@ class AdminGui:
         self.clear_content()
         title = tk.Label(self.root, text="Manage Camps", font=('Arial', 24))
         title.pack(pady=20)
-        self.camps_data = self.camps.get_data()
         plans_data = self.plans.get_data()
         plans_ids = ["All Plans"]
         for val in plans_data['Plan_ID']:
@@ -172,19 +172,52 @@ class AdminGui:
             self.tents_error.config(text=res['tent'])
 
 
-        
-
-
-        
-        
-       
-
-
         # code here to manage camp (alllocate resources etc.)
 
     def manage_volunteers(self):
         self.clear_content()
         # add code here to edit volunteer data
+        self.volunteer_data = pd.open_csv("./files/volunteers.csv")
+        self.clear_content()
+        title = tk.Label(self.root, text="Manage Volunteers", font=('Arial', 24))
+        title.pack(pady=20)
+        camps_ids = ["All Camps"]
+        for val in self.camps_data['Camp_ID']:
+            if val in self.camps_data:
+                continue
+            camps_ids.append(val)
+        self.selected_camp = tk.StringVar(self.root)
+        self.selected_camp.set(camps_ids[0])
+        camps_menu_lbl = tk.Label(self.root, text="Filter By Camp:", font=('Arial', 18))
+        camps_menu = tk.OptionMenu(self.root, self.selected_plan, *camps_ids, command=self.filter_camps)
+        camps_menu_lbl.pack()
+        camps_menu.pack()
+        camp_columns = ["Camp ID", "Username", "First Name", "Last Name", "Phone", "Age", "Availability", "State"]
+        column_widths = [80, 80, 80, 80, 80, 80, 130, 80]
+        self.tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
+        for i in range(len(camp_columns)):
+            col = camp_columns[i]
+            self.tree.heading(col, text=col)
+            self.tree.column(col, stretch=False, width=column_widths[i])
+        # self.tree.bind("<ButtonRelease-1>", self.allocate_resources)
+        self.tree.pack(pady=20)
+        self.filter_volunteers()
+
+    def filter_volunteers(self, event=None):
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        selected_camp = self.selected_camp.get()
+        if selected_camp == "All Plans": filtered_data = self.volunteer_data
+        else:
+            filtered_data = self.volunteer_data[self.volunteer_data["Camp_ID"] == selected_camp]
+        for index, row in (filtered_data.iterrows()):
+            availability_array = ""
+            
+
+
+            values=[row['Camp_ID'], row['Username'], row['First Name'], row['Last Name'],row['Phone'], row['Age'], row['Availability']]
+            self.tree.insert("", "end", values=values)
+
 
     
 
