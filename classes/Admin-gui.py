@@ -70,9 +70,32 @@ class AdminGui:
         self.Location = tk.StringVar()
         # self.Start_Date = tk.StringVar()
         # self.End_Date = tk.StringVar()
+        # com = ttk.Combobox(self.root)
+        # com.place(x=50, y=160)
+        # com["value"] = ("New York", "Denver", "Seattle","Chicago","Los Angeles")
+        # com.current(2)
+    
+        # def xFunc(event):
+        #     self.location = com.get()
+        #     print(self.location)
+        #     return self.location
+        # com.bind("<<ComboboxSelected>>", xFunc)
+        # tk.Label(self.root,text='Add a new plan').place(x=50, y=40)
+        # tk.Label(self.root,text='Plan_ID:').place(x=50, y=60)
+
+
+
+
+
+       
+        self.plan_id = self.admin.plan_id
+        Plan_Id_butn = tk.Entry(self.root, width=30)
+        Plan_Id_butn.place(x=50, y=80)
+        Plan_Id_butn.insert(END, 'self.plan_id')
+        Plan_Id_butn.config(state='readonly')
         tk.Label(self.root,text='Add a new plan').place(x=50, y=40)
-        tk.Label(self.root,text='Plan_ID:').place(x=50, y=60)
-        tk.Entry(self.root, width=30, textvariable=self.Plan_ID).place(x=50, y=80)
+        
+        
         tk.Label(self.root, text='Description:').place(x=50, y=100)
         tk.Entry(self.root, width=30, textvariable=self.Description).place(x=50, y=120)
         tk.Label(self.root, text='Location:').place(x=50, y=140)
