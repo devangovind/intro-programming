@@ -193,6 +193,15 @@ class AdminGui:
         camps_menu = tk.OptionMenu(self.root, self.selected_camp, *camps_ids, command=self.filter_volunteers)
         camps_menu_lbl.pack()
         camps_menu.pack()
+        all_buttons = tk.Frame(self.root)
+       
+        all_buttons.columnconfigure(1, weight=1)
+        all_buttons.columnconfigure(2, weight=1)
+        activate_all_btn = tk.Button(all_buttons, text="Activate All", font=('Arial', 16), command=self.activate_all)
+        deactivate_all_btn = tk.Button(all_buttons, text="Deactivate All", font=('Arial', 16), command=self.deactivate_all)
+        activate_all_btn.grid(row=0, column=0)
+        deactivate_all_btn.grid(row=0, column=1)
+        all_buttons.pack()
         camp_columns = ["Camp ID", "Username", "First Name", "Surname", "Phone", "Age", "Availability", "State", "Delete"]
         column_widths = [70, 80, 80, 80, 80, 40, 220, 70, 70]
         self.volun_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
@@ -203,7 +212,12 @@ class AdminGui:
         self.volun_tree.bind("<ButtonRelease-1>", self.individual_volunteer)
         self.volun_tree.pack(pady=20)
         self.filter_volunteers()
-
+    def activate_all(self):
+        self.admin.activate_all()
+        self.manage_volunteers()
+    def deactivate_all(self):
+        self.admin.deactivate_all()
+        self.manage_volunteers()
     def filter_volunteers(self, event=None):
         for item in self.volun_tree.get_children():
             self.volun_tree.delete(item)
@@ -212,9 +226,8 @@ class AdminGui:
         else:
             filtered_data = self.volunteer_data[self.volunteer_data["Camp_ID"] == selected_camp]
         if not filtered_data.empty:
-            print(self.volunteer_data)
             for index, row in (filtered_data.iterrows()):
-                days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"]
                 availability_array = []
                 availability =  str(row['Availability']).zfill(7)
                 for i in range(len(availability)):
@@ -232,30 +245,22 @@ class AdminGui:
                 state = self.users[self.users["Username"] == row["Username"]]["Active"].values[0]
                 if state: state = "Active"
                 else: state = "Deactive"
-
                 values=[row['Camp_ID'], row['Username'], row['First Name'], row['Last Name'],row['Phone'], row['Age'], availability_string, state, "Delete?"]
                 self.volun_tree.insert("", "end", values=values)
-        
 
     def individual_volunteer(self, event):
         item_id = self.volun_tree.selection()
         column = self.volun_tree.identify_column(event.x)
         if item_id and column == "#8":
             row = (self.volun_tree.item(item_id, "values"))
-
             self.activate_deactivate(row)
         elif item_id and column == "#9":
             row = (self.volun_tree.item(item_id, "values"))
             self.delete_volunteer(row[1])
-        
 
-            
-            
-                
     def activate_deactivate(self, row):
         username = row[1]
         if row[-2] == "Active":
-            
             volunteer_choice = messagebox.askyesno(title="Manage Volunteer", message=f"Deactivate {username}'s Account:\n")
             if volunteer_choice == True:
                 self.admin.deactivate_account(username)
@@ -275,7 +280,6 @@ class AdminGui:
             self.root.update_idletasks()
             self.manage_volunteers()
     
-
     def clear_content(self):
         for widget in self.root.winfo_children():
             if widget not in self.nav_bar:

@@ -76,6 +76,7 @@ class Admin:
 
     def activate_all(self):
         self.users['Active'] = True
+        self.save_changes()
         return "All accounts have been activated"
 
 
@@ -93,13 +94,17 @@ class Admin:
 
     def deactivate_all(self):
         self.users['Active'] = False
+        self.save_changes()
         return "All accounts have been deactivated"
 
 
     def delete_account(self, username):
+        self.volunteer_data = pd.read_csv(self.volunteer_file)
         try:
             if username in self.users['Username'].values:
                 self.users = self.users[self.users['Username'] != username]  # Filter out the user to be deleted
+                self.volunteer_data = self.volunteer_data[self.volunteer_data['Username'] != username]
+                self.volunteer_data.to_csv(self.volunteer_file, sep=',',index=False, encoding='utf-8' )
                 self.save_changes()
                 return f"Account {username} deleted"
             else:
