@@ -1,11 +1,7 @@
 # Admin Class File
-
-from Plans import humanitarian_plan
-import datetime
-import csv
 import pandas as pd
-from datetime import date
-from datetime import datetime
+import csv
+import datetime
 
 class Admin:
     
@@ -67,7 +63,6 @@ class Admin:
         try:
             with open(filepath, mode='a', newline='') as file:
                 writer = csv.DictWriter(file, fieldnames=data.keys())
-
                 if file.tell() == 0:
                     writer.writeheader()
                 
@@ -118,11 +113,7 @@ class Admin:
 
         for row in existing_data:
             print(row)
-            
 
-    def display_plan(self, plan_id):
-        camps = pd.read_csv(self.camps_file)
-        plans = pd.read_csv(self.plans_file)
 
         if self.check_event_ended(plan_id):
             return "This humanitarian plan has ended."
@@ -176,6 +167,39 @@ class Admin:
         self.users['Active'] = False
         return "All accounts have been deactivated"
 
+## Change some functions to fit the admin.gui(for admin feature a-c)
+## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
+    def last_plan_id(self):
+        plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
+
+        res = plan.sort_values(by='Plan_ID', ascending=False)
+        last_plan_id = res.iloc[0]["Plan_ID"]
+        # print(res.iloc[0]["Plan_ID"])
+        return last_plan_id
+
+## This is to justify the type of the date input
+    def is_date(self, date):
+        return isinstance(date, datetime.date)
+## This is to make sure the start date
+    def check_start_day(self, date):
+
+
+        today = date.today()
+        plan_start_date = date
+        if today <= plan_start_date:
+            return False
+        else:
+            return True
+## This is to make sure the end date
+    def check_end_date(self,end_date,start_day):
+        if end_date > start_day:
+            return False
+        else:
+            return True
+    # def plan_id_plus_1(self):
+    #     self.plan_id  = self.plan_id + 1
+    #     return str(self.plan_id)
+
 
     def delete_account(self, username):
         try:
@@ -191,6 +215,10 @@ class Admin:
  
  # FOR (E) RESOURCE ALLOCATION
              
+## This is to refresh the plan after creating a plan 
+    def insert_new_plan(self, new_plan):
+        self.plan_list.append(new_plan)
+
     def set_camp_id(self):
         self.camp_id = input("Enter camp ID (Not case sensitive)): ").upper()
 
@@ -223,7 +251,6 @@ class Admin:
             if self.camp_id in camps['Camp_ID'].values and self.camp_id in resources['Camp_ID'].values:
                 if resource_type in resources.columns:
                     resources.loc[resources['Camp_ID'] == self.camp_id, resource_type] = quantity
-
                     print(f"Updated {resource_type} for {self.camp_id} to {quantity}.")
                     resources.to_csv(self.resources_file, index=False)
                 else:
