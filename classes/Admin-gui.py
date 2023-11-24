@@ -63,6 +63,8 @@ class AdminGui:
         self.clear_content()
         self.Description = tk.StringVar()
         self.Location = tk.StringVar()
+        self.var_startd = tk.StringVar()
+        self.var_end = tk.StringVar()
         tk.Label(self.root, text='Add a new plan').place(x=50, y=40)
         tk.Label(self.root, text='Plan_ID:').place(x=50, y=60)
         self.plan_id = self.admin.last_plan_id() + 1
@@ -85,10 +87,10 @@ class AdminGui:
         self.start_date = tk.Entry(self.root, width=30)
         self.start_date.place(x=50, y=200)
         # self.start_date.insert(0,'dd/mm/yyyy')
-        self.end_date = tk.Entry(self.root, width=30)
+        self.end_date = tk.Entry(self.root, width=30,textvariable=self.var_end)
         self.end_date.place(x=50, y=250)
         # self.end_date.insert(0,'dd/mm/yyyy')
-        self.start_date = tk.Entry(self.root, width=30)
+        self.start_date = tk.Entry(self.root, width=30,textvariable= self.var_startd)
         self.start_date.place(x=50, y=200)
         # self.start_date.insert(0,'dd/mm/yyyy')
         tk.Label(self.root, text='End_Date:').place(x=50, y=220)
@@ -154,6 +156,8 @@ class AdminGui:
         Location_ = self.Location.get()
         Start_date_ = self.s_date
         End_date_ = self.e_date
+        var_start_day = self.var_startd.get()
+        var_end_day = self.var_end.get()
         print(Location_)
         print(Description_)
         print(Plan_ID_)
@@ -162,6 +166,8 @@ class AdminGui:
         if len(self.des_entry.get()) == 0 or len(self.loc_entry.get()) == 0 or len(self.start_date.get())==0 or len(self.end_date.get()) ==0:
             messagebox.showwarning(title='Creat a new plan', message='Please fill in all the entry')
         elif Start_date_ == None or End_date_ == None:
+            messagebox.showwarning(title='Creat a new plan', message='Please using take the button to choose the date')
+        elif var_end_day is not None or var_start_day is not None:
             messagebox.showwarning(title='Creat a new plan', message='Please using take the button to choose the date')
         else:
             Start_date_ = self.s_date.strftime('%d/%m/%Y')
