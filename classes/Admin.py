@@ -5,6 +5,7 @@ import datetime
 
 class Admin:
     
+    # Combined __init__(self) from multiple sources
     def __init__(self):
         self.plans_file = 'intro-programming/files/plans.csv'
         self.camps_file = 'intro-programming/files/camps_file.csv'
@@ -13,12 +14,12 @@ class Admin:
         self.camp_id = None
         self.users = pd.read_csv(self.login_file)
         
+        # from Yan
         with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', encoding='utf-8') as plan_file:
             read = csv.DictReader(plan_file)
             self.plan_list = []
             for row in read:
                 self.plan_list.append(row)
-            # print(plan_list)
 
 
     # FOR (A) CREATE PLANS - GRACIE
@@ -71,7 +72,67 @@ class Admin:
             print(f"Error writing file {filepath}: {e}")
 
             
-    # FOR (B) END DATE - YAN
+    # FOR (B) END DATE - YAN - ALSO INCLUDED - FUNCTIONS FROM YAN FOR A-C GUI INTEGRATION
+    
+    # This code is for set date of the plan,but still a draft(something need to revise) because without the whole plan table
+    def set_valid_sdate(self):
+        current_date = datetime.datetime.now()
+        cur_year = current_date.year
+        cur_month = current_date.month
+        cur_day = current_date.day
+        self.year = int(input('choose the year of the start date'))
+        while self.year < cur_year:
+            self.year = int(input('the year is invalid,please choose the year again'))
+        self.month = int(input('choose the month of the start date'))
+        while self.month < cur_month:
+            self.month = int(input('the month is invalid,please choose the year again'))
+        self.day = int(input('choose the day of the start date '))
+        while self.day < cur_day:
+            self.day = int(input('the day is invalid,please choose the year again'))
+
+        date_s = datetime.datetime(self.year, self.month, self.day)
+
+        return date_s
+
+    def set_valid_eedate(self, sdate_):
+        current_date = datetime.datetime.now()
+        sdate_year = sdate_.year
+        sdate_month = sdate_.month
+        sdate_day = sdate_.day
+        print(sdate_year)
+        self.year = int(input('choose the year of the start date'))
+        while self.year < sdate_year:
+            self.year = int(input(f'the start year of this plan is {sdate_year},please choose the year again'))
+        self.month = int(input('choose the month of the start date'))
+        while self.month < sdate_month:
+            self.month = int(input(f'the start month of this plan is {sdate_month},please choose the month again'))
+        self.day = int(input('choose the day of the start date '))
+        while self.day < sdate_day:
+            self.day = int(input(f'the start day of this plan is {sdate_day},please choose the day again'))
+
+        date_e = datetime.datetime(self.year, self.month, self.day)
+
+        return date_e
+
+    def read_date(self):
+        with open('plan_date.CSV', 'r') as date_file:
+            read = csv.DictReader(date_file)
+            for row in read:
+                print(row['start_date'], row['end_date'])
+
+    def save_date(sdate_save, edate_save):
+        sdate_save = sdate_save.strftime('%Y-%m-%d')
+        edate_save = edate_save.strftime('%Y-%m-%d')
+        print(sdate_save)
+        print(edate_save)
+
+        with open('plan_date.CSV', 'w') as date_file:
+            headers = ['start_date', 'end_date']
+            save_date_ = csv.DictWriter(date_file, fieldnames=headers)
+            save_date_.writeheader()
+            date_dic = {'start_date': sdate_save, 'end_date': edate_save}
+            save_date_.writerow(date_dic)
+
  
     # This is to justify the type of the date input
     def is_date(self, date):
@@ -85,6 +146,7 @@ class Admin:
             return False
         else:
             return True
+    
     # This is to make sure the end date
     def check_end_date(self,end_date,start_day):
         if end_date > start_day:
@@ -95,6 +157,21 @@ class Admin:
     ## This is to refresh the plan after creating a plan 
     def insert_new_plan(self, new_plan):
         self.plan_list.append(new_plan)
+        
+    # Change some functions to fit the admin.gui(for admin feature a-c)
+    # This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
+    def last_plan_id(self):
+        plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
+
+        res = plan.sort_values(by='Plan_ID', ascending=False)
+        last_plan_id = res.iloc[0]["Plan_ID"]
+        # print(res.iloc[0]["Plan_ID"])
+        return last_plan_id
+
+
+    # This is to justify the type of the date input
+    def is_date(self, date):
+        return isinstance(date, datetime.date)
      
     # FOR (C) DISPLAY PLAN - ELICIA
  
@@ -167,39 +244,6 @@ class Admin:
         self.users['Active'] = False
         return "All accounts have been deactivated"
 
-## Change some functions to fit the admin.gui(for admin feature a-c)
-## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
-    def last_plan_id(self):
-        plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
-
-        res = plan.sort_values(by='Plan_ID', ascending=False)
-        last_plan_id = res.iloc[0]["Plan_ID"]
-        # print(res.iloc[0]["Plan_ID"])
-        return last_plan_id
-
-## This is to justify the type of the date input
-    def is_date(self, date):
-        return isinstance(date, datetime.date)
-## This is to make sure the start date
-    def check_start_day(self, date):
-
-
-        today = date.today()
-        plan_start_date = date
-        if today <= plan_start_date:
-            return False
-        else:
-            return True
-## This is to make sure the end date
-    def check_end_date(self,end_date,start_day):
-        if end_date > start_day:
-            return False
-        else:
-            return True
-    # def plan_id_plus_1(self):
-    #     self.plan_id  = self.plan_id + 1
-    #     return str(self.plan_id)
-
 
     def delete_account(self, username):
         try:
@@ -213,11 +257,7 @@ class Admin:
             return "Account doesn't exist"
 
  
- # FOR (E) RESOURCE ALLOCATION
-             
-## This is to refresh the plan after creating a plan 
-    def insert_new_plan(self, new_plan):
-        self.plan_list.append(new_plan)
+    # FOR (E) RESOURCE ALLOCATION - JAY
 
     def set_camp_id(self):
         self.camp_id = input("Enter camp ID (Not case sensitive)): ").upper()
@@ -308,7 +348,7 @@ class Admin:
 
 
 if __name__ == "__main__":
-    # from resource allocation
+    # from resource allocation - E - Jay
     admin = Admin()
     admin.set_camp_id()
     population = admin.get_camp_population()
