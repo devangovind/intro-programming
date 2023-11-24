@@ -63,8 +63,8 @@ class AdminGui:
         self.clear_content()
         self.Description = tk.StringVar()
         self.Location = tk.StringVar()
-        self.var_startd = tk.StringVar()
-        self.var_end = tk.StringVar()
+
+
         tk.Label(self.root, text='Add a new plan').place(x=50, y=40)
         tk.Label(self.root, text='Plan_ID:').place(x=50, y=60)
         self.plan_id = self.admin.last_plan_id() + 1
@@ -84,15 +84,28 @@ class AdminGui:
         tk.Label(self.root, text='Start_Date:').place(x=50, y=180)
         sdate_button = tk.Button(self.root, text='choose the start date', command=self.pick_sdate).place(x=350, y=160)
         edate_button = tk.Button(self.root, text='choose the end date', command=self.pick_edate).place(x=350, y=200)
-        self.start_date = tk.Entry(self.root, width=30)
+        def stest(content, reason, name):
+            if self.start_date.get() is not None:
+                messagebox.showwarning(title='Creat a new plan',
+                                       message='Please using take the button to choose the date')
+                # return False
+
+        self.valid_input_sdate = tk.StringVar()
+        sCMD = self.root.register(stest)
+        self.start_date=tk.Entry(self.root, textvariable=self.valid_input_sdate, validate='focusin',validatecommand=(sCMD, '%P', '%V', '%W'))
         self.start_date.place(x=50, y=200)
-        # self.start_date.insert(0,'dd/mm/yyyy')
-        self.end_date = tk.Entry(self.root, width=30,textvariable=self.var_end)
+
+        def etest(content, reason, name):
+            if self.end_date.get() is not None:
+                messagebox.showwarning(title='Creat a new plan',
+                                       message='Please using take the button to choose the date')
+
+        self.valid_input_edate = tk.StringVar()
+        eCMD = self.root.register(etest)
+        self.end_date = tk.Entry(self.root, textvariable=self.valid_input_edate, validate='focusin',
+                                   validatecommand=(eCMD, '%P', '%V', '%W'))
         self.end_date.place(x=50, y=250)
-        # self.end_date.insert(0,'dd/mm/yyyy')
-        self.start_date = tk.Entry(self.root, width=30,textvariable= self.var_startd)
-        self.start_date.place(x=50, y=200)
-        # self.start_date.insert(0,'dd/mm/yyyy')
+
         tk.Label(self.root, text='End_Date:').place(x=50, y=220)
         tk.Button(self.root, text='Save this plan', command=self.save_data).place(x=150, y=300)
 
@@ -156,45 +169,64 @@ class AdminGui:
         Location_ = self.Location.get()
         Start_date_ = self.s_date
         End_date_ = self.e_date
-        var_start_day = self.var_startd.get()
-        var_end_day = self.var_end.get()
+        var_start_day = self.valid_input_sdate.get()
+        var_end_day = self.valid_input_edate.get()
         print(Location_)
         print(Description_)
         print(Plan_ID_)
         print(Start_date_)
         print(End_date_)
+        print("p:"+ var_start_day)
+        print("p:"+ var_end_day )
         if len(self.des_entry.get()) == 0 or len(self.loc_entry.get()) == 0 or len(self.start_date.get())==0 or len(self.end_date.get()) ==0:
             messagebox.showwarning(title='Creat a new plan', message='Please fill in all the entry')
         elif Start_date_ == None or End_date_ == None:
             messagebox.showwarning(title='Creat a new plan', message='Please using take the button to choose the date')
-        elif var_end_day is not None or var_start_day is not None:
-            messagebox.showwarning(title='Creat a new plan', message='Please using take the button to choose the date')
-        else:
-            Start_date_ = self.s_date.strftime('%d/%m/%Y')
-            End_date_  = self.e_date.strftime('%d/%m/%Y')
-            plan_dic = {'Plan_ID': Plan_ID_,'Description':Description_,'Location':Location_,'Start Date':Start_date_,'End Date':End_date_}
-            plan_list= [{'Plan_ID': Plan_ID_,'Description':Description_,'Location':Location_,'Start Date':Start_date_,'End Date':End_date_}] # 空字典
-            header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date']
-            print(Start_date_)
-            print(End_date_)
-            with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
-                writer = csv.DictWriter(f, fieldnames=header)
-
-
-                writer.writerows(plan_list)
-            self.admin.insert_new_plan(plan_dic)
-            messagebox.showinfo('infor','Create a plan successfully')
-        ## after creating a new plan delect the entry content 
-            self.Description.set('')
-            self.Location.set('')
-            self.start_date.delete(0,END)
-            self.end_date.delete(0,END)
+            self.start_date.delete(0, END)
+            self.end_date.delete(0, END)
             self.e_date = None
             self.s_date = None
-            self.plan_id = self.plan_id + 1
-            self.plan_id_label.destroy()
-            self.plan_id_label = tk.Label(self.root, text=self.plan_id)
-            self.plan_id_label.place(x=50, y=80)
+        elif Start_date_ is not None or End_date_ is not None:
+            Start_date_ = self.s_date.strftime('%Y-%m-%d')
+            End_date_  = self.e_date.strftime('%Y-%m-%d')
+            print(var_start_day==Start_date_)
+            if var_start_day==Start_date_ and var_end_day==End_date_:
+                Start_date_ = self.s_date.strftime('%d/%m/%Y')
+                End_date_  = self.e_date.strftime('%d/%m/%Y')
+                plan_dic = {'Plan_ID': Plan_ID_,'Description':Description_,'Location':Location_,'Start Date':Start_date_,'End Date':End_date_}
+                plan_list= [{'Plan_ID': Plan_ID_,'Description':Description_,'Location':Location_,'Start Date':Start_date_,'End Date':End_date_}] # 空字典
+                header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date']
+                print(Start_date_)
+                print(End_date_)
+                with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                    writer = csv.DictWriter(f, fieldnames=header)
+
+
+                    writer.writerows(plan_list)
+                self.admin.insert_new_plan(plan_dic)
+                messagebox.showinfo('infor','Create a plan successfully')
+            ## after creating a new plan delect the entry content 
+                self.Description.set('')
+                self.Location.set('')
+                self.start_date.delete(0,END)
+                self.end_date.delete(0,END)
+                self.e_date = None
+                self.s_date = None
+                self.plan_id = self.plan_id + 1
+                self.plan_id_label.destroy()
+                self.plan_id_label = tk.Label(self.root, text=self.plan_id)
+                self.plan_id_label.place(x=50, y=80)
+
+            else:
+                # print(var_start_day!=Start_date_)
+                self.admin.is_date(var_start_day)
+                messagebox.showwarning(title='Creat a new plan', message='Please reuse the button to enter the date ')
+                self.start_date.delete(0, END)
+                self.end_date.delete(0, END)
+                self.e_date = None
+                self.s_date = None
+
+
 
 
 ## This is to show the plan by table 
