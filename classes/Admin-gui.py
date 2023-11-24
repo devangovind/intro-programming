@@ -57,14 +57,12 @@ class AdminGui:
         label.pack(pady=100)
 
 
+## Admin feature a-c
 
     def create_new_plan(self):
         self.clear_content()
-        # add_plan_window = Toplevel()
-        # add_plan_window.geometry('400x400+600+300')
         self.Description = tk.StringVar()
         self.Location = tk.StringVar()
-
         tk.Label(self.root, text='Add a new plan').place(x=50, y=40)
         tk.Label(self.root, text='Plan_ID:').place(x=50, y=60)
         self.plan_id = self.admin.last_plan_id() + 1
@@ -91,14 +89,12 @@ class AdminGui:
         self.start_date = tk.Entry(self.root, width=30)
         self.start_date.place(x=50, y=200)
         # self.start_date.insert(0,'dd/mm/yyyy')
-
-        #
         tk.Label(self.root, text='End_Date:').place(x=50, y=220)
-        # tk.Entry(self.root, width=30).place(x=50, y=240)
         tk.Button(self.root, text='Save this plan', command=self.save_data).place(x=150, y=300)
 
 
 
+#  This method is to get the date using calendar and judge whether it is valid or not
 
     def pick_sdate(self):
         self.date_window = tk.Toplevel()
@@ -110,8 +106,8 @@ class AdminGui:
         submit_btn.place(x=80, y=190)
 
     def pick_edate(self):
-        if len(self.start_date.get()) == 0:
-            messagebox.showwarning(title='Choose start date', message='please choose the start date firstly')
+        if len(self.start_date.get()) == 0 and self.e_date is None:
+            messagebox.showwarning(title='Choose start date', message='please choose the start date firstly using calendar')
         else:
 
             self.date_window = tk.Toplevel()
@@ -149,7 +145,7 @@ class AdminGui:
             print(self.admin.is_date(self.e_date))
         return self.e_date
 
-
+## This is to save the recoding and it can be show directly later
     def save_data(self):
         Plan_ID_ = self.plan_id
         Description_ = self.Description.get()
@@ -173,14 +169,16 @@ class AdminGui:
             header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date']
             print(Start_date_)
             print(End_date_)
-            with open('plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+            with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=header)
 
 
                 writer.writerows(plan_list)
             self.admin.insert_new_plan(plan_dic)
+        messagebox.showinfo('infor','Create a plan successfully')
 
 
+## This is to show the plan by table 
 
     def display_plans(self):
         self.clear_content()
@@ -196,92 +194,43 @@ class AdminGui:
             self.table.heading(item, text=item)
 
         self.root.table.pack(fill=tk.BOTH, expand=True)
-        # tk.Button(self.root, text='Add a new plan').pack(side='left', pady=20)
         tk.Button(self.root, text='End a plan', command= self.end_plan).pack(side='left', pady=20)
-        tk.Button(self.root, text='Refresh plans ').pack(side='left', pady=20)
         # plan_data = PlanData()
+# this is to show if the end date in the plan has arrived, this End date will show "None"
         index = 0
         for plan in self.plan_data_:
-            # print(plan[-1])
-            # print(type(plan[-1]))
             if plan['End Date'] is not None:
                 plan_edate_str = plan['End Date']
                 plan_end_date = datetime.strptime(plan_edate_str, "%d/%m/%Y").date()
-                # print(plan_edate_str)
-                # print(plan_end_date)
-                # returns True if end date has occured and False if end date has not
-                # return today > plan_end_date
-                #
+
                 if plan_end_date < date.today():
                     plan['End Date'] = None
-            # print(plan['End Date'])
-            #
-            # # print(plan_edate)
-            # # print(plan)
-            # # print(plan['End Date'])
             self.root.table.insert('', index + 1, values=(plan['Plan_ID'], plan['Description'],
                                                           plan['Location'], plan['Start Date'], plan['End Date']))
 
 
 
     def end_plan(self):
-        # item = self.table.selection()
+        item = self.table.selection()
+        if item:
+            isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
+            if isok:
+                def update_item():
+                    item = self.table.selection()
+                    selected = self.table.focus()
+                    temp = self.table.item(selected, 'values')
+                    plan_edate = temp[-1]
+                    end_up = None
+                    self.table.item(selected, values=(temp[0], temp[1], temp[2],temp[3],end_up))
+                self.table.bind('<ButtonRelease-1>', update_item())
+        else:
+            messagebox.showinfo(title='Info', message='Please choose a plan！！！')
+               
 
 
-        # def selectItem(a):
-        #     curItem = self.table.focus()
-        #     key = self.table.item(curItem)
-        #     value = key['values']
-        #     date = value[-1]
-    #     if item:
-    #     isok = messagebox.askyesno(title='提醒', message='您确定要删除此记录么？')
-    #     if isok:
-    #         self.table.delete(item)
-    # else:
-    #     messagebox.showinfo(title='提示信息', message='请选择一条记录！！！')
-        def update_item():
-            item = self.table.selection()
-            if item:
-                selected = self.table.focus()
-                temp = self.table.item(selected, 'values')
-                plan_edate = temp[-1]
-                if plan_edate is not None and item is not None:
-                    isok = messagebox.askyesno(title='提醒', message='Do you want to end this plan？')
-                    if isok:
-                        end_up = None
-                        self.table.item(selected, values=(temp[0], temp[1], temp[2],temp[3],end_up))
-                else:
-                    messagebox.showwarning(title='End a plan', message='This plan has been ended')
 
-            else:
-                messagebox.showinfo(title='Info', message='Please choose a plan！！！')
-                # selected = self.table.focus()
-                # temp = self.table.item(selected, 'values')
-                # plan_edate = temp[-1]
-                # if plan_edate is not None and item is not None:
-                #     isok = messagebox.askyesno(title='提醒', message='Do you want to end this plan？')
-                #     if isok:
-                #         end_up = None
-                #         self.table.item(selected, values=(temp[0], temp[1], temp[2],temp[3],end_up))
-                # else:
-                #     messagebox.showwarning(title='End a plan', message='This plan has been ended')
 
-            # self.table.item('curItem', values=(column = 'End date', '下塘西路545号⑤')
 
-            # print(tree.item(curItem))
-            # print(value)
-            # print(date)
-            # return self.date
-        # item = self.table.selection()
-        self.table.bind('<ButtonRelease-1>', update_item())
-        # print(self.date)
-        # print(item)
-        # if item:
-        #     isok = messagebox.askyesno(title='提醒', message='您确定要删除此记录么？')
-        #     if isok:
-        #         self.table.delete(item)
-        # else:
-        #     messagebox.showinfo(title='提示信息', message='请选择一条记录！！！')
 
     def manage_camps(self):
         self.clear_content()

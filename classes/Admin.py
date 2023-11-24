@@ -5,7 +5,7 @@ import datetime
 
 class Admin:
     def __init__(self):
-            with open('files\plans_file.csv', 'r', encoding='utf-8') as plan_file:
+            with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', encoding='utf-8') as plan_file:
                 read = csv.DictReader(plan_file)
                 self.plan_list = []
                 for row in read:
@@ -15,54 +15,13 @@ class Admin:
             self.resources_file = 'intro-programming/files/resources.csv'
             self.camp_id = None
 
-        # with open('../plan_file.csv', 'r', encoding='utf-8') as plan_file:
-        #     read = csv.DictReader(plan_file)
-        #     self.plan_list = []
-        #     for row in read:
-        #         self.plan_list.append(row)
-        #     # print(plan_list)
-
-    def is_date(self,date):
-        return isinstance(date,datetime.date)
 
 
-    def check_start_day(self, date):
 
-        today = date.today()
-        plan_start_date = date
-        if today <= plan_start_date:
-            return False
-        else:
-            return True
-    def check_end_date(self,end_date,start_day):
-        if end_date > start_day:
-            return False
-        else:
-            return True
-
-    def plan_id_plus_1(self):
-        self.plan_id  = self.plan_id + 1
-        return str(self.plan_id)
-    
-    import csv
-import datetime
-import pandas as pd
-
-
-class Admin:
-
-    def __init__(self):
-
-        with open('plan_file.csv', 'r', encoding='utf-8') as plan_file:
-            read = csv.DictReader(plan_file)
-            self.plan_list = []
-            for row in read:
-                self.plan_list.append(row)
-            # print(plan_list)
-## Change some functions to fit the admin.gui
+## Change some functions to fit the admin.gui(for admin feature a-c)
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):
-        plan = pd.read_csv("plan_file.csv")
+        plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
 
         res = plan.sort_values(by='Plan_ID', ascending=False)
         last_plan_id = res.iloc[0]["Plan_ID"]
@@ -96,6 +55,9 @@ class Admin:
         self.plan_list.append(new_plan)
 
     
+
+
+
 
 
 
