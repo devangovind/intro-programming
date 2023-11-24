@@ -6,7 +6,6 @@ import datetime
 class Admin:
     
     # Combined __init__(self) from multiple sources
-    
     def __init__(self):
         self.plans_file = 'intro-programming/files/plans.csv'
         self.camps_file = 'intro-programming/files/camps_file.csv'
