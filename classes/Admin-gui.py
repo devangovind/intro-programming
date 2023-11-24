@@ -67,10 +67,12 @@ class AdminGui:
         tk.Label(self.root, text='Plan_ID:').place(x=50, y=60)
         self.plan_id = self.admin.last_plan_id() + 1
         # print(self.plan_id)
-        Plan_Id_butn = tk.Entry(self.root, width=30)
-        Plan_Id_butn.place(x=50, y=80)
-        Plan_Id_butn.insert(END, self.plan_id)
-        Plan_Id_butn.config(state='readonly')
+        self.plan_id_label = tk.Label(self.root, text = self.plan_id)
+        self.plan_id_label.place(x=50, y=80)
+        # Plan_Id_butn = tk.Entry(self.root, width=30)
+        # Plan_Id_butn.place(x=50, y=80)
+        # Plan_Id_butn.insert(END, self.plan_id)
+        # Plan_Id_butn.config(state='readonly')
         tk.Label(self.root, text='Description:').place(x=50, y=100)
         self.des_entry = tk.Entry(self.root, width=30, textvariable=self.Description)
         self.des_entry.place(x=50, y=120)
@@ -176,6 +178,17 @@ class AdminGui:
                 writer.writerows(plan_list)
             self.admin.insert_new_plan(plan_dic)
             messagebox.showinfo('infor','Create a plan successfully')
+        ## after creating a new plan delect the entry content 
+            self.Description.set('')
+            self.Location.set('')
+            self.start_date.delete(0,END)
+            self.end_date.delete(0,END)
+            self.e_date = None
+            self.s_date = None
+            self.plan_id = self.plan_id + 1
+            self.plan_id_label.destroy()
+            self.plan_id_label = tk.Label(self.root, text=self.plan_id)
+            self.plan_id_label.place(x=50, y=80)
 
 
 ## This is to show the plan by table 
