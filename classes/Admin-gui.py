@@ -1,6 +1,6 @@
 from Admin import Admin
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox, ttk, simpledialog
 from Camps import Camps
 from Plans import Plans
 import pandas as pd
@@ -17,6 +17,7 @@ class AdminGui:
         self.camps = Camps()
         self.plans = Plans()
         self.camps_data = self.camps.get_data()
+        
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
     def create_nav_bar(self):
         self.headerarea = tk.Frame(self.root)
@@ -72,18 +73,18 @@ class AdminGui:
         plans_menu.pack()
         camp_columns = ["Camp ID", "Plan ID", "No. of Volunteers", "No. of Refugees", "Capacity", "Food Packages", "Medical Supplies", "Tents", "Action (Click) ⬇"]
         column_widths = [60, 60, 100, 100, 60, 110, 110, 60, 130]
-        self.tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
+        self.camps_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
         for i in range(len(camp_columns)):
             col = camp_columns[i]
-            self.tree.heading(col, text=col)
-            self.tree.column(col, stretch=False, width=column_widths[i])
-        self.tree.bind("<ButtonRelease-1>", self.allocate_resources)
-        self.tree.pack(pady=20)
+            self.camps_tree.heading(col, text=col)
+            self.camps_tree.column(col, stretch=False, width=column_widths[i])
+        self.camps_tree.bind("<ButtonRelease-1>", self.allocate_resources)
+        self.camps_tree.pack(pady=20)
         self.filter_camps()
 
     def filter_camps(self, event=None):
-        for item in self.tree.get_children():
-            self.tree.delete(item)
+        for item in self.camps_tree.get_children():
+            self.camps_tree.delete(item)
         selected_plan = self.selected_plan.get()
         if selected_plan == "All Plans": filtered_data = self.camps_data
         else:
@@ -91,13 +92,13 @@ class AdminGui:
         for index, row in (filtered_data.iterrows()):
             resources = self.camps.get_resource_data(row['Camp_ID'])
             values=[row['Camp_ID'], row['Plan_ID'], row['Num_Of_Volunteers'],row['Num_Of_Refugees'], 50, resources[0], resources[1], resources[2], "Allocate Resources"]
-            self.tree.insert("", "end", values=values)
+            self.camps_tree.insert("", "end", values=values)
             
     def allocate_resources(self, event):
-        item_id = self.tree.selection()
-        column = self.tree.identify_column(event.x)
+        item_id = self.camps_tree.selection()
+        column = self.camps_tree.identify_column(event.x)
         if item_id and column == "#9":
-            row = (self.tree.item(item_id, "values"))
+            row = (self.camps_tree.item(item_id, "values"))
             camp_id = row[0]
             curr_resources = [row[5], row[6], row[7]]
             can_allocate, suggest_resources_dict = self.admin.suggest_resources(camp_id)
@@ -177,48 +178,102 @@ class AdminGui:
     def manage_volunteers(self):
         self.clear_content()
         # add code here to edit volunteer data
-        self.volunteer_data = pd.open_csv("./files/volunteers.csv")
-        self.clear_content()
+        self.volunteer_data = pd.read_csv("./files/volunteers.csv")
+        self.users = pd.read_csv("./files/logindetails.csv")
         title = tk.Label(self.root, text="Manage Volunteers", font=('Arial', 24))
         title.pack(pady=20)
         camps_ids = ["All Camps"]
         for val in self.camps_data['Camp_ID']:
-            if val in self.camps_data:
+            if val in camps_ids:
                 continue
             camps_ids.append(val)
         self.selected_camp = tk.StringVar(self.root)
         self.selected_camp.set(camps_ids[0])
         camps_menu_lbl = tk.Label(self.root, text="Filter By Camp:", font=('Arial', 18))
-        camps_menu = tk.OptionMenu(self.root, self.selected_plan, *camps_ids, command=self.filter_camps)
+        camps_menu = tk.OptionMenu(self.root, self.selected_camp, *camps_ids, command=self.filter_volunteers)
         camps_menu_lbl.pack()
         camps_menu.pack()
-        camp_columns = ["Camp ID", "Username", "First Name", "Last Name", "Phone", "Age", "Availability", "State"]
-        column_widths = [80, 80, 80, 80, 80, 80, 130, 80]
-        self.tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
+        camp_columns = ["Camp ID", "Username", "First Name", "Surname", "Phone", "Age", "Availability", "State", "Delete"]
+        column_widths = [70, 80, 80, 80, 80, 40, 220, 70, 70]
+        self.volun_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
         for i in range(len(camp_columns)):
             col = camp_columns[i]
-            self.tree.heading(col, text=col)
-            self.tree.column(col, stretch=False, width=column_widths[i])
-        # self.tree.bind("<ButtonRelease-1>", self.allocate_resources)
-        self.tree.pack(pady=20)
+            self.volun_tree.heading(col, text=col)
+            self.volun_tree.column(col, stretch=False, width=column_widths[i])
+        self.volun_tree.bind("<ButtonRelease-1>", self.individual_volunteer)
+        self.volun_tree.pack(pady=20)
         self.filter_volunteers()
 
     def filter_volunteers(self, event=None):
-        for item in self.tree.get_children():
-            self.tree.delete(item)
+        for item in self.volun_tree.get_children():
+            self.volun_tree.delete(item)
         selected_camp = self.selected_camp.get()
-        if selected_camp == "All Plans": filtered_data = self.volunteer_data
+        if selected_camp == "All Camps": filtered_data = self.volunteer_data
         else:
             filtered_data = self.volunteer_data[self.volunteer_data["Camp_ID"] == selected_camp]
-        for index, row in (filtered_data.iterrows()):
-            availability_array = ""
+        if not filtered_data.empty:
+            print(self.volunteer_data)
+            for index, row in (filtered_data.iterrows()):
+                days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                availability_array = []
+                availability =  str(row['Availability']).zfill(7)
+                for i in range(len(availability)):
+                    if availability[i] == "1":
+                        availability_array.append(days[i])
+                if len(availability_array) == 7:
+                    availability_string = "All Days"
+                elif len(availability_array) == 0:
+                    availability_string = "No Days"
+                else:
+                    if len(availability_array) == 2:
+                        availability_string = f'{availability_array[0]} and {availability_array[1]}'
+                    else:
+                        availability_string = ", ".join(availability_array)
+                state = self.users[self.users["Username"] == row["Username"]]["Active"].values[0]
+                if state: state = "Active"
+                else: state = "Deactive"
+
+                values=[row['Camp_ID'], row['Username'], row['First Name'], row['Last Name'],row['Phone'], row['Age'], availability_string, state, "Delete?"]
+                self.volun_tree.insert("", "end", values=values)
+        
+
+    def individual_volunteer(self, event):
+        item_id = self.volun_tree.selection()
+        column = self.volun_tree.identify_column(event.x)
+        if item_id and column == "#8":
+            row = (self.volun_tree.item(item_id, "values"))
+
+            self.activate_deactivate(row)
+        elif item_id and column == "#9":
+            row = (self.volun_tree.item(item_id, "values"))
+            self.delete_volunteer(row[1])
+        
+
             
-
-
-            values=[row['Camp_ID'], row['Username'], row['First Name'], row['Last Name'],row['Phone'], row['Age'], row['Availability']]
-            self.tree.insert("", "end", values=values)
-
-
+            
+                
+    def activate_deactivate(self, row):
+        username = row[1]
+        if row[-2] == "Active":
+            
+            volunteer_choice = messagebox.askyesno(title="Manage Volunteer", message=f"Deactivate {username}'s Account:\n")
+            if volunteer_choice == True:
+                self.admin.deactivate_account(username)
+                self.root.update_idletasks()
+                self.manage_volunteers()
+        else:
+            volunteer_choice = messagebox.askyesno(title="Manage Volunteer", message=f"Activate {username}'s Account:\n")
+            if volunteer_choice == True:
+                self.admin.activate_account(username)
+                self.root.update_idletasks()
+                self.manage_volunteers()
+            
+    def delete_volunteer(self, username):
+        volunteer_choice = messagebox.askyesno(title="Manage Volunteer", message=f"Delete {username}'s Account:\n" )
+        if volunteer_choice == True:
+            self.admin.delete_account(username)
+            self.root.update_idletasks()
+            self.manage_volunteers()
     
 
     def clear_content(self):
