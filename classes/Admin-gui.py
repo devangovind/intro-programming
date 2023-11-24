@@ -106,7 +106,7 @@ class AdminGui:
         submit_btn.place(x=80, y=190)
 
     def pick_edate(self):
-        if len(self.start_date.get()) == 0 and self.e_date is None:
+        if len(self.start_date.get()) == 0 or self.s_date is None:
             messagebox.showwarning(title='Choose start date', message='please choose the start date firstly using calendar')
         else:
 
@@ -175,7 +175,7 @@ class AdminGui:
 
                 writer.writerows(plan_list)
             self.admin.insert_new_plan(plan_dic)
-        messagebox.showinfo('infor','Create a plan successfully')
+            messagebox.showinfo('infor','Create a plan successfully')
 
 
 ## This is to show the plan by table 
