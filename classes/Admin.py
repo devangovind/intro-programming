@@ -16,8 +16,16 @@ class Admin:
         self.login_file = './files/logindetails.csv'
         self.camp_id = None
         self.users = pd.read_csv(self.login_file)
+        
+        with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', encoding='utf-8') as plan_file:
+            read = csv.DictReader(plan_file)
+            self.plan_list = []
+            for row in read:
+                self.plan_list.append(row)
+            # print(plan_list)
 
-# FOR (A) CREATE PLANS
+
+    # FOR (A) CREATE PLANS - GRACIE
 
     def create_humanitarian_plan(self):
         description = input("Enter the description of the plan: ")
@@ -67,17 +75,33 @@ class Admin:
         except Exception as e:
             print(f"Error writing file {filepath}: {e}")
 
-
-    def display_plans(self):
-        existing_data = self.read_csv(self.plans_file)
-
-        for row in existing_data:
-            print(row)
             
- # FOR (B) DISPLAY PLAN
+    # FOR (B) END DATE - YAN
  
-
- # FOR (C) DISPLAY PLAN
+    # This is to justify the type of the date input
+    def is_date(self, date):
+        return isinstance(date, datetime.date)
+    
+    # This is to make sure the start date
+    def check_start_day(self, date):
+        today = date.today()
+        plan_start_date = date
+        if today <= plan_start_date:
+            return False
+        else:
+            return True
+    # This is to make sure the end date
+    def check_end_date(self,end_date,start_day):
+        if end_date > start_day:
+            return False
+        else:
+            return True
+        
+    ## This is to refresh the plan after creating a plan 
+    def insert_new_plan(self, new_plan):
+        self.plan_list.append(new_plan)
+     
+    # FOR (C) DISPLAY PLAN - ELICIA
  
     def check_event_ended(self, plan_id):
         plans = pd.read_csv(self.plans_file)
@@ -86,8 +110,15 @@ class Admin:
         today = date.today()
         plan_end_date = datetime.strptime(plan_end_date_str, "%d/%m/%Y").date()
         #returns True if end date has occured and False if end date has not
-        return today > plan_end_date 
-     
+        return today > plan_end_date
+    
+ 
+    def display_plans(self):
+        existing_data = self.read_csv(self.plans_file)
+
+        for row in existing_data:
+            print(row)
+            
 
     def display_plan(self, plan_id):
         camps = pd.read_csv(self.camps_file)
@@ -103,7 +134,7 @@ class Admin:
                 return plan_details[["Camp_ID","Num_Of_Refugees","Num_Of_Volunteers"]]
           
  
- # FOR (D) ACCOUNT ACTIVATION
+    # FOR (D) EDIT VOLUNTEERS - JUSTIN
  
     def save_changes(self):
         self.users.to_csv(self.login_file, sep=',', index=False, encoding='utf-8')
@@ -139,6 +170,7 @@ class Admin:
                     return "Your account has already been deactivated"
         except KeyError:
             return "Account doesn't exist"
+
 
     def deactivate_all(self):
         self.users['Active'] = False
@@ -202,6 +234,7 @@ class Admin:
         except Exception as e:
             print(f"Error in update_resource_allocation: {e}")
 
+
     def suggest_resources(self, duration_days=7):
         population = self.get_camp_population()
         if population > 0:
@@ -222,6 +255,7 @@ class Admin:
         else:
             print(f"No suggestions for Camp_ID {self.camp_id} with population 0.")
             return {}
+
 
     def manual_resource_allocation(self):
         if not self.camp_id:
@@ -246,25 +280,10 @@ class Admin:
             self.update_resource_allocation(resource_type, quantity)
 
 
-
 if __name__ == "__main__":
+    # from resource allocation
     admin = Admin()
     admin.set_camp_id()
     population = admin.get_camp_population()
     print(f"Number of refugees for camp {admin.camp_id}: {population}")
     admin.manual_resource_allocation()
-    
-    test = Admin()
-    test.menu()
-
-    #print(admin.users)
-    #print(admin.deactivate_all())
-    #print(admin.users)
-    #print(admin.activate_all())
-    #print(admin.users)
-    #print(admin.deactivate_account('volunteer1'))
-    #print(admin.users)
-    #print(admin.activate_account('volunteer1'))
-    #print(admin.users)
-    #print(admin.delete_account('volunteer3'))
-    #print(admin.users)
