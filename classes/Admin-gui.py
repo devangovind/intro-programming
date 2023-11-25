@@ -4,8 +4,9 @@ from tkinter import messagebox, END
 from tkinter import ttk
 from tkcalendar import *
 import csv
+import datetime
 from datetime import date
-from datetime import datetime
+# from datetime import datetime
 
 class AdminGui:
     def __init__(self, admin):
@@ -61,29 +62,32 @@ class AdminGui:
 
     def create_new_plan(self):
         self.clear_content()
-        self.Description = tk.StringVar()
-        self.Location = tk.StringVar()
-
-
+        # Get the value by admin using entry
+        self.Description = tk.StringVar() 
+        self.Location = tk.StringVar() 
+        # Build the label     
         tk.Label(self.root, text='Add a new plan').place(x=50, y=40)
         tk.Label(self.root, text='Plan_ID:').place(x=50, y=60)
-        self.plan_id = self.admin.last_plan_id() + 1
-        # print(self.plan_id)
-        self.plan_id_label = tk.Label(self.root, text = self.plan_id)
-        self.plan_id_label.place(x=50, y=80)
-        # Plan_Id_butn = tk.Entry(self.root, width=30)
-        # Plan_Id_butn.place(x=50, y=80)
-        # Plan_Id_butn.insert(END, self.plan_id)
-        # Plan_Id_butn.config(state='readonly')
         tk.Label(self.root, text='Description:').place(x=50, y=100)
+        tk.Label(self.root, text='Location:').place(x=50, y=140)
+        tk.Label(self.root, text='Start_Date:').place(x=50, y=180)
+        tk.Label(self.root, text='End_Date:').place(x=50, y=220)
+        # Get the plan_ID automatically
+        self.plan_id = self.admin.last_plan_id() + 1
+        # print(self.plan_id)--> just for testing during coding
+        # The plan_ID can be shown in the window and admin can not edit
+        self.plan_id_label = tk.Label(self.root, text = self.plan_id)
+        # Build the entry
+        self.plan_id_label.place(x=50, y=80)
         self.des_entry = tk.Entry(self.root, width=30, textvariable=self.Description)
         self.des_entry.place(x=50, y=120)
-        tk.Label(self.root, text='Location:').place(x=50, y=140)
         self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
         self.loc_entry.place(x=50, y=160)
-        tk.Label(self.root, text='Start_Date:').place(x=50, y=180)
+        # Build the button
         sdate_button = tk.Button(self.root, text='choose the start date', command=self.pick_sdate).place(x=350, y=160)
         edate_button = tk.Button(self.root, text='choose the end date', command=self.pick_edate).place(x=350, y=200)
+        tk.Button(self.root, text='Save this plan', command=self.save_data).place(x=150, y=300)
+        # When admin click the entry date, admin will be informed that they need to use calendar
         def stest(content, reason, name):
             if self.start_date.get() is not None:
                 messagebox.showwarning(title='Creat a new plan',
@@ -106,8 +110,7 @@ class AdminGui:
                                    validatecommand=(eCMD, '%P', '%V', '%W'))
         self.end_date.place(x=50, y=250)
 
-        tk.Label(self.root, text='End_Date:').place(x=50, y=220)
-        tk.Button(self.root, text='Save this plan', command=self.save_data).place(x=150, y=300)
+
 
 
 
@@ -177,8 +180,8 @@ class AdminGui:
         print(Plan_ID_)
         print(Start_date_)
         print(End_date_)
-        print("p:"+ var_start_day)
-        print("p:"+ var_end_day )
+        print("test:"+ var_start_day)
+        print("test:"+ var_end_day )
         if len(self.des_entry.get()) == 0 or len(self.loc_entry.get()) == 0 or len(self.start_date.get())==0 or len(self.end_date.get()) ==0:
             messagebox.showwarning(title='Creat a new plan', message='Please fill in all the entry')
         elif Start_date_ == None or End_date_ == None:
@@ -190,8 +193,9 @@ class AdminGui:
         elif Start_date_ is not None or End_date_ is not None:
             Start_date_ = self.s_date.strftime('%Y-%m-%d')
             End_date_  = self.e_date.strftime('%Y-%m-%d')
-            print(var_start_day==Start_date_)
-            print(self.admin.check_end_date(self.e_date, self.s_date))
+            # print(End_date_)
+            # print(var_start_day==Start_date_)
+            # print(self.admin.check_end_date(self.e_date, self.s_date))
             if var_start_day==Start_date_ and var_end_day==End_date_ and not (self.admin.check_end_date(self.e_date, self.s_date)):
                 Start_date_ = self.s_date.strftime('%d/%m/%Y')
                 End_date_  = self.e_date.strftime('%d/%m/%Y')
@@ -202,8 +206,6 @@ class AdminGui:
                 print(End_date_)
                 with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
                     writer = csv.DictWriter(f, fieldnames=header)
-
-
                     writer.writerows(plan_list)
                 self.admin.insert_new_plan(plan_dic)
                 messagebox.showinfo('infor','Create a plan successfully')
@@ -259,7 +261,7 @@ class AdminGui:
         for plan in self.plan_data_:
             if plan['End Date'] is not None:
                 plan_edate_str = plan['End Date']
-                plan_end_date = datetime.strptime(plan_edate_str, "%d/%m/%Y").date()
+                plan_end_date = datetime.datetime.strptime(plan_edate_str, "%d/%m/%Y").date()
 
                 if plan_end_date < date.today():
                     plan['End Date'] = None
@@ -271,17 +273,30 @@ class AdminGui:
     def end_plan(self):
         item = self.table.selection()
         if item:
-            isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
-            if isok:
-                def update_item():
-                    item = self.table.selection()
-                    selected = self.table.focus()
-                    temp = self.table.item(selected, 'values')
-                    plan_edate = temp[-1]
-                    end_up = None
-                    self.table.item(selected, values=(temp[0], temp[1], temp[2],temp[3],end_up))
-                self.table.bind('<ButtonRelease-1>', update_item())
-        else:
+            def valid_item_():
+                item = self.table.selection()
+                selected = self.table.focus()
+                temp = self.table.item(selected, 'values')
+                self.plan_sdate = temp[-2]
+                self.plan_edate = temp[-1]
+                self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate,'%d/%m/%Y').date()
+                self.plan_edate_date = datetime.datetime.strptime(self.plan_edate,'%d/%m/%Y').date()
+            self.table.bind('<ButtonRelease-1>', valid_item_())
+            if self.plan_sdate_date > date.today():
+                messagebox.showinfo(title='Info', message='This plan has not started! It cannot be ended')
+            elif self.plan_sdate_date <= date.today():
+                print(1)
+                isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
+                if isok:
+                    def update_item():
+                        item = self.table.selection()
+                        selected = self.table.focus()
+                        temp = self.table.item(selected, 'values')
+                        plan_edate = temp[-1]
+                        end_up = None
+                        self.table.item(selected, values=(temp[0], temp[1], temp[2],temp[3],end_up))
+                    self.table.bind('<ButtonRelease-1>', update_item())
+        elif not item:
             messagebox.showinfo(title='Info', message='Please choose a plan！！！')
                
 
