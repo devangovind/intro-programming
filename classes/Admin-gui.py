@@ -279,12 +279,17 @@ class AdminGui:
                 temp = self.table.item(selected, 'values')
                 self.plan_sdate = temp[-2]
                 self.plan_edate = temp[-1]
+                print('test:'+ self.plan_edate)
                 self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate,'%d/%m/%Y').date()
-                self.plan_edate_date = datetime.datetime.strptime(self.plan_edate,'%d/%m/%Y').date()
+                # self.plan_edate_date = datetime.datetime.strptime(self.plan_edate,'%d/%m/%Y').date()
             self.table.bind('<ButtonRelease-1>', valid_item_())
             if self.plan_sdate_date > date.today():
                 messagebox.showinfo(title='Info', message='This plan has not started! It cannot be ended')
-            elif self.plan_sdate_date <= date.today():
+            elif self.plan_sdate_date <= date.today() and self.plan_edate != 'None':
+                print(self.plan_edate != None)
+                print(self.plan_edate)
+                print(not self.plan_edate)
+                print((self.plan_edate) is not None)
                 print(1)
                 isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
                 if isok:
@@ -296,6 +301,10 @@ class AdminGui:
                         end_up = None
                         self.table.item(selected, values=(temp[0], temp[1], temp[2],temp[3],end_up))
                     self.table.bind('<ButtonRelease-1>', update_item())
+            elif self.plan_edate == 'None':
+                print(self.plan_edate)
+            
+                messagebox.showinfo(title='Info', message='This plan has aready ended')
         elif not item:
             messagebox.showinfo(title='Info', message='Please choose a plan！！！')
                
