@@ -139,6 +139,7 @@ class AdminGui:
         self.s_date = self.cal.selection_get()
         if self.admin.check_start_day(self.s_date):
             messagebox.showwarning(title='Choose start date', message='The start date cannot before today')
+
         else:
             self.start_date.delete(0, END)
             self.start_date.insert(0, self.s_date)
@@ -190,7 +191,8 @@ class AdminGui:
             Start_date_ = self.s_date.strftime('%Y-%m-%d')
             End_date_  = self.e_date.strftime('%Y-%m-%d')
             print(var_start_day==Start_date_)
-            if var_start_day==Start_date_ and var_end_day==End_date_:
+            print(self.admin.check_end_date(self.e_date, self.s_date))
+            if var_start_day==Start_date_ and var_end_day==End_date_ and not (self.admin.check_end_date(self.e_date, self.s_date)):
                 Start_date_ = self.s_date.strftime('%d/%m/%Y')
                 End_date_  = self.e_date.strftime('%d/%m/%Y')
                 plan_dic = {'Plan_ID': Plan_ID_,'Description':Description_,'Location':Location_,'Start Date':Start_date_,'End Date':End_date_}
@@ -216,11 +218,16 @@ class AdminGui:
                 self.plan_id_label.destroy()
                 self.plan_id_label = tk.Label(self.root, text=self.plan_id)
                 self.plan_id_label.place(x=50, y=80)
-
+            elif self.admin.check_end_date(self.e_date, self.s_date):
+                messagebox.showwarning(title='Choose start date', message='The end date cannot before start date')
+                self.start_date.delete(0, END)
+                self.end_date.delete(0, END)
+                self.e_date = None
+                self.s_date = None
             else:
                 # print(var_start_day!=Start_date_)
                 self.admin.is_date(var_start_day)
-                messagebox.showwarning(title='Creat a new plan', message='Please reuse the button to enter the date ')
+                messagebox.showwarning(title='Creat a new plan', message='Please reuse the button to enter the date using calendar ')
                 self.start_date.delete(0, END)
                 self.end_date.delete(0, END)
                 self.e_date = None
