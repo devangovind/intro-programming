@@ -1,7 +1,7 @@
 # Admin Class File
 import pandas as pd
 import csv
-import datetime
+import datetime 
 
 class Admin:
     def __init__(self):
@@ -24,7 +24,7 @@ class Admin:
         plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
 
         res = plan.sort_values(by='Plan_ID', ascending=False)
-        last_plan_id = res.iloc[0]["Plan_ID"]
+        last_plan_id = int(res.iloc[0]["Plan_ID"])
         # print(res.iloc[0]["Plan_ID"])
         return last_plan_id
 

@@ -5,7 +5,12 @@ from tkinter import ttk
 from tkcalendar import *
 import csv
 import datetime
+import time
 from datetime import date
+import pandas as pd # 引入pandas
+
+
+
 # from datetime import datetime
 
 class AdminGui:
@@ -57,15 +62,14 @@ class AdminGui:
         label = tk.Label(self.root, text=welcome_back, font=('Arial', 24))
         label.pack(pady=100)
 
-
-## Admin feature a-c
+    ## Admin feature a-c
 
     def create_new_plan(self):
         self.clear_content()
         # Get the value by admin using entry
-        self.Description = tk.StringVar() 
-        self.Location = tk.StringVar() 
-        # Build the label     
+        self.Description = tk.StringVar()
+        self.Location = tk.StringVar()
+        # Build the label
         tk.Label(self.root, text='Add a new plan').place(x=50, y=40)
         tk.Label(self.root, text='Plan_ID:').place(x=50, y=60)
         tk.Label(self.root, text='Description:').place(x=50, y=100)
@@ -76,7 +80,7 @@ class AdminGui:
         self.plan_id = self.admin.last_plan_id() + 1
         # print(self.plan_id)--> just for testing during coding
         # The plan_ID can be shown in the window and admin can not edit
-        self.plan_id_label = tk.Label(self.root, text = self.plan_id)
+        self.plan_id_label = tk.Label(self.root, text=self.plan_id)
         # Build the entry
         self.plan_id_label.place(x=50, y=80)
         self.des_entry = tk.Entry(self.root, width=30, textvariable=self.Description)
@@ -87,6 +91,7 @@ class AdminGui:
         sdate_button = tk.Button(self.root, text='choose the start date', command=self.pick_sdate).place(x=350, y=160)
         edate_button = tk.Button(self.root, text='choose the end date', command=self.pick_edate).place(x=350, y=200)
         tk.Button(self.root, text='Save this plan', command=self.save_data).place(x=150, y=300)
+
         # When admin click the entry date, admin will be informed that they need to use calendar
         def stest(content, reason, name):
             if self.start_date.get() is not None:
@@ -96,7 +101,8 @@ class AdminGui:
 
         self.valid_input_sdate = tk.StringVar()
         sCMD = self.root.register(stest)
-        self.start_date=tk.Entry(self.root, textvariable=self.valid_input_sdate, validate='focusin',validatecommand=(sCMD, '%P', '%V', '%W'))
+        self.start_date = tk.Entry(self.root, textvariable=self.valid_input_sdate, validate='focusin',
+                                   validatecommand=(sCMD, '%P', '%V', '%W'))
         self.start_date.place(x=50, y=200)
 
         def etest(content, reason, name):
@@ -107,14 +113,10 @@ class AdminGui:
         self.valid_input_edate = tk.StringVar()
         eCMD = self.root.register(etest)
         self.end_date = tk.Entry(self.root, textvariable=self.valid_input_edate, validate='focusin',
-                                   validatecommand=(eCMD, '%P', '%V', '%W'))
+                                 validatecommand=(eCMD, '%P', '%V', '%W'))
         self.end_date.place(x=50, y=250)
 
-
-
-
-
-#  This method is to get the date using calendar and judge whether it is valid or not
+    #  This method is to get the date using calendar and judge whether it is valid or not
 
     def pick_sdate(self):
         self.date_window = tk.Toplevel()
@@ -127,7 +129,8 @@ class AdminGui:
 
     def pick_edate(self):
         if len(self.start_date.get()) == 0 or self.s_date is None:
-            messagebox.showwarning(title='Choose start date', message='please choose the start date firstly using calendar')
+            messagebox.showwarning(title='Choose start date',
+                                   message='please choose the start date firstly using calendar')
         else:
 
             self.date_window = tk.Toplevel()
@@ -166,7 +169,7 @@ class AdminGui:
             print(self.admin.is_date(self.e_date))
         return self.e_date
 
-## This is to save the recoding and it can be show directly later
+    ## This is to save the recoding and it can be show directly later
     def save_data(self):
         Plan_ID_ = self.plan_id
         Description_ = self.Description.get()
@@ -180,9 +183,10 @@ class AdminGui:
         print(Plan_ID_)
         print(Start_date_)
         print(End_date_)
-        print("test:"+ var_start_day)
-        print("test:"+ var_end_day )
-        if len(self.des_entry.get()) == 0 or len(self.loc_entry.get()) == 0 or len(self.start_date.get())==0 or len(self.end_date.get()) ==0:
+        print("test:" + var_start_day)
+        print("test:" + var_end_day)
+        if len(self.des_entry.get()) == 0 or len(self.loc_entry.get()) == 0 or len(self.start_date.get()) == 0 or len(
+                self.end_date.get()) == 0:
             messagebox.showwarning(title='Creat a new plan', message='Please fill in all the entry')
         elif Start_date_ == None or End_date_ == None:
             messagebox.showwarning(title='Creat a new plan', message='Please using take the button to choose the date')
@@ -192,34 +196,69 @@ class AdminGui:
             self.s_date = None
         elif Start_date_ is not None or End_date_ is not None:
             Start_date_ = self.s_date.strftime('%Y-%m-%d')
-            End_date_  = self.e_date.strftime('%Y-%m-%d')
+            End_date_ = self.e_date.strftime('%Y-%m-%d')
             # print(End_date_)
             # print(var_start_day==Start_date_)
             # print(self.admin.check_end_date(self.e_date, self.s_date))
-            if var_start_day==Start_date_ and var_end_day==End_date_ and not (self.admin.check_end_date(self.e_date, self.s_date)):
-                Start_date_ = self.s_date.strftime('%d/%m/%Y')
-                End_date_  = self.e_date.strftime('%d/%m/%Y')
-                plan_dic = {'Plan_ID': Plan_ID_,'Description':Description_,'Location':Location_,'Start Date':Start_date_,'End Date':End_date_}
-                plan_list= [{'Plan_ID': Plan_ID_,'Description':Description_,'Location':Location_,'Start Date':Start_date_,'End Date':End_date_}] # 空字典
-                header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date']
-                print(Start_date_)
-                print(End_date_)
-                with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
-                    writer = csv.DictWriter(f, fieldnames=header)
-                    writer.writerows(plan_list)
-                self.admin.insert_new_plan(plan_dic)
-                messagebox.showinfo('infor','Create a plan successfully')
-            ## after creating a new plan delect the entry content 
-                self.Description.set('')
-                self.Location.set('')
-                self.start_date.delete(0,END)
-                self.end_date.delete(0,END)
-                self.e_date = None
-                self.s_date = None
-                self.plan_id = self.plan_id + 1
-                self.plan_id_label.destroy()
-                self.plan_id_label = tk.Label(self.root, text=self.plan_id)
-                self.plan_id_label.place(x=50, y=80)
+            if var_start_day == Start_date_ and var_end_day == End_date_ and not (
+            self.admin.check_end_date(self.e_date, self.s_date)):
+                if self.s_date == date.today():
+
+                    Start_date_ = self.s_date.strftime('%d/%m/%Y')
+                    End_date_ = self.e_date.strftime('%d/%m/%Y')
+                    plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
+                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Ongoing'}
+                    plan_list = [
+                        {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
+                         'End Date': End_date_,'Status':'Ongoing'}]  # 空字典
+                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
+                    with open('plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                        writer = csv.DictWriter(f, fieldnames=header)
+
+                        writer.writerows(plan_list)
+                    self.admin.insert_new_plan(plan_dic)
+                    messagebox.showinfo('infor', 'Create a plan successfully')
+                    # self.plan_id = self.plan_id + 1
+                    # self.Plan_Id_entry.insert(END, self.plan_id)
+                    self.Description.set('')
+                    self.Location.set('')
+                    self.start_date.delete(0, END)
+                    self.end_date.delete(0, END)
+                    self.e_date = None
+                    self.s_date = None
+                    self.plan_id = self.plan_id + 1
+                    self.plan_id_label.destroy()
+                    self.plan_id_label = tk.Label(self.root, text=self.plan_id)
+                    self.plan_id_label.place(x=50, y=80)
+                elif self.s_date > date.today():
+                    Start_date_ = self.s_date.strftime('%d/%m/%Y')
+                    End_date_ = self.e_date.strftime('%d/%m/%Y')
+                    plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
+                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Future'}
+                    plan_list = [
+                        {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
+                         'End Date': End_date_,'Status':'Future'}]  # 空字典
+                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
+                    print(Start_date_)
+                    print(End_date_)
+                    with open('plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                        writer = csv.DictWriter(f, fieldnames=header)
+
+                        writer.writerows(plan_list)
+                    self.admin.insert_new_plan(plan_dic)
+                    messagebox.showinfo('infor', 'Create a plan successfully')
+                    # self.plan_id = self.plan_id + 1
+                    # self.Plan_Id_entry.insert(END, self.plan_id)
+                    self.Description.set('')
+                    self.Location.set('')
+                    self.start_date.delete(0, END)
+                    self.end_date.delete(0, END)
+                    self.e_date = None
+                    self.s_date = None
+                    self.plan_id = self.plan_id + 1
+                    self.plan_id_label.destroy()
+                    self.plan_id_label = tk.Label(self.root, text=self.plan_id)
+                    self.plan_id_label.place(x=50, y=80)
             elif self.admin.check_end_date(self.e_date, self.s_date):
                 messagebox.showwarning(title='Choose start date', message='The end date cannot before start date')
                 self.start_date.delete(0, END)
@@ -229,23 +268,21 @@ class AdminGui:
             else:
                 # print(var_start_day!=Start_date_)
                 self.admin.is_date(var_start_day)
-                messagebox.showwarning(title='Creat a new plan', message='Please reuse the button to enter the date using calendar ')
+                messagebox.showwarning(title='Creat a new plan',
+                                       message='Please reuse the button to enter the date using calendar ')
                 self.start_date.delete(0, END)
                 self.end_date.delete(0, END)
                 self.e_date = None
                 self.s_date = None
 
-
-
-
-## This is to show the plan by table 
+    ## This is to show the plan by table
 
     def display_plans(self):
         self.clear_content()
         # add code here:
         # somewhere in here will be the end button for the individual plans which will maybe go to another function
 
-        header = ['plan_ID', 'Description', 'Location', 'Start Date', 'End Date']
+        header = ['plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
         self.table = ttk.Treeview(self.root)
         self.root.table = self.table
         self.table.configure(columns=header, show='headings')
@@ -254,21 +291,30 @@ class AdminGui:
             self.table.heading(item, text=item)
 
         self.root.table.pack(fill=tk.BOTH, expand=True)
-        tk.Button(self.root, text='End a plan', command= self.end_plan).pack(side='left', pady=20)
+        tk.Button(self.root, text='End a plan', command=self.end_plan).pack(side='left', pady=20)
+        # tk.Button(self.root, text='refresh', command= self.refresh_plan).pack(side='left', pady=20)
         # plan_data = PlanData()
-# this is to show if the end date in the plan has arrived, this End date will show "None"
+        # this is to show if the end date in the plan has arrived, this End date will show "None"
         index = 0
-        for plan in self.plan_data_:
-            if plan['End Date'] is not None:
-                plan_edate_str = plan['End Date']
-                plan_end_date = datetime.datetime.strptime(plan_edate_str, "%d/%m/%Y").date()
-
-                if plan_end_date < date.today():
-                    plan['End Date'] = None
+        # 如果开始时间到了今天 创建的计划自动变为ongoing
+        # 如果结束时间到了今天 创建的计划自动变为 finished
+        df = pd.read_csv("plan_file.csv")
+        df.set_index("Plan_ID", inplace=True)  # 日期列设置为index
+        df.loc[df["Start Date"] == time.strftime("%d/%m/%Y", time.localtime(time.time())), "Status"] = "Ongoing"
+        df.loc[df["End Date"] == time.strftime("%d/%m/%Y", time.localtime(time.time())), "Status"] = "Finished"
+        # print(df) # just for test
+        df.to_csv("plan_file.csv")
+        # 将上面自动更新之后的显示在表中
+        index = 0
+        with open('plan_file.csv', 'r', encoding='utf-8') as plan_file:
+            read = csv.DictReader(plan_file)
+            self.plan_update_list = []
+            for row in read:
+                self.plan_update_list.append(row)
+        print(self.plan_update_list)
+        for plan in self.plan_update_list:
             self.root.table.insert('', index + 1, values=(plan['Plan_ID'], plan['Description'],
-                                                          plan['Location'], plan['Start Date'], plan['End Date']))
-
-
+                                                          plan['Location'], plan['Start Date'], plan['End Date'],plan['Status']))
 
     def end_plan(self):
         item = self.table.selection()
@@ -277,42 +323,81 @@ class AdminGui:
                 item = self.table.selection()
                 selected = self.table.focus()
                 temp = self.table.item(selected, 'values')
-                self.plan_sdate = temp[-2]
-                self.plan_edate = temp[-1]
-                print('test:'+ self.plan_edate)
-                self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate,'%d/%m/%Y').date()
+                self.plan_sdate = temp[-3]
+                self.plan_edate = temp[-2]
+                self.status = temp[-1]
+                print('test:' + self.plan_edate)
+                self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate, '%d/%m/%Y').date()
                 # self.plan_edate_date = datetime.datetime.strptime(self.plan_edate,'%d/%m/%Y').date()
+
             self.table.bind('<ButtonRelease-1>', valid_item_())
+            print(self.plan_sdate)
             if self.plan_sdate_date > date.today():
                 messagebox.showinfo(title='Info', message='This plan has not started! It cannot be ended')
-            elif self.plan_sdate_date <= date.today() and self.plan_edate != 'None':
-                print(self.plan_edate != None)
-                print(self.plan_edate)
-                print(not self.plan_edate)
-                print((self.plan_edate) is not None)
-                print(1)
+            elif self.status == 'Ongoing':
+                print(self.status)
+                print('test2')
                 isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
                 if isok:
                     def update_item():
                         item = self.table.selection()
                         selected = self.table.focus()
                         temp = self.table.item(selected, 'values')
-                        plan_edate = temp[-1]
-                        end_up = None
-                        self.table.item(selected, values=(temp[0], temp[1], temp[2],temp[3],end_up))
+                        plan_edate = temp[-2]
+                        end_up = 'Finished'
+                        print(temp[0])
+                        print(temp[1])
+                        print(temp[2])
+                        print(temp[3])
+                        print(temp[4])
+                        end_date_today = time.strftime("%d/%m/%Y",time.localtime(time.time()))
+                        print('今天是'+ end_date_today)
+                        # 显示变化
+                        self.table.item(selected, values=(temp[0], temp[1], temp[2], temp[3], end_date_today,end_up))
+                        #储存新的变化后的计划进去
+                        plan_end_dic = {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2],
+                                        'Start Date': temp[3], 'End Date': end_date_today,'Status':end_up}
+                        plan_end_list = [
+                            {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2], 'Start Date': temp[3],
+                             'End Date': end_date_today,'Status':end_up}]
+                        header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
+                        # 先加入
+                        with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a',
+                                  newline='', encoding='utf-8') as f:
+                            writer = csv.DictWriter(f, fieldnames=header)
+                            writer.writerows(plan_end_list)
+                        self.admin.insert_new_plan(plan_end_dic)
+
+                        print(plan_end_list)
+                        # 然后删除
+                        print('test2 change')
+                        print(temp[0])
+                        print(temp[1])
+                        print(temp[2])
+                        print(temp[3])
+                        print(temp[4])
+                        header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
+                        for x in self.plan_data_:
+                            print('>>>>====', x)
+                            if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
+                                    temp[4] == x['End Date'] and temp[5] == 'Ongoing':
+                                yy = self.plan_data_.remove(x)
+                        print(self.plan_data_)
+                        with open('plan_file.csv', 'w', newline='') as csvfile:
+                            fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status']
+                            writer = csv.DictWriter(csvfile, fieldnames=fields)
+                            writer.writeheader()
+                            for row in self.plan_data_:
+                                writer.writerow(row)
+
                     self.table.bind('<ButtonRelease-1>', update_item())
-            elif self.plan_edate == 'None':
+
+            elif self.status == 'Finished':
                 print(self.plan_edate)
-            
+
                 messagebox.showinfo(title='Info', message='This plan has aready ended')
         elif not item:
             messagebox.showinfo(title='Info', message='Please choose a plan！！！')
-               
-
-
-
-
-
 
     def manage_camps(self):
         self.clear_content()
