@@ -212,7 +212,7 @@ class AdminGui:
                         {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
                          'End Date': End_date_,'Status':'Ongoing'}]  # 空字典
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                    with open('plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                    with open('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
 
                         writer.writerows(plan_list)
@@ -241,7 +241,7 @@ class AdminGui:
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
                     print(Start_date_)
                     print(End_date_)
-                    with open('plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                    with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
 
                         writer.writerows(plan_list)
@@ -298,15 +298,17 @@ class AdminGui:
         index = 0
         # 如果开始时间到了今天 创建的计划自动变为ongoing
         # 如果结束时间到了今天 创建的计划自动变为 finished
-        df = pd.read_csv("plan_file.csv")
+        df = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")
         df.set_index("Plan_ID", inplace=True)  # 日期列设置为index
-        df.loc[df["Start Date"] == time.strftime("%d/%m/%Y", time.localtime(time.time())), "Status"] = "Ongoing"
-        df.loc[df["End Date"] == time.strftime("%d/%m/%Y", time.localtime(time.time())), "Status"] = "Finished"
+        # df.loc[(df["高温"] >= 0) & (df["强度"] == "2级"), "风向"] = "【一朵】"
+        today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
+        df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Future'), "Status"] = "Ongoing"
+        df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finshed"
         # print(df) # just for test
-        df.to_csv("plan_file.csv")
+        df.to_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
         # 将上面自动更新之后的显示在表中
         index = 0
-        with open('plan_file.csv', 'r', encoding='utf-8') as plan_file:
+        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', encoding='utf-8') as plan_file:
             read = csv.DictReader(plan_file)
             self.plan_update_list = []
             for row in read:
@@ -362,7 +364,7 @@ class AdminGui:
                              'End Date': end_date_today,'Status':end_up}]
                         header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
                         # 先加入
-                        with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a',
+                        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a',
                                   newline='', encoding='utf-8') as f:
                             writer = csv.DictWriter(f, fieldnames=header)
                             writer.writerows(plan_end_list)
@@ -382,8 +384,14 @@ class AdminGui:
                             if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
                                     temp[4] == x['End Date'] and temp[5] == 'Ongoing':
                                 yy = self.plan_data_.remove(x)
+                            elif int(temp[0]) == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
+                                    temp[4] == x['End Date'] and temp[5] == 'Ongoing':
+
+                                    yy = self.plan_data_.remove(x)
+                                    print('yes or not')
                         print(self.plan_data_)
-                        with open('plan_file.csv', 'w', newline='') as csvfile:
+
+                        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'w', newline='') as csvfile:
                             fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status']
                             writer = csv.DictWriter(csvfile, fieldnames=fields)
                             writer.writeheader()
