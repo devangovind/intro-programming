@@ -1,16 +1,19 @@
-Plan_ID,Description,Location,Start Date,End Date
-1,Provide aid to refugees,New York,1/1/2023,10/1/2023
-2,Community support project,Los Angeles,15/2/2023,25/12/2023
-3,Medical assistance program,Chicago,20/3/2023,30/11/2023
-4,Education outreach initiative,Miami,5/4/2023,15/4/2023
-5,Food distribution campaign,San Francisco,10/5/2023,20/12/2023
-6,Shelter building project,Seattle,25/6/2023,5/12/2023
-7,Environmental sustainability effort,Dallas,8/8/2023,18/8/2023
-8,Disaster relief program,Houston,12/9/2023,22/9/2023
-9,Crisis counseling services,Phoenix,18/10/2023,28/10/2023
-10,Infrastructure development project,Denver,21/11/2023,1/11/2023
-
-11,ll,sss,30/11/2023,01/12/2023
-12,ass,dss,01/12/2023,30/11/2023
-
-13,lol,asd,01/12/2023,02/12/2023
+Plan_ID,Description,Location,Start Date,End Date,Status
+1,Provide aid to refugees,New York,1/1/2023,10/1/2023,Finished
+2,Community support project,Los Angeles,15/2/2023,25/12/2023,Ongoing
+4,Education outreach initiative,Miami,5/4/2023,15/4/2023,Finished
+5,Food distribution campaign,San Francisco,10/5/2023,20/12/2023,Ongoing
+6,Shelter building project,Seattle,25/6/2023,5/12/2023,Finished
+7,Environmental sustainability effort,Dallas,8/8/2023,18/8/2023,Finished
+8,Disaster relief program,Houston,12/9/2023,22/9/2023,Finished
+9,Crisis counseling services,Phoenix,18/10/2023,28/10/2023,Finished
+10,Infrastructure development project,Denver,21/11/2023,1/12/2023,Ongoing
+11,food,london,30/11/2023,01/12/2023,Future
+12,hwh,lkl,30/11/2023,01/12/2023,Future
+13,ijb,efv,02/12/2023,10/12/2023,Future
+14,lol,asdfgh,30/11/2023,01/12/2023,Future
+15,A_Infrastructure development project,New York,26/11/2023,12/12/2023,Ongoing
+16,B_,London,1/1/2023,26/11/2023,Finished
+17,hello,world,01/12/2023,09/12/2023,Future
+18,wer,rtyrty,26/11/2023,30/11/2023,Ongoing
+3,Medical assistance program,Chicago,20/3/2023,26/11/2023,Finished
