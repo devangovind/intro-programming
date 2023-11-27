@@ -5,7 +5,7 @@ import tkinter.font as tkFont
 from Volunteer import Volunteer
 from Camps import Camps
 from Refugee import Refugee
-from Data_visulistaion import create_pie_chart
+from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
 
 class VolunteerGui:

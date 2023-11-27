@@ -94,7 +94,7 @@ def display_figure_tkinter_test(): # For more info see https://matplotlib.org/st
     
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.draw()
-    canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
     
     root.mainloop()
         
