@@ -8,45 +8,55 @@ class UserRegistration:
         self.root = tk.Tk()
         self.root.title("User Registration")
 
-        self.username_label = tk.Label(self.root, text = "Username:\nYour username should be between 8 and 16 characters long and only consist of letters a-z and numbers 0-9")
-        self.username_entry = tk.Entry(self.root, validate="key", validatecommand=(self.root.register(self.validate_username_entry), "%P"))
-        self.username_status = tk.Label(self.root, text="")
+        self.frame = ttk.Frame(self.root)
+        self.frame.pack(fill=tk.BOTH, expand=True)
+        self.canvas = tk.Canvas(self.frame)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.scrollbar = ttk.Scrollbar(self.frame, orient=tk.VERTICAL, command=self.canvas.yview)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.scrollable_frame = ttk.Frame(self.canvas)
+        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor=tk.NW)
 
-        self.first_name_label = tk.Label(self.root, text = "First Name:\nYour first name should be between 0 and 20 letters long and the first letter should be capitalized ")
-        self.first_name_entry = tk.Entry(self.root, validate="key", validatecommand=(self.root.register(self.validate_first_name_entry), "%P"))
-        self.first_name_status = tk.Label(self.root, text="")
+        self.username_label = tk.Label(self.scrollable_frame, text = "\nUsername:\nYour username should be between 8 and 16 characters long\nand only consist of letters a-z and numbers 0-9")
+        self.username_entry = tk.Entry(self.scrollable_frame, validate="key", validatecommand=(self.root.register(self.validate_username_entry), "%P"))
+        self.username_status = tk.Label(self.scrollable_frame, text="")
 
-        self.last_name_label = tk.Label(self.root, text = "Last Name:\nYour last name should be between 0 and 20 letters long and the first letter should be capitalized")
-        self.last_name_entry = tk.Entry(self.root, validate="key", validatecommand=(self.root.register(self.validate_last_name_entry), "%P"))
-        self.last_name_status = tk.Label(self.root, text="")
+        self.first_name_label = tk.Label(self.scrollable_frame, text = "First Name:\nYour first name should be between 0 and 20 letters long\nand the first letter should be capitalized ")
+        self.first_name_entry = tk.Entry(self.scrollable_frame, validate="key", validatecommand=(self.root.register(self.validate_first_name_entry), "%P"))
+        self.first_name_status = tk.Label(self.scrollable_frame, text="")
 
-        self.phone_label = tk.Label(self.root, text = "Phone:\nYour phone should be between 6 and 15 numbers long")
-        self.phone_entry = tk.Entry(self.root, validate="key", validatecommand=(self.root.register(self.validate_phone_entry), "%P"))
-        self.phone_status = tk.Label(self.root, text="")
+        self.last_name_label = tk.Label(self.scrollable_frame, text = "Last Name:\nYour last name should be between 0 and 20 letters long\nand the first letter should be capitalized")
+        self.last_name_entry = tk.Entry(self.scrollable_frame, validate="key", validatecommand=(self.root.register(self.validate_last_name_entry), "%P"))
+        self.last_name_status = tk.Label(self.scrollable_frame, text="")
 
-        self.age_label = tk.Label(self.root, text = "Age:\nYour age should be numbers between 0 and 140")
-        self.age_entry = tk.Entry(self.root, validate="key", validatecommand=(self.root.register(self.validate_age_entry), "%P"))
-        self.age_status = tk.Label(self.root, text="")
+        self.phone_label = tk.Label(self.scrollable_frame, text = "Phone:\nYour phone should be between 6 and 15 numbers long")
+        self.phone_entry = tk.Entry(self.scrollable_frame, validate="key", validatecommand=(self.root.register(self.validate_phone_entry), "%P"))
+        self.phone_status = tk.Label(self.scrollable_frame, text="")
 
-        self.camp_id_label = tk.Label(self.root, text = "Camp_ID:\nChoose you Camp ID")
+        self.age_label = tk.Label(self.scrollable_frame, text = "Age:\nYour age should be numbers between 0 and 140")
+        self.age_entry = tk.Entry(self.scrollable_frame, validate="key", validatecommand=(self.root.register(self.validate_age_entry), "%P"))
+        self.age_status = tk.Label(self.scrollable_frame, text="")
+
+        self.camp_id_label = tk.Label(self.scrollable_frame, text = "Camp_ID:\nChoose you Camp ID")
         self.camp_id_values = self.read_camp_id_values_from_csv()  
         self.selected_camp_id = tk.StringVar()
-        self.camp_id_dropdown = ttk.Combobox(self.root, textvariable=self.selected_camp_id, values=self.camp_id_values)
+        self.camp_id_dropdown = ttk.Combobox(self.scrollable_frame, textvariable=self.selected_camp_id, values=self.camp_id_values)
 
-        self.availability_label = tk.Label(self.root, text = "\nAvailability:\nSet 0000000 to the default value")
-        self.availability_entry = tk.Entry(self.root)
+        self.availability_label = tk.Label(self.scrollable_frame, text = "\nAvailability:\nSet 0000000 to the default value")
+        self.availability_entry = tk.Entry(self.scrollable_frame)
         self.availability_entry.insert(0, "0000000")
 
     
-        self.password_label = tk.Label(self.root, text = "\nPassword:\nYour password should contain at least one capital letter, at least one of '?' or '!', letters a-z and numbers 0-9 and be between 8 and 16 characters long")
-        self.password_entry = tk.Entry(self.root, show = "*",validate="key", validatecommand=(self.root.register(self.validate_password_entry), "%P"))
-        self.password_status = tk.Label(self.root, text="")
+        self.password_label = tk.Label(self.scrollable_frame, text = "\nPassword:\nYour password should contain at least one capital letter, at least one of '?' or '!',\nletters a-z and numbers 0-9 and be between 8 and 16 characters long")
+        self.password_entry = tk.Entry(self.scrollable_frame, show = "*",validate="key", validatecommand=(self.root.register(self.validate_password_entry), "%P"))
+        self.password_status = tk.Label(self.scrollable_frame, text="")
 
-        self.confirm_password_label = tk.Label(self.root, text="Confirm your password:")
-        self.confirm_password_entry = tk.Entry(self.root, show="*", validate="key", validatecommand=(self.root.register(self.validate_confirm_password_entry), "%P"))
-        self.confirm_password_status = tk.Label(self.root, text="")
+        self.confirm_password_label = tk.Label(self.scrollable_frame, text="Confirm your password:")
+        self.confirm_password_entry = tk.Entry(self.scrollable_frame, show="*", validate="key", validatecommand=(self.root.register(self.validate_confirm_password_entry), "%P"))
+        self.confirm_password_status = tk.Label(self.scrollable_frame, text="")
 
-        self.register_button = tk.Button(self.root, text = "Register", command=self.register)
+        self.register_button = tk.Button(self.scrollable_frame, text = "Register", command=self.register)
 
         self.username_label.pack()
         self.username_entry.pack()
@@ -84,16 +94,22 @@ class UserRegistration:
 
         self.register_button.pack()
 
+        self.scrollable_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
+        self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
+
         self.center_window()
 
         self.root.mainloop()
+
+    def on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def center_window(self):
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
-        window_width = 1000  
-        window_height = 800 
+        window_width = 505
+        window_height = 600 
 
         x = (screen_width - window_width) // 2
         y = (screen_height - window_height) // 2
@@ -194,7 +210,7 @@ class UserRegistration:
         elif " " in age:
             raise ValueError ("Do not enter spaces in age")
         else:
-            raise ValueError ("Age must be number")
+            raise ValueError ("Age must be numbers")
         
     def read_camp_id_values_from_csv(self):
         camp_id_values = []
