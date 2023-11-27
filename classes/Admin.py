@@ -21,7 +21,7 @@ class Admin:
 ## Change some functions to fit the admin.gui(for admin feature a-c)
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):
-        plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
+        plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")
 
         res = plan.sort_values(by='Plan_ID', ascending=False)
         last_plan_id = int(res.iloc[0]["Plan_ID"])

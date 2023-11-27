@@ -7,7 +7,7 @@ import csv
 import datetime
 import time
 from datetime import date
-import pandas as pd # 引入pandas
+import pandas as pd 
 
 
 
@@ -70,27 +70,27 @@ class AdminGui:
         self.Description = tk.StringVar()
         self.Location = tk.StringVar()
         # Build the label
-        tk.Label(self.root, text='Add a new plan').place(x=50, y=40)
-        tk.Label(self.root, text='Plan_ID:').place(x=50, y=60)
-        tk.Label(self.root, text='Description:').place(x=50, y=100)
-        tk.Label(self.root, text='Location:').place(x=50, y=140)
-        tk.Label(self.root, text='Start_Date:').place(x=50, y=180)
-        tk.Label(self.root, text='End_Date:').place(x=50, y=220)
+        tk.Label(self.root, text='Add a new plan',font = ('Arial',20)).place(x=270, y=60)
+        tk.Label(self.root, text='Plan_ID:',font = ('Arial',12)).place(x=300, y=110)
+        tk.Label(self.root, text='Description:',font = ('Arial',12)).place(x=300, y=170)
+        tk.Label(self.root, text='Location:',font = ('Arial',12)).place(x=300, y=250)
+        tk.Label(self.root, text='Start_Date:',font = ('Arial',12)).place(x=300, y=330)
+        tk.Label(self.root, text='End_Date:',font = ('Arial',12)).place(x=300, y=390)
         # Get the plan_ID automatically
         self.plan_id = self.admin.last_plan_id() + 1
         # print(self.plan_id)--> just for testing during coding
         # The plan_ID can be shown in the window and admin can not edit
-        self.plan_id_label = tk.Label(self.root, text=self.plan_id)
+        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
         # Build the entry
-        self.plan_id_label.place(x=50, y=80)
+        self.plan_id_label.place(x=300, y=140)
         self.des_entry = tk.Entry(self.root, width=30, textvariable=self.Description)
-        self.des_entry.place(x=50, y=120)
+        self.des_entry.place(x=300, y=210)
         self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
-        self.loc_entry.place(x=50, y=160)
+        self.loc_entry.place(x=300, y=290)
         # Build the button
-        sdate_button = tk.Button(self.root, text='choose the start date', command=self.pick_sdate).place(x=350, y=160)
-        edate_button = tk.Button(self.root, text='choose the end date', command=self.pick_edate).place(x=350, y=200)
-        tk.Button(self.root, text='Save this plan', command=self.save_data).place(x=150, y=300)
+        sdate_button = tk.Button(self.root, text='choose the start date', command=self.pick_sdate).place(x=460, y=350)
+        edate_button = tk.Button(self.root, text='choose the end date', command=self.pick_edate).place(x=460, y=410)
+        tk.Button(self.root, text='Save this plan', command=self.save_data,font = ('Arial',12)).place(x=300, y=480)
 
         # When admin click the entry date, admin will be informed that they need to use calendar
         def stest(content, reason, name):
@@ -103,7 +103,7 @@ class AdminGui:
         sCMD = self.root.register(stest)
         self.start_date = tk.Entry(self.root, textvariable=self.valid_input_sdate, validate='focusin',
                                    validatecommand=(sCMD, '%P', '%V', '%W'))
-        self.start_date.place(x=50, y=200)
+        self.start_date.place(x=300, y=360)
 
         def etest(content, reason, name):
             if self.end_date.get() is not None:
@@ -114,7 +114,7 @@ class AdminGui:
         eCMD = self.root.register(etest)
         self.end_date = tk.Entry(self.root, textvariable=self.valid_input_edate, validate='focusin',
                                  validatecommand=(eCMD, '%P', '%V', '%W'))
-        self.end_date.place(x=50, y=250)
+        self.end_date.place(x=300, y=420)
 
     #  This method is to get the date using calendar and judge whether it is valid or not
 
@@ -234,10 +234,10 @@ class AdminGui:
                     Start_date_ = self.s_date.strftime('%d/%m/%Y')
                     End_date_ = self.e_date.strftime('%d/%m/%Y')
                     plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
-                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Future'}
+                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Not started'}
                     plan_list = [
                         {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
-                         'End Date': End_date_,'Status':'Future'}]  # 空字典
+                         'End Date': End_date_,'Status':'Not started'}]  # 空字典
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
                     print(Start_date_)
                     print(End_date_)
@@ -257,8 +257,8 @@ class AdminGui:
                     self.s_date = None
                     self.plan_id = self.plan_id + 1
                     self.plan_id_label.destroy()
-                    self.plan_id_label = tk.Label(self.root, text=self.plan_id)
-                    self.plan_id_label.place(x=50, y=80)
+                    self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
+                    self.plan_id_label.place(x=300, y=140)
             elif self.admin.check_end_date(self.e_date, self.s_date):
                 messagebox.showwarning(title='Choose start date', message='The end date cannot before start date')
                 self.start_date.delete(0, END)
@@ -300,7 +300,6 @@ class AdminGui:
         # 如果结束时间到了今天 创建的计划自动变为 finished
         df = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")
         df.set_index("Plan_ID", inplace=True)  # 日期列设置为index
-        # df.loc[(df["高温"] >= 0) & (df["强度"] == "2级"), "风向"] = "【一朵】"
         today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
         df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Future'), "Status"] = "Ongoing"
         df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finshed"
