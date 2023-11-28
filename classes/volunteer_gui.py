@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 class VolunteerGui:
     def __init__(self, volunteer, loginwindow):
         self.root = tk.Tk()
-        self.root.geometry("900x600")
+        self.root.geometry("990x600")
         self.root.title("Volunteer View")
         self.volunteer = volunteer
         self.camps = Camps()
@@ -165,43 +165,45 @@ class VolunteerGui:
         camps_menu_lbl.pack()
         camps_menu.pack()
 
-        availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 16))
-        availability_lbl.pack(pady=10)
-        volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
-        availability_array = []
-        print(volunteer_availability)
-        for c in volunteer_availability:
-            if c == "1":
-                availability_array.append(True)
-            else:
-                availability_array.append(False)
-        self.mon_var = tk.BooleanVar(value=availability_array[0])
-        self.tue_var = tk.BooleanVar(value=availability_array[1])
-        self.wed_var = tk.BooleanVar(value=availability_array[2])
-        self.thu_var = tk.BooleanVar(value=availability_array[3])
-        self.fri_var = tk.BooleanVar(value=availability_array[4])
-        self.sat_var = tk.BooleanVar(value=availability_array[5])
-        self.sun_var = tk.BooleanVar(value=availability_array[6])
-        self.availability_variables = [self.mon_var, self.tue_var, self.wed_var, self.thu_var, self.fri_var, self.sat_var, self.sun_var]
-        availability_frame = tk.Frame(self.content_frame)
-        availability_frame.columnconfigure(0, weight=1)
-        availability_frame.columnconfigure(1, weight=1)
-        availability_frame.columnconfigure(2, weight=1)
-        mon_box = tk.Checkbutton(availability_frame, text="Monday", variable=self.mon_var)
-        tue_box = tk.Checkbutton(availability_frame, text="Tuesday", variable=self.tue_var)
-        wed_box = tk.Checkbutton(availability_frame, text="Wednesday", variable=self.wed_var)
-        thu_box = tk.Checkbutton(availability_frame, text="Thursday", variable=self.thu_var)
-        fri_box = tk.Checkbutton(availability_frame, text="Friday", variable=self.fri_var)
-        sat_box = tk.Checkbutton(availability_frame, text="Saturday", variable=self.sat_var)
-        sun_box = tk.Checkbutton(availability_frame, text="Sunday", variable=self.sun_var)
-        mon_box.grid(row=0, column=0)
-        tue_box.grid(row=1, column=0)
-        wed_box.grid(row=0, column=1)
-        thu_box.grid(row=1, column=1)
-        fri_box.grid(row=0, column=2)
-        sat_box.grid(row=1, column=2)
-        sun_box.grid(row=2, column=2)
-        availability_frame.pack()
+        # Availability section - to move to edit personal details
+        # availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 16))
+        # availability_lbl.pack(pady=10)
+        # volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
+        # availability_array = []
+        # print(volunteer_availability)
+        # for c in volunteer_availability:
+        #     if c == "1":
+        #         availability_array.append(True)
+        #     else:
+        #         availability_array.append(False)
+        # self.mon_var = tk.BooleanVar(value=availability_array[0])
+        # self.tue_var = tk.BooleanVar(value=availability_array[1])
+        # self.wed_var = tk.BooleanVar(value=availability_array[2])
+        # self.thu_var = tk.BooleanVar(value=availability_array[3])
+        # self.fri_var = tk.BooleanVar(value=availability_array[4])
+        # self.sat_var = tk.BooleanVar(value=availability_array[5])
+        # self.sun_var = tk.BooleanVar(value=availability_array[6])
+        # self.availability_variables = [self.mon_var, self.tue_var, self.wed_var, self.thu_var, self.fri_var, self.sat_var, self.sun_var]
+        # availability_frame = tk.Frame(self.content_frame)
+        # availability_frame.columnconfigure(0, weight=1)
+        # availability_frame.columnconfigure(1, weight=1)
+        # availability_frame.columnconfigure(2, weight=1)
+        # mon_box = tk.Checkbutton(availability_frame, text="Monday", variable=self.mon_var)
+        # tue_box = tk.Checkbutton(availability_frame, text="Tuesday", variable=self.tue_var)
+        # wed_box = tk.Checkbutton(availability_frame, text="Wednesday", variable=self.wed_var)
+        # thu_box = tk.Checkbutton(availability_frame, text="Thursday", variable=self.thu_var)
+        # fri_box = tk.Checkbutton(availability_frame, text="Friday", variable=self.fri_var)
+        # sat_box = tk.Checkbutton(availability_frame, text="Saturday", variable=self.sat_var)
+        # sun_box = tk.Checkbutton(availability_frame, text="Sunday", variable=self.sun_var)
+        # mon_box.grid(row=0, column=0)
+        # tue_box.grid(row=1, column=0)
+        # wed_box.grid(row=0, column=1)
+        # thu_box.grid(row=1, column=1)
+        # fri_box.grid(row=0, column=2)
+        # sat_box.grid(row=1, column=2)
+        # sun_box.grid(row=2, column=2)
+        # availability_frame.pack()
+
         current_capacity = camps_data.loc[camps_data['Camp_ID'] == camps_ids[saved_idx], 'Num_Of_Refugees'].iloc[0]
         capacity_string = f'Edit Current Camp ({camps_ids[saved_idx]}) Capacity:'
         capacity_lbl = tk.Label(self.content_frame, text=capacity_string, font=('Arial', 16))
@@ -221,22 +223,39 @@ class VolunteerGui:
         
 
         cancel_btn = tk.Button(self.content_frame, text="Cancel", font=('Arial', 14), command=self.welcome_message)
-        cancel_btn.pack(pady=20)
+        cancel_btn.pack(pady=5)
         submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 14), command=lambda: self.submit_camp(selected_camp.get(), capacity_inp.get()))
         submit_btn.pack()
 
-        # Submit resource request section
+        # Submit resource request section-------------------------------------
+        resource_request_frame = tk.Frame(self.content_frame)
+        resource_request_frame.pack(fill='both', expand=True, padx=100, pady=20)
+
         def submit_resource_request():
             pass
 
         curr_volunteer = self.volunteer.username
         volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0]
-        availability_lbl = tk.Label(self.content_frame, text=f'Submit Resource Request for {volunteer_curr_camp}:', font=('Arial', 16))
-        availability_lbl.pack(pady=10)
-        submit_request_btn = tk.Button(self.content_frame, text="Submit Resource Request", font=('Arial', 14), command= submit_resource_request())
-        submit_request_btn.pack()
+        request_label = tk.Label(resource_request_frame, text=f'Submit Resource Request for {volunteer_curr_camp} (your current camp):', font=('Arial', 15))
+        request_label.grid(row = 0, column= 1, pady=10)
 
-    
+        food_request = tk.Label(resource_request_frame, text=f'Food: ', font=('Arial', 16))
+        food_request.grid(row = 1, column= 0, pady=5)
+        food_entry = tk.Entry(resource_request_frame)
+        food_entry.grid(row=2, column=0)
+
+        medical_sup_request = tk.Label(resource_request_frame, text=f'Medical Supplies: ', font=('Arial', 16))
+        medical_sup_request.grid(row = 1, column= 1)
+        medical_sup_entry = tk.Entry(resource_request_frame)
+        medical_sup_entry.grid(row=2, column=1)
+
+        tents_request = tk.Label(resource_request_frame, text=f'Tents: ', font=('Arial', 16))
+        tents_request.grid(row = 1, column= 2, pady=5)
+        tents_entry = tk.Entry(resource_request_frame)
+        tents_entry.grid(row=2, column=2)
+
+        submit_request_btn = tk.Button(resource_request_frame, text="Submit Request", font=('Arial', 14), command= submit_resource_request())
+        submit_request_btn.grid(row=3, column=1, pady=15)
 
         def resize(e):
             size = e.width / 70
