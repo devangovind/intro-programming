@@ -75,7 +75,7 @@ class Admin:
 
 
     def activate_all(self):
-        self.users['Active'] = True
+        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = True
         self.save_changes()
         return "All accounts have been activated"
 
@@ -93,7 +93,7 @@ class Admin:
             return "Account doesn't exist"
 
     def deactivate_all(self):
-        self.users['Active'] = False
+        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = False
         self.save_changes()
         return "All accounts have been deactivated"
 

@@ -202,6 +202,8 @@ class AdminGui:
         activate_all_btn.grid(row=0, column=0)
         deactivate_all_btn.grid(row=0, column=1)
         all_buttons.pack()
+        info_lbl  = tk.Label(self.root, text="Click on a State or Delete column to edit an individual volunteer", font=('Arial', 16))
+        info_lbl.pack()
         camp_columns = ["Camp ID", "Username", "First Name", "Surname", "Phone", "Age", "Availability", "State", "Delete"]
         column_widths = [70, 80, 80, 80, 80, 40, 220, 70, 70]
         self.volun_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
