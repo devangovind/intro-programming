@@ -6,7 +6,7 @@ import ttkbootstrap as tb
 import csv
 import re
 from volunteer_gui import VolunteerGui
-from volunteer import Volunteer
+from Volunteer import Volunteer
 from Camps import Camps
 
 # these functions are NOT in class because they are used in different classes to validate admin and volunteers

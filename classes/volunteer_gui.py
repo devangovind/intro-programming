@@ -4,7 +4,7 @@ import ttkbootstrap as tb
 from tkinter import messagebox
 import tkinter.font as tkFont
 from tkinter import messagebox
-from volunteer import Volunteer
+from Volunteer import Volunteer
 from Camps import Camps
 from Refugee import Refugee
 # from main_gui import run
