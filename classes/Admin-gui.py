@@ -71,6 +71,8 @@ class AdminGui:
         plans_menu = tk.OptionMenu(self.root, self.selected_plan, *plans_ids, command=self.filter_camps)
         plans_menu_lbl.pack()
         plans_menu.pack()
+        info_lbl = tk.Label(self.root, text="Click on Allocate Resources to allocate to specific camp", font=('Arial', 16))
+        info_lbl.pack()
         camp_columns = ["Camp ID", "Plan ID", "No. of Volunteers", "No. of Refugees", "Capacity", "Food Packages", "Medical Supplies", "Tents", "Action (Click) ⬇"]
         column_widths = [60, 60, 100, 100, 60, 110, 110, 60, 130]
         self.camps_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
