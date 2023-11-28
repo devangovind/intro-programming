@@ -234,7 +234,7 @@ class UserRegistration:
         elif not any(c.isupper() for c in password):
             raise ValueError("Please ensure that your password contains at least one capital letter.")
         elif not re.match(pw_chars, password) or not re.search(punc_chars, password):
-            raise ValueError("Please ensure that your password contains only letters a-z, numbers 0-9, and at least one of '!' or '?'.")
+            raise ValueError("Please ensure that your password contains only letters a-z,\nnumbers 0-9, and at least one of '!' or '?'.")
     
     def validate_confirm_password(self, password, confirm_password):
         if password != confirm_password:
