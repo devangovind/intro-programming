@@ -10,8 +10,19 @@ from Volunteer import Volunteer
 from Camps import Camps
 
 # these functions are NOT in class because they are used in different classes to validate admin and volunteers
+
+# Filepaths for windows
+logindetails_filepath = "../files/logindetails.csv"
+camps_filepath = "../files/camps_file.csv"  
+volunteers_filepath = "../files/volunteers.csv" 
+
+# Filepaths for MAC
+# logindetails_filepath = "intro-programming/files/logindetails.csv"  
+# camps_filepath = "intro-programming/files/camps_file.csv"  
+# volunteers_filepath = "intro-programming/files/volunteers.csv" 
+
 def user_valid(username, acct_type):
-    with open("../files/logindetails.csv", "r") as file:
+    with open(logindetails_filepath, "r") as file:
         file_reader = csv.reader(file)
         for row in file_reader:
             if username == row[0]:
@@ -29,6 +40,7 @@ def password_valid(password, credentials):
         return True
     else:
         return False
+    
 
 # class Login for Login page
 class Login:
@@ -58,13 +70,20 @@ class Login:
         self.username_entry.grid(row=3, column=0)
 
              # Admin - password
+        # style = ttk.Style()
+        # style.configure('show_pw', font='underline', bg='grey')
         self.admin_password = Label(self.admin_frame, text="Admin Password:")
         self.admin_password.grid(row=4, column=0)
-        self.password_entry = Entry(self.admin_frame, width= 30)
+        self.password_entry = Entry(self.admin_frame, width= 30, show="*")
         self.password_entry.grid(row=5, column=0)
+        # Hide/ show pw
+        self.password_show_admin = Button(self.admin_frame, text="Show Password", command=self.show_pw)
+        self.password_show_admin.grid(row=6, column=0, pady=10)
+        self.password_hide_admin = Button(self.admin_frame, text="Hide Password", command=self.hide_pw)
+        self.password_hide_admin.grid(row=7, column=0, pady=5)
 
         self.admin_sign_in = Button(self.admin_frame, text="Sign In", command=self.admin_validate)
-        self.admin_sign_in.grid(row=6, column=0, pady=20)
+        self.admin_sign_in.grid(row=8, column=0, pady=10)
 
         # Volunteer Tab
         self.volunteer_frame = Frame(self.notebook, pady=150, padx=200)
@@ -79,6 +98,12 @@ class Login:
         self.volunteer_register = Button(self.volunteer_frame, text="Register as Volunteer", command=self.volunteer_register_page, width=20)
         self.volunteer_register.grid(row=3, column=0, pady=10)
 
+    def show_pw(self):
+        self.password_entry.configure(show='')
+        
+    def hide_pw(self):
+        self.password_entry.configure(show='*')
+         
     # Validate if admin username and pw is correct
     def admin_validate(self):
         user_type = 'Admin'
@@ -99,7 +124,7 @@ class Login:
     # display volunteer log in window
     def volunteer_login_page(self):
         self.log_in_window = Toplevel()
-        self.log_in_window.geometry("500x200+300+300")
+        self.log_in_window.geometry("500x275+300+300")
         self.log_in_window.resizable(False, False)
         self.log_in_window.title("Login to your Volunteer account")
         self.caption = Label(self.log_in_window, text="Login as Volunteer. Please enter your username and password.")
@@ -110,9 +135,13 @@ class Login:
         self.username_entry.pack()
         self.password = Label(self.log_in_window, text="Volunteer Password:")
         self.password.pack()
-        self.password_entry = Entry(self.log_in_window, width= 30)
+        self.password_entry = Entry(self.log_in_window, width= 30, show='*')
         self.password_entry.pack()
 
+        self.password_show_volunteer = Button(self.log_in_window, text="Show Password", command=self.show_pw)
+        self.password_show_volunteer.pack(pady=10)
+        self.password_hide_volunteer = Button(self.log_in_window, text="Hide Password", command=self.hide_pw)
+        self.password_hide_volunteer.pack(pady=5)
 
         sign_in = Button(self.log_in_window, text="Sign In", command= self.volunteer_validate)
         sign_in.pack(pady=20)
@@ -127,11 +156,10 @@ class Login:
                 correct_credentials = user_valid(entered_username, user_type) 
                 if password_valid(entered_password, correct_credentials): 
                     #if login is valid, display volunteer menu
-                    self.log_in_window.destroy()
-                    # root.destroy()
-                    self.root.withdraw()
+                    self.log_in_window.destroy() #destroys volunteer login pop up
+                    self.root.iconify() #minimises general login GUI when sign in successful
                     create_volunteer = Volunteer(entered_username)
-                    VolunteerGui(create_volunteer)
+                    VolunteerGui(create_volunteer, self.root)
                 else:
                     messagebox.showerror("Error", "Password is incorrect!")
                     self.log_in_window.lift()
@@ -173,7 +201,6 @@ class Volunteer_Register:
 
         # configure the canvas
         my_canvas.configure(yscrollcommand=my_scrollbar.set)
-        # my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
         my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=(0,0,500,800)))
         
         # create another frame inside the canvas
@@ -265,13 +292,10 @@ class Volunteer_Register:
     # def center_window(self):
     #     screen_width = self.root.winfo_screenwidth()
     #     screen_height = self.root.winfo_screenheight()
-
     #     window_width = 1000  
     #     window_height = 800 
-
     #     x = (screen_width - window_width) // 2
     #     y = (screen_height - window_height) // 2
-
     #     self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
     def register (self):
@@ -293,10 +317,10 @@ class Volunteer_Register:
             self.validate_age(age)
             self.validate_password(password)
 
-            with open ("../files/logindetails.csv", "a") as file:
+            with open (logindetails_filepath, "a") as file:
                 file.write(f"{username},{password},{True},{account_type}\n")
 
-            with open ("../files/volunteers.csv", "a") as file:
+            with open (volunteers_filepath, "a") as file:
                 file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability}\n")
         
             messagebox.showinfo("Success", "Registration successful!")
@@ -307,7 +331,7 @@ class Volunteer_Register:
             self.register_window.lift()
 
     def validate_username(self, username):
-        with open("../files/logindetails.csv", "r") as file:
+        with open(logindetails_filepath, "r") as file:
             file_reader = csv.reader(file)
             next(file_reader)
             for row in file_reader:
@@ -375,7 +399,7 @@ class Volunteer_Register:
     def read_camp_id_values_from_csv(self):
         camp_id_values = []
         try:
-            with open("../files/camps_file.csv", "r") as file:
+            with open(camps_filepath, "r") as file:
                 reader = csv.reader(file)
                 next(reader)  
                 for row in reader:

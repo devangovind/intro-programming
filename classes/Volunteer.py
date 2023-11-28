@@ -10,9 +10,17 @@ from Camps import Camps
 class Volunteer:
     def __init__(self, username):
         self.username = username
-        self.camp_path = "../files/camps.csv"
+
+        # Filepaths for windows
+        self.camp_path = "../files/camps_file.csv"
         self.resource_path = "../files/resources.csv"
         self.volunteer_path = '../files/volunteers.csv'
+
+
+        # Filepaths for MAC
+        # self.camp_path = "intro-programming/files/camps_file.csv"  
+        # self.resource_path = "intro-programming/files/resources.csv"  
+        # self.volunteer_path = "intro-programming/files/volunteers.csv" 
 
     
     def get_volunteer_data(self):

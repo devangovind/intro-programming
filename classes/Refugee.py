@@ -3,7 +3,11 @@ from Camps import Camps
 
 class Refugee:
     def __init__(self) -> None:
+        # Filepaths for windows
         self.refugee_path = "../files/refugee.csv"
+
+        # Filepaths for MAC
+        # self.refugee_path = "intro-programming/files/refugee.csv"  
     
     def generate_refugee_id(self):
         refugee_data = pd.read_csv(self.refugee_path)

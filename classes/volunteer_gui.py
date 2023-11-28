@@ -12,9 +12,9 @@ from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
 
 class VolunteerGui:
-    def __init__(self, volunteer):
+    def __init__(self, volunteer, loginwindow):
         self.root = tk.Tk()
-        self.root.geometry("800x600")
+        self.root.geometry("900x600")
         self.root.title("Volunteer View")
         self.volunteer = volunteer
         self.camps = Camps()
@@ -24,6 +24,7 @@ class VolunteerGui:
         self.create_content_frame()  # Creates the content frame below the navigation bar
         self.welcome_message() # Adds the welcome message to the content frame
         self.tree_view = None
+        self.loginwindow = loginwindow
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
     
     def create_nav_bar(self):
@@ -136,87 +137,6 @@ class VolunteerGui:
             self.phone_error.config(text=res[2])
             self.age_error.config(text=res[3])
 
-        # def edit_camp(self):
-    #     self.clear_content()
-    #     title = tk.Label(self.content_frame, text="Edit Camp Details", font=('Arial', 18))
-    #     title.config(fg="medium slate blue")
-    #     title.pack(pady=15)
-    #     camps = Camps()
-    #     camps_data = camps.get_data()
-    #     camps_ids = []
-    #     i = 0
-    #     for val in camps_data['Camp_ID']:
-    #         if val in camps_ids:
-    #             continue
-    #         else:
-    #             if val == self.volunteer_data['CampID'].values[0]:
-    #                 saved_idx= i
-    #             camps_ids.append(val)
-    #             i += 1
-    #     selected_camp = tk.StringVar(self.content_frame)
-    #     selected_camp.set(camps_ids[saved_idx])
-    #     camps_menu_lbl = tk.Label(self.content_frame, text="Edit Camp:", font=('Arial', 16))
-    #     camps_menu = tk.OptionMenu(self.content_frame, selected_camp, *camps_ids)
-    #     camps_menu_lbl.pack()
-    #     camps_menu.pack()
-    #     # str_out=tk.StringVar(self.content_frame)
-    #     # str_out.set("Output")
-    #     # str_out.set(selected_camp.get())
-    #     availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 16))
-    #     availability_lbl.pack(pady=10)
-    #     volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
-    #     availability_array = []
-    #     print(volunteer_availability)
-    #     for c in volunteer_availability:
-    #         if c == "1":
-    #             availability_array.append(True)
-    #         else:
-    #             availability_array.append(False)
-    #     self.mon_var = tk.BooleanVar(value=availability_array[0])
-    #     self.tue_var = tk.BooleanVar(value=availability_array[1])
-    #     self.wed_var = tk.BooleanVar(value=availability_array[2])
-    #     self.thu_var = tk.BooleanVar(value=availability_array[3])
-    #     self.fri_var = tk.BooleanVar(value=availability_array[4])
-    #     self.sat_var = tk.BooleanVar(value=availability_array[5])
-    #     self.sun_var = tk.BooleanVar(value=availability_array[6])
-    #     self.availability_variables = [self.mon_var, self.tue_var, self.wed_var, self.thu_var, self.fri_var, self.sat_var, self.sun_var]
-    #     availability_frame = tk.Frame(self.content_frame)
-    #     availability_frame.columnconfigure(0, weight=1)
-    #     availability_frame.columnconfigure(1, weight=1)
-    #     availability_frame.columnconfigure(2, weight=1)
-    #     mon_box = tk.Checkbutton(availability_frame, text="Monday", variable=self.mon_var)
-    #     tue_box = tk.Checkbutton(availability_frame, text="Tuesday", variable=self.tue_var)
-    #     wed_box = tk.Checkbutton(availability_frame, text="Wednesday", variable=self.wed_var)
-    #     thu_box = tk.Checkbutton(availability_frame, text="Thursday", variable=self.thu_var)
-    #     fri_box = tk.Checkbutton(availability_frame, text="Friday", variable=self.fri_var)
-    #     sat_box = tk.Checkbutton(availability_frame, text="Saturday", variable=self.sat_var)
-    #     sun_box = tk.Checkbutton(availability_frame, text="Sunday", variable=self.sun_var)
-    #     mon_box.grid(row=0, column=0)
-    #     tue_box.grid(row=1, column=0)
-    #     wed_box.grid(row=0, column=1)
-    #     thu_box.grid(row=1, column=1)
-    #     fri_box.grid(row=0, column=2)
-    #     sat_box.grid(row=1, column=2)
-    #     sun_box.grid(row=2, column=2)
-    #     availability_frame.pack()
-    #     current_capacity = camps_data.loc[camps_data['Camp_ID'] == camps_ids[saved_idx], 'Num_Of_Refugees'].iloc[0]
-    #     capacity_string = f'Edit Current Camp ({camps_ids[saved_idx]}) Capacity:'
-    #     # capacity_string = f'Edit Current Camp ({selected_camp.get()}) Capacity:'
-    #     capacity_lbl = tk.Label(self.content_frame, text=capacity_string, font=('Arial', 16))
-    #     capacity_lbl.pack()
-    #     capacity_inp = tk.Entry(self.content_frame)
-    #     capacity_inp.insert(0, current_capacity)
-    #     capacity_inp.pack()
-    #     self.capacity_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 10))
-    #     self.capacity_error.pack()
-        
-
-    #     cancel_btn = tk.Button(self.content_frame, text="Cancel", font=('Arial', 14), command=self.welcome_message)
-    #     cancel_btn.pack(pady=20)
-    #     submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 14), command=lambda: self.submit_camp(selected_camp.get(), capacity_inp.get()))
-    #     submit_btn.pack()
-
-
     def edit_camp(self):
         self.clear_content()
         title = tk.Label(self.content_frame, text="Edit Camp Details", font=('Arial', 18))
@@ -305,10 +225,24 @@ class VolunteerGui:
         submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 14), command=lambda: self.submit_camp(selected_camp.get(), capacity_inp.get()))
         submit_btn.pack()
 
+        # Submit resource request section
+        def submit_resource_request():
+            pass
+
+        curr_volunteer = self.volunteer.username
+        volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0]
+        availability_lbl = tk.Label(self.content_frame, text=f'Submit Resource Request for {volunteer_curr_camp}:', font=('Arial', 16))
+        availability_lbl.pack(pady=10)
+        submit_request_btn = tk.Button(self.content_frame, text="Submit Resource Request", font=('Arial', 14), command= submit_resource_request())
+        submit_request_btn.pack()
+
+    
+
         def resize(e):
             size = e.width / 70
             cancel_btn.config(font=('Arial', int(size)))
             submit_btn.config(font=('Arial', int(size)))
+            submit_request_btn.config(font=('Arial', int(size)))
             
         self.content_frame.bind('<Configure>', resize)
 
@@ -476,12 +410,10 @@ class VolunteerGui:
         if result == "Refugee profile created successfully":
             self.welcome_message()
 
-    # When click logout button
+    # When click logout button, destory volunteer menu
     def logout(self):
-        pass
-        # self.root.destroy()
-        # run()
-        #show login window again 
+        self.root.destroy()
+        self.loginwindow.deiconify() 
 
     def clear_content(self):
         # Destroy all widgets in the content frame
