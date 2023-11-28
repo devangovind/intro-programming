@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk, simpledialog
 from Camps import Camps
 from Plans import Plans
+from Resource_requests import Resource_requests
 import pandas as pd
 
 class AdminGui:
@@ -16,7 +17,9 @@ class AdminGui:
         self.welcome_message()
         self.camps = Camps()
         self.plans = Plans()
+        self.requests = Resource_requests()
         self.camps_data = self.camps.get_data()
+
         
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
     def create_nav_bar(self):
@@ -75,13 +78,28 @@ class AdminGui:
         info_lbl.pack()
         camp_columns = ["Camp ID", "Plan ID", "No. of Volunteers", "No. of Refugees", "Capacity", "Food Packages", "Medical Supplies", "Tents", "Action (Click) ⬇"]
         column_widths = [60, 60, 100, 100, 60, 110, 110, 60, 130]
-        self.camps_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
+        tree_view_frame= tk.Frame(self.root)
+        tree_view_frame.pack()
+        tree_view_frame.columnconfigure(0, weight=8)
+        tree_view_frame.columnconfigure(1, weight=1)
+        self.camps_tree = ttk.Treeview(tree_view_frame, columns=camp_columns, show="headings")
         for i in range(len(camp_columns)):
             col = camp_columns[i]
             self.camps_tree.heading(col, text=col)
             self.camps_tree.column(col, stretch=False, width=column_widths[i])
-        self.camps_tree.bind("<ButtonRelease-1>", self.allocate_resources)
-        self.camps_tree.pack(pady=20)
+        self.camps_tree.bind("<ButtonRelease-1>", self.can_allocate)        
+        scrollbar = ttk.Scrollbar(tree_view_frame, orient="vertical", command=self.camps_tree.yview)
+        # Configure the Treeview to use the scrollbar
+        self.camps_tree.configure(yscrollcommand=scrollbar.set)
+        # Place the scrollbar on the right side of the Treeview
+        self.camps_tree.grid(row=0, column=0, sticky='nsew')
+        
+        # label.grid(row=0,column=1)
+        scrollbar.grid(row=0, column=1, sticky='ns')
+        self.unresolved = self.requests.get_unresolved()
+        request_btn_text = f'Resource Requests ({len(self.unresolved)})'
+        request_btn = tk.Button(self.root, text=request_btn_text, font= ("Arial", 16), command=self.resource_requests_list)
+        request_btn.pack(pady=50)
         self.filter_camps()
 
     def filter_camps(self, event=None):
@@ -95,8 +113,89 @@ class AdminGui:
             resources = self.camps.get_resource_data(row['Camp_ID'])
             values=[row['Camp_ID'], row['Plan_ID'], row['Num_Of_Volunteers'],row['Num_Of_Refugees'], 50, resources[0], resources[1], resources[2], "Allocate Resources"]
             self.camps_tree.insert("", "end", values=values)
-            
-    def allocate_resources(self, event):
+    
+    def resource_requests_list(self):
+        self.clear_content()
+        self.unresolved = self.requests.get_unresolved()
+        request_title = tk.Label(self.root, text="Resource Requests", font=('Arial', 24))
+        request_title.pack(pady=20)
+        unresolved_title = tk.Label(self.root, text="Unresolved Requests", font=('Arial', 20))
+        unresolved_title.pack(pady=5)
+        unresolved_frame = tk.Frame(self.root)
+        unresolved_frame.columnconfigure(0, weight=8)
+        unresolved_frame.columnconfigure(1, weight=1)
+        unresolved_columns = ["Camp ID", "Requester", "Food Packages Requested", "Medical Supplies Requested", "Tents Requested", "Time Requested"]
+        column_widths = [60, 120, 170, 170, 140, 100]
+        grant_requests = tk.Button(self.root, text="Allocate all requested resources", command=self.grant_all_requests)
+        grant_requests.pack()
+        self.requests_tree = ttk.Treeview(unresolved_frame, columns=unresolved_columns, show="headings")
+        self.requests_tree.grid(row=0, column=0)
+        request_scrollbar = ttk.Scrollbar(unresolved_frame, orient="vertical", command=self.requests_tree.yview)
+        # Configure the Treeview to use the scrollbar
+        self.requests_tree.configure(yscrollcommand=request_scrollbar.set)
+        request_scrollbar.grid(row=0, column=1)
+        unresolved_frame.pack()
+        for i in range(len(unresolved_columns)):
+            col = unresolved_columns[i]
+            self.requests_tree.heading(col, text=col)
+            self.requests_tree.column(col, stretch=False, width=column_widths[i])
+        for index, row in (self.unresolved.iterrows()):
+            values = [row['Camp_ID'], row['Volunteer'], row['food_pac'], row['medical_sup'], row['tents'], row['date']]
+            self.requests_tree.insert("", "end", values=values)
+        self.requests_tree.bind("<ButtonRelease-1>", self.grant_specific_request)
+  
+        # completed requests
+        self.resolved = self.requests.get_resolved()
+        resolved_title = tk.Label(self.root, text="Resolved Requests", font=('Arial', 20))
+        resolved_title.pack(pady=20)
+        resolved_frame = tk.Frame(self.root)
+        resolved_frame.columnconfigure(0, weight=8)
+        resolved_frame.columnconfigure(1, weight=1)
+        resolved_columns = ["Camp ID", "Requester", "Food Packages Requested", "Medical Supplies Requested", "Tents Requested", "Time Requested"]
+        column_widths = [60, 120, 170, 170, 140, 100]
+        self.resolved_tree = ttk.Treeview(resolved_frame, columns=resolved_columns, show="headings")
+        self.resolved_tree.grid(row=0, column=0)
+        resolved_scrollbar = ttk.Scrollbar(resolved_frame, orient="vertical", command=self.resolved_tree.yview)
+        # Configure the Treeview to use the scrollbar
+        self.resolved_tree.configure(yscrollcommand=resolved_scrollbar.set)
+        self.resolved_tree.configure(height=5)
+        
+        resolved_scrollbar.grid(row=0, column=1)
+        resolved_frame.pack()
+        for i in range(len(resolved_columns)):
+            col = resolved_columns[i]
+            self.resolved_tree.heading(col, text=col)
+            self.resolved_tree.column(col, stretch=False, width=column_widths[i])
+        for index, row in (self.resolved.iterrows()):
+            values = [row['Camp_ID'], row['Volunteer'], row['food_pac'], row['medical_sup'], row['tents'], row['date']]
+            self.resolved_tree.insert("", "end", values=values)
+        
+    def grant_all_requests(self):
+        self.requests.write_all()
+        for index, row in (self.unresolved.iterrows()):
+            self.admin.manual_resource_allocation(row['Camp_ID'], str(row['food_pac']), str(row['medical_sup']), str(row['tents']))
+        messagebox.showinfo("Success", "All Requested Resources Successfully Allocated!")
+        self.resource_requests_list()
+    
+    def grant_specific_request(self, event):
+        item_id = self.requests_tree.selection()
+        if item_id:
+            row = (self.requests_tree.item(item_id, "values"))
+            requested_resources = [row[2], row[3], row[4]]
+            camp_id = row[0]
+        
+            can_allocate, suggest_resources_dict = self.admin.suggest_resources(row[0])
+            if can_allocate == False:
+                messagebox.showinfo("Error", "Chosen camp has 0 population and thus no resources can be allocated")
+                self.manage_camps()
+            else:
+               
+                resources = self.camps.get_resource_data(camp_id)
+                if resources == []:
+                    resources = [0, 0, 0]
+                self.allocate_resources(camp_id, resources, suggest_resources_dict, requested_resources)
+
+    def can_allocate(self, event):
         item_id = self.camps_tree.selection()
         column = self.camps_tree.identify_column(event.x)
         if item_id and column == "#9":
@@ -108,51 +207,72 @@ class AdminGui:
                 messagebox.showinfo("Error", "Chosen camp has 0 population and thus no resources can be allocated")
                 self.manage_camps()
             else:
-                self.clear_content()
-                title_txt = f'Allocate Resources for Camp {camp_id}'
-                title = tk.Label(self.root, text=title_txt, font=('Arial', 24))
-                title.pack(pady=20)
-                suggest_food_text = f'Suggested food supplies: {suggest_resources_dict["food"]}'
-                suggest_med_text = f'Suggested medical supplies: {suggest_resources_dict["medical"]}'
-                suggest_tents_text = f'Suggested tents: {suggest_resources_dict["tent"]}'
-                food_lbl = tk.Label(self.root, text="Edit food supplies:", font=('Arial', 18))
-                self.food_inp = tk.Entry(self.root)
-                self.food_inp.insert(0, curr_resources[0])
-                suggest_food_lbl = tk.Label(self.root, text=suggest_food_text, font=('Arial', 16))
-                self.food_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
-                food_lbl.pack()
-                self.food_inp.pack()
-                suggest_food_lbl.pack()
-                self.food_error.pack(pady=(0,10))
-                med_lbl = tk.Label(self.root, text="Edit medical supplies:", font=('Arial', 18))
-                self.med_inp = tk.Entry(self.root)
-                self.med_inp.insert(0, curr_resources[1])
-                suggest_med_lbl = tk.Label(self.root, text=suggest_med_text, font=('Arial', 16))
-                self.med_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
-                med_lbl.pack()
-                self.med_inp.pack()
-                suggest_med_lbl.pack()
-                self.med_error.pack(pady=(0,10))
-                tents_lbl = tk.Label(self.root, text="Edit tents:", font=('Arial', 18))
-                self.tents_inp = tk.Entry(self.root)
-                self.tents_inp.insert(0, curr_resources[2])
-                suggest_tents_lbl = tk.Label(self.root, text=suggest_tents_text, font=('Arial', 16))
-                self.tents_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
-                tents_lbl.pack()
-                self.tents_inp.pack()
-                suggest_tents_lbl.pack()
-                self.tents_error.pack(pady=(0,10))
-                self.submitframe = tk.Frame(self.root)
-                self.submitframe.columnconfigure(0, weight=1)
-                self.submitframe.columnconfigure(1, weight=1)
-                self.submitframe.columnconfigure(2, weight=1)
-                cancel_btn = tk.Button(self.submitframe, text="Cancel", font=('Arial', 20), command=self.manage_camps)
-                cancel_btn.grid(row=0, column=0)
-                submit_suggest_btn = tk.Button(self.submitframe, text="Allocate Suggested Resources", font=('Arial', 20), command=lambda: self.submit_resources(camp_id, str(suggest_resources_dict["food"]), str(suggest_resources_dict["medical"]), str(suggest_resources_dict["tent"])))
-                submit_suggest_btn.grid(row=0, column=1)
-                submit_btn = tk.Button(self.submitframe, text="Allocate Edited Resourece", font=('Arial', 20), command=lambda: self.submit_resources(camp_id, self.food_inp.get(), self.med_inp.get(), self.tents_inp.get()))
-                submit_btn.grid(row=0, column=2)
-                self.submitframe.pack()
+                request_data = self.requests.get_unresolved()
+                if camp_id in request_data['Camp_ID'].values:
+                    row = request_data[request_data['Camp_ID']==camp_id].values[0]
+                    requested_resources = [row[3], row[4], row[5]]
+                    self.allocate_resources(camp_id, curr_resources, suggest_resources_dict, requested_resources)
+                else:
+                    self.allocate_resources(camp_id, curr_resources, suggest_resources_dict)
+    def allocate_resources(self, camp_id, curr_resources, suggest_resources_dict, requested_resources=None):
+            self.clear_content()
+           
+            if requested_resources != None:
+                requested_strings = [f'Requested Food: {requested_resources[0]}', f'Requested Medical: {requested_resources[1]}', f'Requested Tents: {requested_resources[2]}']
+            else:
+                requested_strings = ["", "", ""]
+            title_txt = f'Allocate Resources for Camp {camp_id}'
+            title = tk.Label(self.root, text=title_txt, font=('Arial', 24))
+            title.pack(pady=20)
+            suggest_food_text = f'Suggested food supplies: {suggest_resources_dict["food"]}'
+            suggest_med_text = f'Suggested medical supplies: {suggest_resources_dict["medical"]}'
+            suggest_tents_text = f'Suggested tents: {suggest_resources_dict["tent"]}'
+            food_lbl = tk.Label(self.root, text="Edit food supplies:", font=('Arial', 18))
+            self.food_inp = tk.Entry(self.root)
+            self.food_inp.insert(0, curr_resources[0])
+            suggest_food_lbl = tk.Label(self.root, text=suggest_food_text, font=('Arial', 16))
+            requested_food_lbl = tk.Label(self.root, text=requested_strings[0], font=('Arial', 16))
+            self.food_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
+            food_lbl.pack()
+            self.food_inp.pack()
+            requested_food_lbl.pack()
+            suggest_food_lbl.pack()
+            
+            self.food_error.pack(pady=(0,10))
+            med_lbl = tk.Label(self.root, text="Edit medical supplies:", font=('Arial', 18))
+            self.med_inp = tk.Entry(self.root)
+            self.med_inp.insert(0, curr_resources[1])
+            suggest_med_lbl = tk.Label(self.root, text=suggest_med_text, font=('Arial', 16))
+            requested_med_lbl = tk.Label(self.root, text=requested_strings[1], font=('Arial', 16))
+            self.med_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
+            med_lbl.pack()
+            self.med_inp.pack()
+            requested_med_lbl.pack()
+            suggest_med_lbl.pack()
+            self.med_error.pack(pady=(0,10))
+            tents_lbl = tk.Label(self.root, text="Edit tents:", font=('Arial', 18))
+            self.tents_inp = tk.Entry(self.root)
+            self.tents_inp.insert(0, curr_resources[2])
+            suggest_tents_lbl = tk.Label(self.root, text=suggest_tents_text, font=('Arial', 16))
+            requested_tents_lbl = tk.Label(self.root, text=requested_strings[2], font=('Arial', 16))
+            self.tents_error = tk.Label(self.root, text="", fg="red", font=('Arial', 16))
+            tents_lbl.pack()
+            self.tents_inp.pack()
+            requested_tents_lbl.pack()
+            suggest_tents_lbl.pack()
+            
+            self.tents_error.pack(pady=(0,10))
+            self.submitframe = tk.Frame(self.root)
+            self.submitframe.columnconfigure(0, weight=1)
+            self.submitframe.columnconfigure(1, weight=1)
+            self.submitframe.columnconfigure(2, weight=1)
+            cancel_btn = tk.Button(self.submitframe, text="Cancel", font=('Arial', 20), command=self.manage_camps)
+            cancel_btn.grid(row=0, column=0)
+            submit_suggest_btn = tk.Button(self.submitframe, text="Allocate Suggested Resources", font=('Arial', 20), command=lambda: self.submit_resources(camp_id, str(suggest_resources_dict["food"]), str(suggest_resources_dict["medical"]), str(suggest_resources_dict["tent"])))
+            submit_suggest_btn.grid(row=0, column=1)
+            submit_btn = tk.Button(self.submitframe, text="Allocate Edited Resourece", font=('Arial', 20), command=lambda: self.submit_resources(camp_id, self.food_inp.get(), self.med_inp.get(), self.tents_inp.get()))
+            submit_btn.grid(row=0, column=2)
+            self.submitframe.pack()
 
     def submit_resources(self, camp_id, food_sup, med_sup, tents):
         res = self.admin.manual_resource_allocation(camp_id, food_sup, med_sup, tents)
@@ -208,13 +328,22 @@ class AdminGui:
         info_lbl.pack()
         camp_columns = ["Camp ID", "Username", "First Name", "Surname", "Phone", "Age", "Availability", "State", "Delete"]
         column_widths = [70, 80, 80, 80, 80, 40, 220, 70, 70]
-        self.volun_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
+        tree_view_frame= tk.Frame(self.root)
+        tree_view_frame.pack()
+        tree_view_frame.columnconfigure(0, weight=8)
+        tree_view_frame.columnconfigure(1, weight=1)
+        self.volun_tree = ttk.Treeview(tree_view_frame, columns=camp_columns, show="headings")
         for i in range(len(camp_columns)):
             col = camp_columns[i]
             self.volun_tree.heading(col, text=col)
             self.volun_tree.column(col, stretch=False, width=column_widths[i])
         self.volun_tree.bind("<ButtonRelease-1>", self.individual_volunteer)
-        self.volun_tree.pack(pady=20)
+        scrollbar = ttk.Scrollbar(tree_view_frame, orient="vertical", command=self.volun_tree.yview)
+        # Configure the Treeview to use the scrollbar
+        self.volun_tree.configure(yscrollcommand=scrollbar.set)
+        # Place the scrollbar on the right side of the Treeview
+        self.volun_tree.grid(row=0, column=0)
+        scrollbar.grid(row=0, column=1)
         self.filter_volunteers()
     def activate_all(self):
         self.admin.activate_all()

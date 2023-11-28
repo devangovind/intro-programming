@@ -17,9 +17,9 @@ class Admin:
   
 
     def __init__(self):
-        self.plans_file = 'intro-programming/files/plans.csv'
-        self.camps_file = 'intro-programming/files/camps_file.csv'
-        self.resources_file = 'intro-programming/files/resources.csv'
+        self.plans_file = './files/plans.csv'
+        self.camps_file = './files/camps_file.csv'
+        self.resources_file = './files/resources.csv'
         self.login_file = './files/logindetails.csv'
         self.volunteer_file = './files/volunteers.csv'
         self.camp_id = None
@@ -227,10 +227,16 @@ class Admin:
         # except Exception as e:
         #     print(f"Error in update_resource_allocation: {e}")
         resources_data = pd.read_csv(self.resources_file)
-        camp_index = resources_data.index[resources_data['Camp_ID'] == camp_id]
-        new_row = [camp_id, food, medical, tent]
-        resources_data.iloc[camp_index, :] = new_row
-        resources_data.to_csv(self.resources_file, index=False)
+
+        if camp_id in resources_data['Camp_ID'].values:
+            camp_index = resources_data.index[resources_data['Camp_ID'] == camp_id]
+            new_row = [camp_id, int(food), int(medical), int(tent)]
+            resources_data.iloc[camp_index, :] = new_row
+            resources_data.to_csv(self.resources_file, index=False)
+        else:
+            new_row = {'Camp_ID': camp_id, 'food_pac': food, 'medical_sup': medical, 'tents': tent}
+            resources_data.loc[len(resources_data)] = new_row
+            resources_data.to_csv(self.resources_file, index=False)
         return True
 
     def suggest_resources(self, camp_id,duration_days=7):
