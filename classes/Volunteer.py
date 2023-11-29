@@ -191,9 +191,11 @@ class Volunteer:
             req_df = pd.read_csv(self.resource_req_path, index_col=0)
             print(req_df)
             # if volunteer_username in req_df['Username']:
-            # if volunteer_username in req_df.loc[:,'Username']:
-            req_df = req_df.drop(f'{volunteer_username}')
-            req_df.to_csv(self.resource_req_path, index=True)
+            print(req_df.iloc[:,0])
+            print(volunteer_username in req_df.iloc[:,0])
+            if volunteer_username in req_df.iloc[:,0]:
+                req_df = req_df.drop(f'{volunteer_username}')  
+                req_df.to_csv(self.resource_req_path, index=True)
 
             with open(self.resource_req_path, "a") as file:
                 file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{responded}\n")
