@@ -14,9 +14,10 @@ import matplotlib.pyplot as plt
 class VolunteerGui:
     def __init__(self, volunteer, loginwindow):
         self.root = tk.Tk()
-        self.root.geometry("990x600")
+        self.root.geometry("990x650")
         self.root.title("Volunteer View")
         self.volunteer = volunteer
+        # self.volunteer = Volunteer(volunteer)
         self.camps = Camps()
         self.refugee = Refugee()
         self.volunteer_data = self.volunteer.get_volunteer_data()
@@ -229,33 +230,40 @@ class VolunteerGui:
 
         # Submit resource request section-------------------------------------
         resource_request_frame = tk.Frame(self.content_frame)
-        resource_request_frame.pack(fill='both', expand=True, padx=100, pady=20)
+        resource_request_frame.pack(padx=60, pady=20)
 
-        def submit_resource_request():
-            pass
 
         curr_volunteer = self.volunteer.username
         volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0]
         request_label = tk.Label(resource_request_frame, text=f'Submit Resource Request for {volunteer_curr_camp} (your current camp):', font=('Arial', 15))
-        request_label.grid(row = 0, column= 1, pady=10)
-
+        request_label.grid(row = 0, column= 1, pady=15)
+ 
         food_request = tk.Label(resource_request_frame, text=f'Food: ', font=('Arial', 16))
         food_request.grid(row = 1, column= 0, pady=5)
         food_entry = tk.Entry(resource_request_frame)
         food_entry.grid(row=2, column=0)
+        self.food_error = tk.Label(resource_request_frame, text="", fg="red", font=('Arial', 10))
+        self.food_error.config(fg="red")
+        self.food_error.grid(row=3, column=0)
 
         medical_sup_request = tk.Label(resource_request_frame, text=f'Medical Supplies: ', font=('Arial', 16))
         medical_sup_request.grid(row = 1, column= 1)
         medical_sup_entry = tk.Entry(resource_request_frame)
         medical_sup_entry.grid(row=2, column=1)
+        self.medical_sup_error = tk.Label(resource_request_frame, text="", fg="red", font=('Arial', 10))
+        self.medical_sup_error.config(fg="red")
+        self.medical_sup_error.grid(row=3, column=1)
 
         tents_request = tk.Label(resource_request_frame, text=f'Tents: ', font=('Arial', 16))
         tents_request.grid(row = 1, column= 2, pady=5)
         tents_entry = tk.Entry(resource_request_frame)
         tents_entry.grid(row=2, column=2)
+        self.tents_error = tk.Label(resource_request_frame, text="", fg="red", font=('Arial', 10))
+        self.tents_error.config(fg="red")
+        self.tents_error.grid(row=3, column=2)
 
-        submit_request_btn = tk.Button(resource_request_frame, text="Submit Request", font=('Arial', 14), command= submit_resource_request())
-        submit_request_btn.grid(row=3, column=1, pady=15)
+        submit_request_btn = tk.Button(resource_request_frame, text="Submit Request", font=('Arial', 14), command=lambda: self.submit_resource_request(curr_volunteer, volunteer_curr_camp, food_entry.get(), medical_sup_entry.get(), tents_entry.get()))
+        submit_request_btn.grid(row=4, column=1, pady=15)
 
         def resize(e):
             size = e.width / 70
@@ -279,6 +287,25 @@ class VolunteerGui:
             self.welcome_message()
         else:
             self.capacity_error.config(text=res[0])
+
+    def submit_resource_request(self, username, camp_id, food, medical_supplies, tents):
+        res = self.volunteer.edit_resources_details(username, camp_id, food, medical_supplies, tents)
+        if res == True:
+            print("request was success")
+            self.food_error.config(text="Food request Saved", fg="green")
+            self.medical_sup_error.config(text="Medical Supplies request Saved", fg="green")
+            self.tents_error.config(text="Tents request Saved", fg="green")
+            # self.root.update_idletasks() 
+            messagebox.showinfo("Success", "Request successfully submitted!")
+            self.welcome_message()
+            
+        else:
+            print("request failed")
+            self.food_error.config(text=res[0])
+            self.medical_sup_error.config(text=res[1])
+            self.tents_error.config(text=res[2])
+
+
 
     def display_resources(self):
         self.clear_content()

@@ -2,6 +2,7 @@
 import pandas as pd
 import re
 from Camps import Camps
+import csv
 
 
 # need to work on how we are to set this out
@@ -15,6 +16,7 @@ class Volunteer:
         self.camp_path = "../files/camps_file.csv"
         self.resource_path = "../files/resources.csv"
         self.volunteer_path = '../files/volunteers.csv'
+        self.resource_req_path = "../files/resource_request.csv"
 
 
         # Filepaths for MAC
@@ -149,8 +151,57 @@ class Volunteer:
             return True
         return False
     
+    def edit_resources_details(self, username, camp_id, food, medical_supplies, tents):
+        volunteer_username = username
+        volunteer_camp = camp_id
+        food_entry = food
+        medical_supplies_entry = medical_supplies
+        tents_entry = tents
+        
+        def validate_entries(food, medical_supplies, tents):
+            errors = ["", "", ""]
+            if food.isdigit():
+                errors[0] = ""
+            else:
+                errors[0] = ("Resource must be a number")
 
+            if medical_supplies.isdigit():
+                errors[1] = ""
+            else:
+                errors[1] = ("Resource must be a number")
 
+            if tents.isdigit():
+                errors[2] = ""
+            else:
+                errors[2] = ("Resource must be a number")
+            return errors
+        
+        self.errors = validate_entries(food_entry, medical_supplies_entry, tents_entry) 
+        if self.errors == ["", "", ""]:
+            print("inputs were integers")
+            input_food = int(food_entry)
+            input_medical_supplies = int(medical_supplies_entry)
+            input_tents = int(tents_entry)
+            responded = 'FALSE'
+
+            # self.create_resource_req(volunteer_username, volunteer_camp, input_food, input_medical_supplies, input_tents,responded)
+            # if volunteer_username in pd.read_csv(self.resource_req)['']
+            # if volunteer alrd made previous request, overwrite the previous request
+            # if volunteer had not made previous request, write to csv
+            req_df = pd.read_csv(self.resource_req_path, index_col=0)
+            print(req_df)
+            # if volunteer_username in req_df['Username']:
+            # if volunteer_username in req_df.loc[:,'Username']:
+            req_df = req_df.drop(f'{volunteer_username}')
+            req_df.to_csv(self.resource_req_path, index=True)
+
+            with open(self.resource_req_path, "a") as file:
+                file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{responded}\n")
+
+            return True
+        else:
+            print("inputs were not integers")
+            return self.errors
 
 
 # if __name__ == "__main__":
