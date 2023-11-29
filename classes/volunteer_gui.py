@@ -12,7 +12,7 @@ from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
 
 class VolunteerGui:
-    def __init__(self, volunteer, loginwindow):
+    def __init__(self, volunteer):
         self.root = tk.Tk()
         self.root.geometry("990x600")
         self.root.title("Volunteer View")
@@ -24,7 +24,7 @@ class VolunteerGui:
         self.create_content_frame()  # Creates the content frame below the navigation bar
         self.welcome_message() # Adds the welcome message to the content frame
         self.tree_view = None
-        self.loginwindow = loginwindow
+        # self.loginwindow = loginwindow
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
     
     def create_nav_bar(self):
@@ -41,7 +41,7 @@ class VolunteerGui:
         self.edit_details_btn.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
         self.edit_camp_btn = tk.Button(self.headerarea, text="Edit Camp Details", font=('Arial', 16), command=self.edit_camp)
         self.edit_camp_btn.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
-        self.view_camp_btn = tk.Button(self.headerarea, text="View Camp Details", font=('Arial', 16), command=self.display_resources)
+        self.view_camp_btn = tk.Button(self.headerarea, text="View Camp Details", font=('Arial', 16), command=self.display_resources_with_dropdown)
         self.view_camp_btn.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
         self.add_refugee_btn = tk.Button(self.headerarea, text="Create Refugee Profile", font=('Arial', 16), command=self.add_refugee) 
         self.add_refugee_btn.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
@@ -108,10 +108,49 @@ class VolunteerGui:
         age_lbl.pack()
         age_inp.pack()
         self.age_error.pack()
+        # Availability section - to move to edit personal details
+        availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 16))
+        availability_lbl.pack(pady=10)
+        volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
+        availability_array = []
+        print(volunteer_availability)
+        for c in volunteer_availability:
+            if c == "1":
+                availability_array.append(True)
+            else:
+                availability_array.append(False)
+        self.mon_var = tk.BooleanVar(value=availability_array[0])
+        self.tue_var = tk.BooleanVar(value=availability_array[1])
+        self.wed_var = tk.BooleanVar(value=availability_array[2])
+        self.thu_var = tk.BooleanVar(value=availability_array[3])
+        self.fri_var = tk.BooleanVar(value=availability_array[4])
+        self.sat_var = tk.BooleanVar(value=availability_array[5])
+        self.sun_var = tk.BooleanVar(value=availability_array[6])
+        self.availability_variables = [self.mon_var, self.tue_var, self.wed_var, self.thu_var, self.fri_var, self.sat_var, self.sun_var]
+        availability_frame = tk.Frame(self.content_frame)
+        availability_frame.columnconfigure(0, weight=1)
+        availability_frame.columnconfigure(1, weight=1)
+        availability_frame.columnconfigure(2, weight=1)
+        mon_box = tk.Checkbutton(availability_frame, text="Monday", variable=self.mon_var)
+        tue_box = tk.Checkbutton(availability_frame, text="Tuesday", variable=self.tue_var)
+        wed_box = tk.Checkbutton(availability_frame, text="Wednesday", variable=self.wed_var)
+        thu_box = tk.Checkbutton(availability_frame, text="Thursday", variable=self.thu_var)
+        fri_box = tk.Checkbutton(availability_frame, text="Friday", variable=self.fri_var)
+        sat_box = tk.Checkbutton(availability_frame, text="Saturday", variable=self.sat_var)
+        sun_box = tk.Checkbutton(availability_frame, text="Sunday", variable=self.sun_var)
+        mon_box.grid(row=0, column=0, sticky="w")  # Align to the west (left)
+        tue_box.grid(row=0, column=1, sticky="w")
+        wed_box.grid(row=0, column=2, sticky="w")
+        thu_box.grid(row=1, column=0, sticky="w")
+        fri_box.grid(row=1, column=1, sticky="w")
+        sat_box.grid(row=1, column=2, sticky="w")
+
+        availability_frame.pack()
         cancel_btn = tk.Button(self.content_frame, text="Cancel", font=('Arial', 14), command=self.welcome_message)
-        cancel_btn.pack(pady=20)
+        cancel_btn.pack(pady=10)
         submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 14), command=lambda: self.submit_details(first_name_inp.get(), last_name_inp.get(), phone_inp.get(), age_inp.get()))
         submit_btn.pack()
+        
         
         def resize(e):
             size = e.width / 70
@@ -165,49 +204,12 @@ class VolunteerGui:
         camps_menu_lbl.pack()
         camps_menu.pack()
 
-        # Availability section - to move to edit personal details
-        # availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 16))
-        # availability_lbl.pack(pady=10)
-        # volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
-        # availability_array = []
-        # print(volunteer_availability)
-        # for c in volunteer_availability:
-        #     if c == "1":
-        #         availability_array.append(True)
-        #     else:
-        #         availability_array.append(False)
-        # self.mon_var = tk.BooleanVar(value=availability_array[0])
-        # self.tue_var = tk.BooleanVar(value=availability_array[1])
-        # self.wed_var = tk.BooleanVar(value=availability_array[2])
-        # self.thu_var = tk.BooleanVar(value=availability_array[3])
-        # self.fri_var = tk.BooleanVar(value=availability_array[4])
-        # self.sat_var = tk.BooleanVar(value=availability_array[5])
-        # self.sun_var = tk.BooleanVar(value=availability_array[6])
-        # self.availability_variables = [self.mon_var, self.tue_var, self.wed_var, self.thu_var, self.fri_var, self.sat_var, self.sun_var]
-        # availability_frame = tk.Frame(self.content_frame)
-        # availability_frame.columnconfigure(0, weight=1)
-        # availability_frame.columnconfigure(1, weight=1)
-        # availability_frame.columnconfigure(2, weight=1)
-        # mon_box = tk.Checkbutton(availability_frame, text="Monday", variable=self.mon_var)
-        # tue_box = tk.Checkbutton(availability_frame, text="Tuesday", variable=self.tue_var)
-        # wed_box = tk.Checkbutton(availability_frame, text="Wednesday", variable=self.wed_var)
-        # thu_box = tk.Checkbutton(availability_frame, text="Thursday", variable=self.thu_var)
-        # fri_box = tk.Checkbutton(availability_frame, text="Friday", variable=self.fri_var)
-        # sat_box = tk.Checkbutton(availability_frame, text="Saturday", variable=self.sat_var)
-        # sun_box = tk.Checkbutton(availability_frame, text="Sunday", variable=self.sun_var)
-        # mon_box.grid(row=0, column=0)
-        # tue_box.grid(row=1, column=0)
-        # wed_box.grid(row=0, column=1)
-        # thu_box.grid(row=1, column=1)
-        # fri_box.grid(row=0, column=2)
-        # sat_box.grid(row=1, column=2)
-        # sun_box.grid(row=2, column=2)
-        # availability_frame.pack()
-
         current_capacity = camps_data.loc[camps_data['Camp_ID'] == camps_ids[saved_idx], 'Num_Of_Refugees'].iloc[0]
         capacity_string = f'Edit Current Camp ({camps_ids[saved_idx]}) Capacity:'
         capacity_lbl = tk.Label(self.content_frame, text=capacity_string, font=('Arial', 16))
         capacity_lbl.pack()
+        
+        
         def my_show(*args):
             # dynamically updates string display of camp_id according to optionmenu selection
             str_out.set(selected_camp.get())
@@ -280,121 +282,32 @@ class VolunteerGui:
         else:
             self.capacity_error.config(text=res[0])
 
-    def display_resources(self):
-        self.clear_content()
-        title = tk.Label(self.content_frame, text="View Camp Details", font=('Arial', 18))
-        title.config(fg="medium slate blue")
-        title.pack(pady=(20, 10))
-
-        # Assuming 'volunteer_camp_id' is set elsewhere after login
-        curr_volunteer = self.volunteer.username
-        # volunteer_data = self.volunteer.get_volunteer_data()
-        self.volunteer_camp_id = str(self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0])
-        # self.volunteer_camp_id = "C12345"  # Replace with dynamic retrieval of the volunteer's camp ID
-
-        # Create Treeview widget if it does not exist
-        if self.tree_view is None:
-            self.tree_view_frame = tk.Frame(self.content_frame)
-            self.tree_view_frame.pack(fill='both', expand=True, pady=10)
-            
-            # Scrollbars for the Treeview
-            tree_scroll = tk.Scrollbar(self.tree_view_frame)
-            tree_scroll.pack(side='right', fill='y')
-            tree_xscroll = tk.Scrollbar(self.tree_view_frame, orient='horizontal')
-            tree_xscroll.pack(side='bottom', fill='x')
-
-            # Create the Treeview widget
-            self.tree_view = ttk.Treeview(self.tree_view_frame, yscrollcommand=tree_scroll.set, 
-                                          xscrollcommand=tree_xscroll.set, show='headings')
-            self.tree_view.pack(side='left', fill='both', expand=True)
-
-            # Configure the scrollbars
-            tree_scroll.config(command=self.tree_view.yview)
-            tree_xscroll.config(command=self.tree_view.xview)
-
-            # Define columns
-            columns = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'food_pac', 'medical_sup', 'tents']
-            self.tree_view['columns'] = columns
-
-            # Create column headings
-            for col in columns:
-                self.tree_view.heading(col, text=col, anchor='center')
-                self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
-
-            # Style configuration
-            style = ttk.Style(self.content_frame)
-            style.theme_use("default")
-            style.configure("Treeview",
-                            background="#D3D3D3",
-                            foreground="black",
-                            rowheight=25,
-                            fieldbackground="#D3D3D3")
-            style.map('Treeview', background=[('selected', '#347083')])
-
-        # Clear the existing entries in the Treeview, if any
-        for item in self.tree_view.get_children():
-            self.tree_view.delete(item)
-
-        try:
-            # Retrieve the camp resources
-            df_output = self.camps.display_camp_resources(self.volunteer_camp_id)  # Assume this returns a DataFrame
-
-            # Add data to the treeview
-            for index, row in df_output.iterrows():
-                self.tree_view.insert("", 'end', values=list(row))
-
-            # Show 'Show Pie Chart' button only if camp details are successfully displayed
-            show_chart_btn = tk.Button(self.content_frame, text="Show Pie Chart", command=self.show_pie_chart_of_resources)
-            show_chart_btn.pack(pady=10)
-
-            def resize(e):
-                size = e.width / 70
-                show_chart_btn.config(font=('Arial', int(size)))
-            
-            self.content_frame.bind('<Configure>', resize)
-
-        except Exception as e:
-            print("Failed to display camp resources:", e)
-            error_label = tk.Label(self.content_frame, text="Error displaying camp resources.", background='#f0f0f0', font=('Arial', 10))
-            error_label.pack(pady=10)
-
-    def show_pie_chart_of_resources(self):
-        # Retrieve values for food_pac, medical_sup, tents from the Treeview
-        # Assume the Treeview has one row with these values at indices 4, 5, 6
-        item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
-        row = self.tree_view.item(item, 'values')
-        resource_values = [int(row[4]), int(row[5]), int(row[6])]  # Convert to int
-        resource_labels = ['food_pac', 'medical_sup', 'tents']
-
-        # Call the create_pie_chart function
-        create_pie_chart(resource_values, resource_labels, 'Camp Resource Distribution')
-
     def add_refugee(self):
         self.clear_content()
-        title = tk.Label(self.content_frame, text="Create Refugee Profile", font=('Arial', 18))
-        title.config(fg="medium slate blue")
-        title.pack(pady=15)
+        title = tk.Label(self.content_frame, text="Create Refugee Profile", font=('Arial', 24))
+        title.pack(pady=20)
         
         # Generate and suggest a Refugee ID
         suggested_refugee_id = self.refugee.generate_refugee_id()
+        # messagebox.showinfo("Suggested Refugee ID", f"The suggested Refugee ID is: {suggested_refugee_id}")
         
         # Dropdown for Camp ID
-        Camp_ID_lbl = tk.Label(self.content_frame, text="Camp ID:", font=('Arial', 16))
+        Camp_ID_lbl = tk.Label(self.content_frame, text="Camp ID:", font=('Arial', 18))
         Camp_IDs = self.camps.get_camp_ids()  # Get the list of camp IDs
         Camp_ID_var = tk.StringVar(self.content_frame)
         Camp_ID_var.set(Camp_IDs[0])  # Set default value
         Camp_ID_dropdown = tk.OptionMenu(self.content_frame, Camp_ID_var, *Camp_IDs)
-        Camp_ID_dropdown.config(width=17)
+        Camp_ID_dropdown.config(width=16)
         Camp_ID_lbl.pack(pady=10)
         Camp_ID_dropdown.pack()
 
         # Create input fields for Refugee ID, Medical Condition, and Number of Relatives
-        refugee_id_lbl = tk.Label(self.content_frame, text="Refugee ID:", font=('Arial', 16))
+        refugee_id_lbl = tk.Label(self.content_frame, text="Refugee ID:", font=('Arial', 18))
         refugee_id_inp = tk.Entry(self.content_frame)
         refugee_id_inp.insert(0, suggested_refugee_id)
-        medical_condition_lbl = tk.Label(self.content_frame, text="Medical Condition:", font=('Arial', 16))
+        medical_condition_lbl = tk.Label(self.content_frame, text="Medical Condition:", font=('Arial', 18))
         medical_condition_inp = tk.Entry(self.content_frame)
-        num_relatives_lbl = tk.Label(self.content_frame, text="Number of Relatives:", font=('Arial', 16))
+        num_relatives_lbl = tk.Label(self.content_frame, text="Number of Relatives:", font=('Arial', 18))
         num_relatives_inp = tk.Entry(self.content_frame)
 
         # Pack the new widgets
@@ -414,12 +327,6 @@ class VolunteerGui:
                                 num_relatives_inp.get()))
         submit_btn.pack(pady=20)
 
-        def resize(e):
-            size = e.width / 70
-            submit_btn.config(font=('Arial', int(size)))
-            
-        self.content_frame.bind('<Configure>', resize)
-
 
     def submit_refugee_profile(self, refugee_id, Camp_ID, medical_condition, num_relatives):
         # Call create_refugee_profile from Refugee class
@@ -428,6 +335,113 @@ class VolunteerGui:
         messagebox.showinfo("Result", result)
         if result == "Refugee profile created successfully":
             self.welcome_message()
+
+    
+    def display_resources_with_dropdown(self):
+        self.clear_content()
+        self.content_frame['background'] = '#f0f0f0'  # Set the background color for the content frame
+
+        # Title with new style
+        title = tk.Label(self.content_frame, text="View Camp Details", font=('Arial', 24), background='#f0f0f0')
+        title.pack(pady=(20, 10))
+
+        # Camp ID selection area
+        camp_id_frame = tk.Frame(self.content_frame, background='#f0f0f0')
+        camp_id_frame.pack(pady=(0, 20))
+        Camp_ID_lbl = tk.Label(camp_id_frame, text="Select Camp ID:", font=('Arial', 18), background='#f0f0f0')
+        Camp_ID_lbl.pack(side='left', padx=(10, 0))
+
+        # Dropdown for Camp ID
+        Camp_ID_var = tk.StringVar(camp_id_frame)
+        Camp_IDs = self.camps.get_camp_ids()  # Assume this gets the list of camp IDs
+        Camp_ID_var.set(Camp_IDs[0])  # Set default value
+        Camp_ID_dropdown = tk.OptionMenu(camp_id_frame, Camp_ID_var, *Camp_IDs)
+        Camp_ID_dropdown.pack(side='left', padx=(0, 10))
+
+        # Button to view resources
+        view_btn = tk.Button(self.content_frame, text="View Resources", 
+                             command=lambda: self.display_selected_camp_resources(Camp_ID_var.get()))
+        view_btn.pack(pady=10)
+
+    def display_selected_camp_resources(self, camp_id):
+        if self.tree_view is not None:
+            # Clear the previous entries in the Treeview
+            for item in self.tree_view.get_children():
+                self.tree_view.delete(item)
+        else:
+            # If this is the first time, create the Treeview
+            self.tree_view_frame = tk.Frame(self.content_frame, background='#f0f0f0')
+            self.tree_view_frame.pack(fill='both', expand=True, pady=10)
+            
+            # Scrollbars for the Treeview
+            tree_scroll = tk.Scrollbar(self.tree_view_frame)
+            tree_scroll.pack(side='right', fill='y')
+            tree_xscroll = tk.Scrollbar(self.tree_view_frame, orient='horizontal')
+            tree_xscroll.pack(side='bottom', fill='x')
+
+            # Create the Treeview widget
+            self.tree_view = ttk.Treeview(self.tree_view_frame, yscrollcommand=tree_scroll.set, 
+                                          xscrollcommand=tree_xscroll.set, show='headings')
+            self.tree_view.pack(side='left', fill='both', expand=True)
+
+            # Configure the scrollbars
+            tree_scroll.config(command=self.tree_view.yview)
+            tree_xscroll.config(command=self.tree_view.xview)
+
+            # Define our columns
+            columns = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'food_pac', 'medical_sup', 'tents']
+            self.tree_view['columns'] = columns
+
+            # Create column headings
+            for col in columns:
+                self.tree_view.heading(col, text=col, anchor='center')
+                self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
+
+            # Style configuration
+            style = ttk.Style(self.content_frame)
+            style.theme_use("default")
+            style.configure("Treeview",
+                            background="#D3D3D3",
+                            foreground="black",
+                            rowheight=25,
+                            fieldbackground="#D3D3D3")
+            style.map('Treeview', background=[('selected', '#347083')])
+
+        try:
+            # Retrieve the camp resources
+            df_output = self.camps.display_camp_resources(camp_id)  # Assume this returns a DataFrame
+
+            # Add data to the treeview
+            for index, row in df_output.iterrows():
+                self.tree_view.insert("", 'end', values=list(row))
+
+        except Exception as e:
+            print("Failed to display camp resources:", e)
+            error_label = tk.Label(self.tree_view_frame, text="Error displaying camp resources.", background='#f0f0f0', font=('Arial', 14))
+            error_label.pack(pady=10)
+
+
+    def show_pie_chart_of_resources(self):
+        # Retrieve values for food_pac, medical_sup, tents from the Treeview
+        # Assume the Treeview has one row with these values at indices 4, 5, 6
+        item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
+        row = self.tree_view.item(item, 'values')
+        resource_values = [int(row[4]), int(row[5]), int(row[6])]  # Convert to int
+        resource_labels = ['food_pac', 'medical_sup', 'tents']
+
+        # Call the create_pie_chart function
+        create_pie_chart(resource_values, resource_labels, 'Camp Resource Distribution')
+
+    
+
+
+    def submit_refugee_profile(self, Camp_ID, refugee_id, medical_condition, medical_description, num_relatives, health_status):
+        # Call create_refugee_profile from Refugee class
+        # The method signature should include all necessary parameters
+        result = self.refugee.create_refugee_profile(Camp_ID, medical_condition, num_relatives, health_status, refugee_id, medical_description)
+        messagebox.showinfo("Result", result)
+        if result == "Refugee profile created successfully":
+            self.welcome_message()  # Assuming welcome_message is a method that shows some welcome screen or message
 
     # When click logout button, destory volunteer menu
     def logout(self):
@@ -442,9 +456,9 @@ class VolunteerGui:
         # Reset the tree_view to None to allow re-creation
         self.tree_view = None
 
-    # def run(self):
-    #     self.root.mainloop()
+    def run(self):
+        self.content_frame.mainloop()
 
-# dummy = Volunteer("volunteer1")
-# VGui = VolunteerGui(dummy)
-# VGui.run()
+dummy = Volunteer("volunteer1")
+VGui = VolunteerGui(dummy)
+VGui.run()

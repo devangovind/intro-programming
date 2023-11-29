@@ -4,10 +4,11 @@ from Camps import Camps
 class Refugee:
     def __init__(self) -> None:
         # Filepaths for windows
-        self.refugee_path = "../files/refugee.csv"
+        # self.refugee_path = "../files/refugee.csv"
 
         # Filepaths for MAC
-        # self.refugee_path = "intro-programming/files/refugee.csv"  
+        self.refugee_path = "files/refugee.csv"  
+    
     
     def generate_refugee_id(self):
         refugee_data = pd.read_csv(self.refugee_path)
@@ -16,12 +17,14 @@ class Refugee:
         last_id = last_id_series.max()
         new_id = f'R{str(last_id + 1).zfill(3)}'  # Increment and format
         return new_id
+    
 
     def create_refugee_profile_auto_id(self, camp_id, medical_condition, num_relatives):
         new_refugee_id = self.generate_refugee_id()
         return self.create_refugee_profile(new_refugee_id, camp_id, medical_condition, num_relatives)
     
-    def create_refugee_profile(self, camp_id, medical_condition, num_relatives, refugee_id=None):
+
+    def create_refugee_profile(self, camp_id, medical_condition, num_relatives, refugee_id=None, medical_description=None):
         refugee_data = pd.read_csv(self.refugee_path)
         
         if refugee_id is None:
@@ -33,6 +36,7 @@ class Refugee:
             'Refugee_ID': [refugee_id],
             'Camp_ID': [camp_id],
             'MedicalCondition': [medical_condition],
+            'MedicalDescription': [medical_description],  # Corrected column name
             'NumberOfRelatives': [num_relatives]
         })
 
@@ -45,6 +49,8 @@ class Refugee:
         except Exception as e:
             print(f"An error occurred while writing to the CSV: {e}")
             return "Failed to write refugee profile to CSV"
+
+
         
    
 if __name__ == "__main__":

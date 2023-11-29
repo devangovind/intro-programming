@@ -12,15 +12,15 @@ class Volunteer:
         self.username = username
 
         # Filepaths for windows
-        self.camp_path = "../files/camps_file.csv"
-        self.resource_path = "../files/resources.csv"
-        self.volunteer_path = '../files/volunteers.csv'
+        # self.camp_path = "../files/camps_file.csv"
+        # self.resource_path = "../files/resources.csv"
+        # self.volunteer_path = '../files/volunteers.csv'
 
 
         # Filepaths for MAC
-        # self.camp_path = "intro-programming/files/camps_file.csv"  
-        # self.resource_path = "intro-programming/files/resources.csv"  
-        # self.volunteer_path = "intro-programming/files/volunteers.csv" 
+        self.camp_path = "files/camps_file.csv"  
+        self.resource_path = "files/resources.csv"  
+        self.volunteer_path = "files/volunteers.csv" 
 
     
     def get_volunteer_data(self):
@@ -32,22 +32,21 @@ class Volunteer:
         else: return "No volunteer data"
         
     
-    def edit_volunteer_details(self, fname, sname, phone, age):
-        
+    def edit_volunteer_details(self, fname, sname, phone, age, availability):
         if self.validate_personal_details(fname, sname, phone, age):
             self.volunteer_data['First Name'] = fname.strip().capitalize()
             self.volunteer_data['Last Name'] = sname.strip().capitalize()
             self.volunteer_data['Phone'] = int(phone)
             self.volunteer_data['Age'] = int(age)
+            self.volunteer_data['Availability'] = int(availability)  # Update availability
             # self.volunteer_data['Camp_ID'] = Camp_ID
-            # self.volunteer_data['Availabiltiy'] = availability
             self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
             self.volunteer_file.to_csv(self.volunteer_path, index=False)
             return True
         else:
             return self.errors
        
-    def validate_personal_details(self, fname, sname, phone, age):
+    def validate_personal_details(self, fname, sname, phone, age,availability):
         alphabet = "^[a-zA-Z\s]+$"
         self.errors = ["", "", "", ""]
         
@@ -106,8 +105,20 @@ class Volunteer:
         #     camps = camp_data['camp_id']
         #     if Camp_ID not in camps.values:
         #         raise ValueError("Camp_ID does not exist")
-        fname_validate(), sname_validate(), phone_validate(), age_validate()
-        if self.errors == ["", "", "", ""]:
+        def availability_validate():
+            if availability.isdigit():
+                if int(availability) > 100:  # Assuming availability is a percentage
+                    self.errors.append("Availability cannot exceed 100")
+                elif int(availability) < 0:
+                    self.errors.append("Availability cannot be negative")
+                else:
+                    self.errors.append("")
+            else:
+                self.errors.append("Availability must be a number")
+
+        # Call the new validation function
+        fname_validate(), sname_validate(), phone_validate(), age_validate(), availability_validate()
+        if all(error == "" for error in self.errors):
             return True
         return False
 
@@ -116,7 +127,7 @@ class Volunteer:
         if self.validate_camp_details(camp_id, availability, capacity):
            print('v', availability)
            self.volunteer_data['Camp_ID'] = camp_id
-           self.volunteer_data['Availability'] = int(availability)
+
            self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
            self.volunteer_file.to_csv(self.volunteer_path, index=False)
            camps = Camps()
@@ -157,17 +168,8 @@ class Volunteer:
 #     # Creating an instance of the Volunteer class
 #     volunteer = Volunteer("test_user")
 
-#     # Testing create_refugee_profile
-#     print("Creating Refugee Profile:")
-#     print(volunteer.create_refugee_profile("R005", "camp_01", "Healthy", 4))
 
-#     # Testing validate_refugee_existence
-#     print("\nValidating Refugee Existence:")
-#     print("Refugee R004 exists:", volunteer.validate_refugee_existence("R004"))
 
-#     # Testing display_camp_resources
-#     print("\nDisplaying Camp Resources:")
-#     print(volunteer.display_camp_resources("camp_01"))
 
 
 # volunteer = Volunteer('volunteer1')

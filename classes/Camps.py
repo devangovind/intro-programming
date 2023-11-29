@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 class Camps:
     def __init__(self):
         # Filepaths for windows
-        self.camps_filepath = "../files/camps_file.csv"  # Update to the path where camps.csv is located
-        self.resource_filepath = "../files/resources.csv"
+        # self.camps_filepath = "../files/camps_file.csv"  # Update to the path where camps.csv is located
+        # self.resource_filepath = "../files/resources.csv"
 
         # Filepaths for MAC
-        # self.camps_filepath = "intro-programming/files/camps_file.csv"  # Update to the path where camps.csv is located
-        # self.resource_filepath = "intro-programming/files/resources.csv"
+        self.camps_filepath = "files/camps_file.csv"  # Update to the path where camps.csv is located
+        self.resource_filepath = "files/resources.csv"
 
     def get_data(self):
         self.camps_data = pd.read_csv(self.camps_filepath)
@@ -45,25 +45,21 @@ class Camps:
         else:
             # Displaying the merged data
             return camp_resources
-        
 
-    # def dataVis(self):
-    #     # resources_data = pd.read_csv(self.resource_filepath)
-    #     # plt.pie(resources_data, autopct="%1.1f%%")
+    def get_all_camp_resources(self):
+        # Load the data from both CSV files
+        camp_data = pd.read_csv(self.camps_filepath)
+        resources_data = pd.read_csv(self.resource_filepath)
 
-    #     # plt.title("My Tasks")
-    #     # plt.axis("equal")
+        # Merge the two datasets on Camp_ID
+        merged_data = pd.merge(camp_data, resources_data, on='Camp_ID', how='inner')
 
-    #     # plt.show()
-    #     my_data = [300, 500, 700]
-    #     my_labels = ["Tasks Pending", "Tasks Ongoing", "Tasks Completed"]
+        if merged_data.empty:
+            return "No data available for camps"
+        else:
+            # Returning the merged data
+            return merged_data  
 
-    #     plt.pie(my_data, labels=my_labels, autopct="%1.1f%%")
-
-    #     plt.title("My Tasks")
-    #     plt.axis("equal")
-
-    #     plt.show()
 
 # Testing the Camps class
 if __name__ == "__main__":
