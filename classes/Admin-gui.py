@@ -36,6 +36,7 @@ class AdminGui:
         self.headerarea.columnconfigure(3, weight=1)
         self.headerarea.columnconfigure(4, weight=1)
         self.headerarea.columnconfigure(5, weight=1)
+        self.headerarea.columnconfigure(6, weight=1)
         self.home_btn = tk.Button(self.headerarea, text="Home", font=('Arial', 16), command=self.welcome_message)
         self.home_btn.grid(row=0, column=0)
         self.create_plan_btn = tk.Button(self.headerarea, text="Create New Plan", font=('Arial', 16),
@@ -44,14 +45,17 @@ class AdminGui:
         self.display_plans_btn = tk.Button(self.headerarea, text="Display Existing Plans", font=('Arial', 16),
                                            command=self.display_plans)
         self.display_plans_btn.grid(row=0, column=2)
+        self.display_plans_btn = tk.Button(self.headerarea, text="Creat a new camp", font=('Arial', 16),
+                                    command=self.add_camp)
+        self.display_plans_btn.grid(row=0, column=3)
         self.manage_camps_btn = tk.Button(self.headerarea, text="Manage Camps", font=('Arial', 16),
                                           command=self.manage_camps)
-        self.manage_camps_btn.grid(row=0, column=3)
+        self.manage_camps_btn.grid(row=0, column=4)
         self.manage_volunteers_btn = tk.Button(self.headerarea, text="Manage Volunteers", font=('Arial', 16),
                                                command=self.manage_volunteers)
-        self.manage_volunteers_btn.grid(row=0, column=4)
+        self.manage_volunteers_btn.grid(row=0, column=5)
         self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 16))
-        self.logout_btn.grid(row=0, column=5)
+        self.logout_btn.grid(row=0, column=6)
         self.headerarea.pack(padx=20)
         self.nav_bar = [self.headerarea, self.home_btn, self.display_plans_btn, self.create_plan_btn,
                         self.manage_camps_btn, self.manage_volunteers_btn, self.logout_btn]
@@ -77,7 +81,7 @@ class AdminGui:
         tk.Label(self.root, text='Start_Date:',font = ('Arial',12)).place(x=300, y=330)
         tk.Label(self.root, text='End_Date:',font = ('Arial',12)).place(x=300, y=390)
         # Get the plan_ID automatically
-        self.plan_id = self.admin.last_plan_id() + 1
+        self.plan_id = "P"+ (self.admin.last_plan_id() + 1)
         # print(self.plan_id)--> just for testing during coding
         # The plan_ID can be shown in the window and admin can not edit
         self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
@@ -88,8 +92,8 @@ class AdminGui:
         self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
         self.loc_entry.place(x=300, y=290)
         # Build the button
-        sdate_button = tk.Button(self.root, text='choose the start date', command=self.pick_sdate).place(x=460, y=350)
-        edate_button = tk.Button(self.root, text='choose the end date', command=self.pick_edate).place(x=460, y=410)
+        sdate_button = tk.Button(self.root, text='choose the start date',font = ('Arial',10),command=self.pick_sdate).place(x=460, y=350)
+        edate_button = tk.Button(self.root, text='choose the end date', font = ('Arial',10),command=self.pick_edate).place(x=460, y=410)
         tk.Button(self.root, text='Save this plan', command=self.save_data,font = ('Arial',12)).place(x=300, y=480)
 
         # When admin click the entry date, admin will be informed that they need to use calendar
@@ -159,7 +163,7 @@ class AdminGui:
 
         self.e_date = self.cal.selection_get()
         if self.admin.check_end_date(self.e_date, self.s_date):
-            messagebox.showwarning(title='Choose start date', message='The end date cannot before start date')
+            messagebox.showwarning(title='Choose start date', message='The end date should be after the start date')
         else:
             self.end_date.delete(0, END)
             self.end_date.insert(0, self.e_date)
@@ -228,8 +232,8 @@ class AdminGui:
                     self.s_date = None
                     self.plan_id = self.plan_id + 1
                     self.plan_id_label.destroy()
-                    self.plan_id_label = tk.Label(self.root, text=self.plan_id)
-                    self.plan_id_label.place(x=50, y=80)
+                    self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
+                    self.plan_id_label.place(x=300, y=140)
                 elif self.s_date > date.today():
                     Start_date_ = self.s_date.strftime('%d/%m/%Y')
                     End_date_ = self.e_date.strftime('%d/%m/%Y')
@@ -301,8 +305,8 @@ class AdminGui:
         df = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")
         df.set_index("Plan_ID", inplace=True)  # 日期列设置为index
         today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
-        df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Future'), "Status"] = "Ongoing"
-        df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finshed"
+        df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Not started'), "Status"] = "Ongoing"
+        df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
         # print(df) # just for test
         df.to_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
         # 将上面自动更新之后的显示在表中
@@ -405,6 +409,35 @@ class AdminGui:
                 messagebox.showinfo(title='Info', message='This plan has aready ended')
         elif not item:
             messagebox.showinfo(title='Info', message='Please choose a plan！！！')
+    def add_camp(self):
+        self.clear_content()
+        # Get the value by admin using entry
+        self.Description = tk.StringVar()
+        self.Location = tk.StringVar()
+        # Build the label
+        tk.Label(self.root, text='Add a new camp to one plan',font = ('Arial',20)).place(x=270, y=60)
+        tk.Label(self.root, text='Plan_ID:',font = ('Arial',12)).place(x=300, y=110)
+        tk.Label(self.root, text='Description:',font = ('Arial',12)).place(x=300, y=170)
+        tk.Label(self.root, text='Location:',font = ('Arial',12)).place(x=300, y=250)
+        tk.Label(self.root, text='Start_Date:',font = ('Arial',12)).place(x=300, y=330)
+        tk.Label(self.root, text='End_Date:',font = ('Arial',12)).place(x=300, y=390)
+        # Get the plan_ID automatically
+        self.plan_id = "P"+ (self.admin.last_plan_id() + 1)
+        # print(self.plan_id)--> just for testing during coding
+        # The plan_ID can be shown in the window and admin can not edit
+        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
+        # Build the entry
+        self.plan_id_label.place(x=300, y=140)
+        self.des_entry = tk.Entry(self.root, width=30, textvariable=self.Description)
+        self.des_entry.place(x=300, y=210)
+        self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
+        self.loc_entry.place(x=300, y=290)
+        # Build the button
+        sdate_button = tk.Button(self.root, text='choose the start date',font = ('Arial',10),command=self.pick_sdate).place(x=460, y=350)
+        edate_button = tk.Button(self.root, text='choose the end date', font = ('Arial',10),command=self.pick_edate).place(x=460, y=410)
+        tk.Button(self.root, text='Save this plan', command=self.save_data,font = ('Arial',12)).place(x=300, y=480)
+
+        pass
 
     def manage_camps(self):
         self.clear_content()
