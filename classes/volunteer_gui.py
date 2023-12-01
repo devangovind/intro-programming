@@ -289,7 +289,7 @@ class VolunteerGui:
             self.capacity_error.config(text=res[0])
 
     def submit_resource_request(self, username, camp_id, food, medical_supplies, tents):
-        res = self.volunteer.edit_resources_details(username, camp_id, food, medical_supplies, tents)
+        res = self.volunteer.edit_resources_req_details(username, camp_id, food, medical_supplies, tents)
         if res == True:
             print("request was success")
             self.food_error.config(text="Food request Saved", fg="green")

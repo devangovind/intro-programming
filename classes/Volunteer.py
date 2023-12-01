@@ -3,6 +3,8 @@ import pandas as pd
 import re
 from Camps import Camps
 import csv
+from datetime import date
+from datetime import datetime
 
 
 # need to work on how we are to set this out
@@ -151,12 +153,14 @@ class Volunteer:
             return True
         return False
     
-    def edit_resources_details(self, username, camp_id, food, medical_supplies, tents):
+    def edit_resources_req_details(self, username, camp_id, food, medical_supplies, tents):
         volunteer_username = username
         volunteer_camp = camp_id
         food_entry = food
         medical_supplies_entry = medical_supplies
         tents_entry = tents
+        today = str(date.today())
+        today = datetime.strptime(today, "%Y-%m-%d").strftime("%d/%m/%Y")
         
         def validate_entries(food, medical_supplies, tents):
             errors = ["", "", ""]
@@ -188,17 +192,18 @@ class Volunteer:
             # if volunteer_username in pd.read_csv(self.resource_req)['']
             # if volunteer alrd made previous request, overwrite the previous request
             # if volunteer had not made previous request, write to csv
-            req_df = pd.read_csv(self.resource_req_path, index_col=0)
+            req_df = pd.read_csv(self.resource_req_path, index_col=1)
             print(req_df)
             # if volunteer_username in req_df['Username']:
-            print(req_df.iloc[:,0])
-            print(volunteer_username in req_df.iloc[:,0])
-            if volunteer_username in req_df.iloc[:,0]:
-                req_df = req_df.drop(f'{volunteer_username}')  
+            print(req_df.iloc[:,1])
+            # print(volunteer_username in req_df.iloc[:,0])
+            print(volunteer_camp in req_df.iloc[:,1])
+            if volunteer_camp in req_df.iloc[:,1]:
+                req_df = req_df.drop(f'{volunteer_camp}')  
                 req_df.to_csv(self.resource_req_path, index=True)
 
             with open(self.resource_req_path, "a") as file:
-                file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{responded}\n")
+                file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{today},{responded}\n")
 
             return True
         else:
