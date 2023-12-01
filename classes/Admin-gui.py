@@ -11,8 +11,6 @@ import pandas as pd
 
 
 
-# from datetime import datetime
-
 class AdminGui:
     def __init__(self, admin):
         self.s_date = None
@@ -101,7 +99,7 @@ class AdminGui:
         # When admin click the entry date, admin will be informed that they need to use calendar
         def stest(content, reason, name):
             if self.start_date.get() is not None:
-                messagebox.showwarning(title='Creat a new plan',
+                messagebox.showwarning(title='Creat a new plan-start date',
                                        message='Please using take the button to choose the date')
                 # return False
 
@@ -113,7 +111,7 @@ class AdminGui:
 
         def etest(content, reason, name):
             if self.end_date.get() is not None:
-                messagebox.showwarning(title='Creat a new plan',
+                messagebox.showwarning(title='Creat a new plan--end date',
                                        message='Please using take the button to choose the date')
 
         self.valid_input_edate = tk.StringVar()
@@ -175,7 +173,7 @@ class AdminGui:
             print(self.admin.is_date(self.e_date))
         return self.e_date
 
-    ## This is to save the recoding and it can be show directly later
+    ## This is to save the new plan to csv file and it can be show directly later
     def save_data(self):
         Plan_ID_ = self.plan_id
         Description_ = self.Description.get()
@@ -184,16 +182,11 @@ class AdminGui:
         End_date_ = self.e_date
         var_start_day = self.valid_input_sdate.get()
         var_end_day = self.valid_input_edate.get()
-        print(Location_)
-        print(Description_)
-        print(Plan_ID_)
-        print(Start_date_)
-        print(End_date_)
-        print("test:" + var_start_day)
-        print("test:" + var_end_day)
+        # ensure all the blank is not empty
         if len(self.des_entry.get()) == 0 or len(self.loc_entry.get()) == 0 or len(self.start_date.get()) == 0 or len(
                 self.end_date.get()) == 0:
             messagebox.showwarning(title='Creat a new plan', message='Please fill in all the entry')
+        # ensure choosing the date using calendar
         elif Start_date_ == None or End_date_ == None:
             messagebox.showwarning(title='Creat a new plan', message='Please using take the button to choose the date')
             self.start_date.delete(0, END)
@@ -203,13 +196,10 @@ class AdminGui:
         elif Start_date_ is not None or End_date_ is not None:
             Start_date_ = self.s_date.strftime('%Y-%m-%d')
             End_date_ = self.e_date.strftime('%Y-%m-%d')
-            # print(End_date_)
-            # print(var_start_day==Start_date_)
-            # print(self.admin.check_end_date(self.e_date, self.s_date))
             if var_start_day == Start_date_ and var_end_day == End_date_ and not (
             self.admin.check_end_date(self.e_date, self.s_date)):
+            ## check the status of this new plan-- onging or not started 
                 if self.s_date == date.today():
-
                     Start_date_ = self.s_date.strftime('%d/%m/%Y')
                     End_date_ = self.e_date.strftime('%d/%m/%Y')
                     plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
@@ -220,22 +210,14 @@ class AdminGui:
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
                     with open('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
-
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
-                    plan = pd.read_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv')  # 请替换为您的实际文件路径
-
-                    # 提取 'Plan_ID' 中的数字部分并转换为整数，创建新的列 'Numeric_ID'
+                    # order all the plan after adding a new plan
+                    plan = pd.read_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv')  
                     plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
-
-                    # 按 'Numeric_ID' 列的值升序排序整个 DataFrame
                     sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-
-                    # 将排序后的 DataFrame 存储回原始的 CSV 文件，覆盖原始数据
                     sorted_plan.to_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv', index=False)
                     messagebox.showinfo('infor', 'Create a plan successfully')
-                    # self.plan_id = self.plan_id + 1
-                    # self.Plan_Id_entry.insert(END, self.plan_id)
                     self.Description.set('')
                     self.Location.set('')
                     self.start_date.delete(0, END)
@@ -263,20 +245,14 @@ class AdminGui:
 
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
-                    plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")  # 请替换为您的实际文件路径
-
-                    # 提取 'Plan_ID' 中的数字部分并转换为整数，创建新的列 'Numeric_ID'
+                    ## Order plan using pandas
+                    plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv") 
                     plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
-
-                    # 按 'Numeric_ID' 列的值升序排序整个 DataFrame
                     sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-
-                    # 将排序后的 DataFrame 存储回原始的 CSV 文件，覆盖原始数据
                     sorted_plan.to_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv", index=False)
-
+                    ## reminde admin
                     messagebox.showinfo('infor', 'Create a plan successfully')
-                    # self.plan_id = self.plan_id + 1
-                    # self.Plan_Id_entry.insert(END, self.plan_id)
+                    ## clean all the blank after add a plan successfully and show the plan ID 
                     self.Description.set('')
                     self.Location.set('')
                     self.start_date.delete(0, END)
@@ -288,12 +264,14 @@ class AdminGui:
                     self.plan_id_label.destroy()
                     self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
                     self.plan_id_label.place(x=300, y=140)
+            ## check the date 
             elif self.admin.check_end_date(self.e_date, self.s_date):
                 messagebox.showwarning(title='Choose start date', message='The end date cannot before start date')
                 self.start_date.delete(0, END)
                 self.end_date.delete(0, END)
                 self.e_date = None
                 self.s_date = None
+            ## check the data if using calendar 
             else:
                 # print(var_start_day!=Start_date_)
                 self.admin.is_date(var_start_day)
