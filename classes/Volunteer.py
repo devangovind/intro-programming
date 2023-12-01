@@ -1,0 +1,184 @@
+# Volunteer class file
+import pandas as pd
+import re
+from Camps import Camps
+import csv
+
+
+# need to work on how we are to set this out
+# the variables self.volunteer_file and self.volunteer_data i think should be part of the __init__
+# also need to think about how this will work in the gui (loops on validation etc.)
+class Volunteer:
+    def __init__(self, username):
+        self.username = username
+
+        # Filepaths for windows
+        self.camp_path = "files/camps_file.csv"
+        self.resource_path = "files/resources.csv"
+        self.volunteer_path = 'files/volunteers.csv'
+        self.resource_req_path = "files/resource_request.csv"
+
+
+        # Filepaths for MAC
+        # self.camp_path = "intro-programming/files/camps_file.csv"  
+        # self.resource_path = "intro-programming/files/resources.csv"  
+        # self.volunteer_path = "intro-programming/files/volunteers.csv" 
+
+    
+    def get_volunteer_data(self):
+        self.volunteer_file = pd.read_csv(self.volunteer_path)
+        self.volunteer_data = self.volunteer_file[self.volunteer_file['Username'] == self.username].copy()
+        self.volunteer_index = self.volunteer_data.index
+        
+        if not self.volunteer_data.empty: return (self.volunteer_data)
+        else: return "No volunteer data"
+        
+    
+    def edit_volunteer_details(self, fname, sname, phone, age, availability):
+        if self.validate_personal_details(fname, sname, phone, age, availability):
+            self.volunteer_data['First Name'] = fname.strip().capitalize()
+            self.volunteer_data['Last Name'] = sname.strip().capitalize()
+            self.volunteer_data['Phone'] = int(phone)
+            self.volunteer_data['Age'] = int(age)
+            self.volunteer_data['Availability'] = int(availability)
+            self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
+            self.volunteer_file.to_csv(self.volunteer_path, index=False)
+            return True
+        else:
+            return self.errors
+
+       
+    def validate_personal_details(self, fname, sname, phone, age, availability):
+        alphabet = "^[a-zA-Z]+$"
+        self.errors = ["", "", "", "", ""]  # Added an additional element for availability error
+        
+        def fname_validate():
+            if not re.match(alphabet, fname):
+                self.errors[0] = "Name can only contain alphabetic characters."
+            elif len(fname) > 20 or len(fname) <= 0:
+                self.errors[0] = "Name must be between 1-20 characters long."
+
+        def sname_validate():
+            if not re.match(alphabet, sname):
+                self.errors[1] = "Name can only contain alphabetic characters."
+            elif len(sname) > 20 or len(sname) <= 0:
+                self.errors[1] = "Name must be between 1-20 characters long."
+
+        def phone_validate():
+            if not phone.isdigit():
+                self.errors[2] = "Phone number must contain only digits."
+            elif len(phone) < 6 or len(phone) > 15:
+                self.errors[2] = "Phone number must be between 6-15 digits long."
+
+        def age_validate():
+            if not age.isdigit():
+                self.errors[3] = "Age must be a positive number."
+            else:
+                age_num = int(age)
+                if age_num <= 0 or age_num > 140:
+                    self.errors[3] = "Age must be between 1-140."
+
+        def availability_validate():
+            if str(availability).isdigit():
+                availability_num = int(availability)
+                if availability_num < 0 or availability_num > 7:
+                    self.errors[4] = "Availability must be between 0 to 7 days per week."
+            else:
+                self.errors[4] = "Availability must be a number."
+
+        fname_validate()
+        sname_validate()
+        phone_validate()
+        age_validate()
+        availability_validate()
+
+        if all(error == "" for error in self.errors):
+            return True
+        return False
+
+
+    def edit_camp_details(self, camp_id, capacity):
+        if self.validate_camp_details(camp_id, capacity):
+           self.volunteer_data['Camp_ID'] = camp_id
+           self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
+           self.volunteer_file.to_csv(self.volunteer_path, index=False)
+           camps = Camps()
+        #    when csv is done maybe change to write_data function definition like this:
+        #    write_data(self, Camp_ID, Num_Of_Refugees=None, capacity=None). and then just specify which values are to be changed
+        #   call by saying camps.write_data(camp_id, capacity=capacity)
+           camps_data = camps.get_data()
+           camps_row = camps_data[camps_data['Camp_ID'] == camp_id].copy()
+           camps_row['Num_Of_Refugees'] = int(capacity)
+           camps.write_data(camp_id, camps_row)
+           return True
+        else:
+           return self.camperrors
+           
+        
+    def validate_camp_details(self, camp_id, capacity):
+        self.camperrors = [""] 
+        def capacity_validate():
+            if capacity.isdigit():
+                if int(capacity) > 1000000:
+                    self.camperrors[0] = ("Capacity too high")
+                elif int(capacity) <= 0:
+                    self.camperrors[0] = ("Capacity must be positive")
+                else:
+                    self.camperrors[0] = ""
+            else:
+                self.camperrors[0] = ("Capacity must be number")
+        capacity_validate()
+        if self.camperrors == [""]:
+            return True
+        return False
+    
+    def edit_resources_details(self, username, camp_id, food, medical_supplies, tents):
+        volunteer_username = username
+        volunteer_camp = camp_id
+        food_entry = food
+        medical_supplies_entry = medical_supplies
+        tents_entry = tents
+        
+        def validate_entries(food, medical_supplies, tents):
+            errors = ["", "", ""]
+            if food.isdigit():
+                errors[0] = ""
+            else:
+                errors[0] = ("Resource must be a number")
+
+            if medical_supplies.isdigit():
+                errors[1] = ""
+            else:
+                errors[1] = ("Resource must be a number")
+
+            if tents.isdigit():
+                errors[2] = ""
+            else:
+                errors[2] = ("Resource must be a number")
+            return errors
+        
+        self.errors = validate_entries(food_entry, medical_supplies_entry, tents_entry) 
+        if self.errors == ["", "", ""]:
+            print("inputs were integers")
+            input_food = int(food_entry)
+            input_medical_supplies = int(medical_supplies_entry)
+            input_tents = int(tents_entry)
+            responded = 'FALSE'
+            req_df = pd.read_csv(self.resource_req_path, index_col=0)
+            print(req_df)
+            # if volunteer_username in req_df['Username']:
+            print(req_df.iloc[:,0])
+            print(volunteer_username in req_df.iloc[:,0])
+            if volunteer_username in req_df.iloc[:,0]:
+                req_df = req_df.drop(f'{volunteer_username}')  
+                req_df.to_csv(self.resource_req_path, index=True)
+
+            with open(self.resource_req_path, "a") as file:
+                file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{responded}\n")
+
+            return True
+        else:
+            print("inputs were not integers")
+            return self.errors
+
+
