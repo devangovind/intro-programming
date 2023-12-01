@@ -21,12 +21,20 @@ class Admin:
 ## Change some functions to fit the admin.gui(for admin feature a-c)
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):
-        plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")
-
-        res = plan.sort_values(by='Plan_ID', ascending=False)
-        last_plan_id = int(res.iloc[0]["Plan_ID"])
-        # print(res.iloc[0]["Plan_ID"])
-        return last_plan_id
+        plan = pd.read_csv('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv')
+        plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
+        last_plan = plan.loc[plan['Numeric_ID'].idxmax()]
+        last_plan_id = last_plan['Plan_ID']
+        num_ = int(last_plan_id[1:])
+        return num_
+    
+    def last_camp_id(self):
+        camps = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\camps_file.csv")
+        camps['Numeric_ID'] = camps['Camp_ID'].str.extract('(\d+)').astype(int)
+        last_plan = camps.loc[camps['Numeric_ID'].idxmax()]
+        last_plan_id = last_plan['Camp_ID']
+        num_ = int(last_plan_id[1:])
+        return num_
 
 ## This is to justify the type of the date input
     def is_date(self, date):
@@ -53,6 +61,29 @@ class Admin:
 ## This is to refresh the plan after creating a plan 
     def insert_new_plan(self, new_plan):
         self.plan_list.append(new_plan)
+
+
+    def valid_plan(self):
+        column_to_check = 5  # 假设要检查第三列的值
+        condition_value = 'Ongoing'
+        condition_value_2 = 'Not started'  # 假设筛选条件为某个特定的值
+
+        # 打开输入 CSV 文件并读取数据
+
+        target_column_index = 0  # 这里假设要获取第二列，索引从0开始
+
+        # 存储列中的值
+        column_values = []
+        with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', newline='') as input_file:
+            csv_reader = csv.reader(input_file)
+
+            # 遍历每一行并根据条件筛选并输出到控制台
+            for row in csv_reader:
+                # 检查特定列的值是否符合筛选条件
+                if (row[column_to_check] == condition_value or row[column_to_check] == condition_value_2):
+                    # 符合条件的行将被输出到控制台
+                    column_values.append(row[target_column_index])
+        return column_values
 
     
 

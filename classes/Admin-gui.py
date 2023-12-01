@@ -17,6 +17,7 @@ class AdminGui:
     def __init__(self, admin):
         self.s_date = None
         self.e_date = None
+        self.camp_num_id = None
         self.root = tk.Tk()
         self.root.geometry("800x600")
         self.root.title("Volunteer View")
@@ -81,7 +82,8 @@ class AdminGui:
         tk.Label(self.root, text='Start_Date:',font = ('Arial',12)).place(x=300, y=330)
         tk.Label(self.root, text='End_Date:',font = ('Arial',12)).place(x=300, y=390)
         # Get the plan_ID automatically
-        self.plan_id = "P"+ (self.admin.last_plan_id() + 1)
+        self.plan_id_num = (self.admin.last_plan_id() + 1)
+        self.plan_id = "P"+str(self.plan_id_num)
         # print(self.plan_id)--> just for testing during coding
         # The plan_ID can be shown in the window and admin can not edit
         self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
@@ -221,6 +223,16 @@ class AdminGui:
 
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
+                    plan = pd.read_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv')  # 请替换为您的实际文件路径
+
+                    # 提取 'Plan_ID' 中的数字部分并转换为整数，创建新的列 'Numeric_ID'
+                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
+
+                    # 按 'Numeric_ID' 列的值升序排序整个 DataFrame
+                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
+
+                    # 将排序后的 DataFrame 存储回原始的 CSV 文件，覆盖原始数据
+                    sorted_plan.to_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv', index=False)
                     messagebox.showinfo('infor', 'Create a plan successfully')
                     # self.plan_id = self.plan_id + 1
                     # self.Plan_Id_entry.insert(END, self.plan_id)
@@ -230,7 +242,8 @@ class AdminGui:
                     self.end_date.delete(0, END)
                     self.e_date = None
                     self.s_date = None
-                    self.plan_id = self.plan_id + 1
+                    self.plan_id_num_1 = int(self.plan_id[1:])+1
+                    self.plan_id = "P" + str(self.plan_id_num_1)
                     self.plan_id_label.destroy()
                     self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
                     self.plan_id_label.place(x=300, y=140)
@@ -250,6 +263,17 @@ class AdminGui:
 
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
+                    plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")  # 请替换为您的实际文件路径
+
+                    # 提取 'Plan_ID' 中的数字部分并转换为整数，创建新的列 'Numeric_ID'
+                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
+
+                    # 按 'Numeric_ID' 列的值升序排序整个 DataFrame
+                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
+
+                    # 将排序后的 DataFrame 存储回原始的 CSV 文件，覆盖原始数据
+                    sorted_plan.to_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv", index=False)
+
                     messagebox.showinfo('infor', 'Create a plan successfully')
                     # self.plan_id = self.plan_id + 1
                     # self.Plan_Id_entry.insert(END, self.plan_id)
@@ -259,7 +283,8 @@ class AdminGui:
                     self.end_date.delete(0, END)
                     self.e_date = None
                     self.s_date = None
-                    self.plan_id = self.plan_id + 1
+                    self.plan_id_num_1 = int(self.plan_id[1:])+1
+                    self.plan_id = "P" + str(self.plan_id_num_1)
                     self.plan_id_label.destroy()
                     self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
                     self.plan_id_label.place(x=300, y=140)
@@ -318,7 +343,7 @@ class AdminGui:
                 self.plan_update_list.append(row)
         print(self.plan_update_list)
         for plan in self.plan_update_list:
-            self.root.table.insert('', index + 1, values=(plan['Plan_ID'], plan['Description'],
+            self.root.table.insert('', 'end', values=(plan['Plan_ID'], plan['Description'],
                                                           plan['Location'], plan['Start Date'], plan['End Date'],plan['Status']))
 
     def end_plan(self):
@@ -409,35 +434,93 @@ class AdminGui:
                 messagebox.showinfo(title='Info', message='This plan has aready ended')
         elif not item:
             messagebox.showinfo(title='Info', message='Please choose a plan！！！')
+
     def add_camp(self):
         self.clear_content()
         # Get the value by admin using entry
-        self.Description = tk.StringVar()
-        self.Location = tk.StringVar()
+        self.capacity = tk.StringVar()
+        # self.camp_num_id = tk.StringVar()
+
         # Build the label
-        tk.Label(self.root, text='Add a new camp to one plan',font = ('Arial',20)).place(x=270, y=60)
-        tk.Label(self.root, text='Plan_ID:',font = ('Arial',12)).place(x=300, y=110)
-        tk.Label(self.root, text='Description:',font = ('Arial',12)).place(x=300, y=170)
-        tk.Label(self.root, text='Location:',font = ('Arial',12)).place(x=300, y=250)
-        tk.Label(self.root, text='Start_Date:',font = ('Arial',12)).place(x=300, y=330)
-        tk.Label(self.root, text='End_Date:',font = ('Arial',12)).place(x=300, y=390)
-        # Get the plan_ID automatically
-        self.plan_id = "P"+ (self.admin.last_plan_id() + 1)
+        tk.Label(self.root, text='Add a new camp', font=('Arial', 20)).place(x=270, y=60)
+        tk.Label(self.root, text='Plan_ID:', font=('Arial', 12)).place(x=300, y=110)
+        tk.Label(self.root, text='Camp_ID:', font=('Arial', 12)).place(x=300, y=180)
+        tk.Label(self.root, text='Num_Of_Refugees:', font=('Arial', 12)).place(x=300, y=240)
+        tk.Label(self.root, text='Num_Of_Volunteers:', font=('Arial', 12)).place(x=300, y=300)
+        tk.Label(self.root, text='Capacity(between 100-1000):', font=('Arial', 12)).place(x=300, y=360)
+
+        self.camp_id_num = (self.admin.last_camp_id() + 1)
+        self.camp_id = "C"+str(self.camp_id_num)
+
         # print(self.plan_id)--> just for testing during coding
         # The plan_ID can be shown in the window and admin can not edit
-        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
+        self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 12))
         # Build the entry
-        self.plan_id_label.place(x=300, y=140)
-        self.des_entry = tk.Entry(self.root, width=30, textvariable=self.Description)
-        self.des_entry.place(x=300, y=210)
-        self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
-        self.loc_entry.place(x=300, y=290)
-        # Build the button
-        sdate_button = tk.Button(self.root, text='choose the start date',font = ('Arial',10),command=self.pick_sdate).place(x=460, y=350)
-        edate_button = tk.Button(self.root, text='choose the end date', font = ('Arial',10),command=self.pick_edate).place(x=460, y=410)
-        tk.Button(self.root, text='Save this plan', command=self.save_data,font = ('Arial',12)).place(x=300, y=480)
+        self.camp_id_label.place(x= 300, y=210)
+        # Get the valid plan_ID automatically
+        self.num_r_entry = tk.Entry(self.root, width=30)
+        self.num_r_entry.insert(END, '0')
+        self.num_r_entry.place(x=300,y=270)
+        self.num_r_entry.config(state='readonly')
+        self.num_v_entry = tk.Entry(self.root, width=30)
+        self.num_v_entry.insert(END, '0')
+        self.num_v_entry.place(x=300,y=330)
+        self.num_v_entry.config(state='readonly')
+        # self.des_entry.place(x=300, y=210)
+        self.capacity_entry = tk.Entry(self.root, width=30, textvariable=self.capacity)
+        self.capacity_entry.place(x=300, y=390)
+        self.capacity_entry.config(
+            validate="key",
+            validatecommand=(self.root.register(lambda P: P.isdigit() or P == ""), "%P",),
+        )
+        # tk.Button(self.root, text='Save this camp',font=('Arial', 12),command=self.save_camp).place(x=300, y=430)
 
-        pass
+        self.OPTIONS = self.admin.valid_plan()
+
+        self.plan_id_camp = tk.StringVar()
+        self.plan_id_camp.set(self.OPTIONS[0])
+
+        w = tk.OptionMenu(self.root, self.plan_id_camp, *self.OPTIONS)
+        w.place(x=300,y=140)
+        tk.Button(self.root, text='Save this camp', font=('Arial', 12), command=self.save_camp).place(x=300, y=430)
+
+    def save_camp(self):
+        #选择的那个plan（要加入camp的那个)
+        Plan_ID_C = self.plan_id_camp.get()
+        Camp_ID  = self.camp_id
+        Capacity_ = self.capacity.get()
+        Num_v = 0
+        Num_r = 0
+        print(Plan_ID_C)
+        print(Capacity_)
+        print(Num_r)
+        print(Num_v)
+        print(Camp_ID)
+        print(type(Capacity_))
+        print(type(int(Capacity_)))
+        if int(Capacity_) < 100 or int(Capacity_)>1000:
+            messagebox.showwarning(title='Create a new camp', message='Please choose capacity between 100 and 1000')
+        elif int(Capacity_) >= 100 and int(Capacity_) <=1000:
+            camp_plan_dic = {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
+                        'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_,' Plan_ID':Plan_ID_C}
+            camp_plan_list = [
+                {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
+                 'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_, 'Plan_ID': Plan_ID_C}]  # 空字典
+            header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Capacity', 'Plan_ID']
+            with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\camps_file.csv', 'a', newline='', encoding='utf-8') as f:
+                writer = csv.DictWriter(f, fieldnames=header)
+
+                writer.writerows(camp_plan_list)
+            self.admin.insert_new_plan(camp_plan_dic)
+            messagebox.showinfo('infor', 'Create a camp in specific plan successfully')
+            # self.plan_id = self.plan_id + 1
+            # self.Plan_Id_entry.insert(END, self.plan_id)
+            self.capacity.set('')
+            self.camp_id_num_1 = int(self.camp_id[1:])+1
+            self.camp_id = "C" + str(self.camp_id_num_1)
+            self.camp_id_label.destroy()
+            self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 12))
+            self.camp_id_label.place(x=300, y=210)
 
     def manage_camps(self):
         self.clear_content()
