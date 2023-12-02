@@ -16,12 +16,12 @@ class Admin:
         # self.camps_file = 'intro-programming/files/camps_file.csv'
         # self.resources_file = 'intro-programming/files/resources.csv'
 
-            self.camp_id = None
-            with open(self.plan_file, 'r', encoding='utf-8') as plan_file:
-                read = csv.DictReader(plan_file)
-                self.plan_list = []
-                for row in read:
-                    self.plan_list.append(row)
+        self.camp_id = None
+        with open(self.plan_file, 'r', encoding='utf-8') as plan_file:
+            read = csv.DictReader(plan_file)
+            self.plan_list = []
+            for row in read:
+                self.plan_list.append(row)
 
 
 
@@ -29,7 +29,7 @@ class Admin:
 ## Change some functions to fit the admin.gui(for admin feature a-c)
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):
-        plan = pd.read_csv("files\\plan_file.csv")
+        plan = pd.read_csv(self.plan_file)
         plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
         last_plan = plan.loc[plan['Numeric_ID'].idxmax()]
         last_plan_id = last_plan['Plan_ID']
@@ -37,7 +37,7 @@ class Admin:
         return num_
     
     def last_camp_id(self):
-        camps = pd.read_csv("files\\camps_file.csv")
+        camps = pd.read_csv(self.camp_file)
         camps['Numeric_ID'] = camps['Camp_ID'].str.extract('(\d+)').astype(int)
         last_plan = camps.loc[camps['Numeric_ID'].idxmax()]
         last_plan_id = last_plan['Camp_ID']
@@ -77,7 +77,7 @@ class Admin:
         condition_value_2 = 'Not started'  
         target_column_index = 0  
         column_values = []
-        with open('files\\plan_file.csv', 'r', newline='') as input_file:
+        with open(self.plan_file, 'r', newline='') as input_file:
             csv_reader = csv.reader(input_file)
             for row in csv_reader:
                 if (row[column_to_check] == condition_value or row[column_to_check] == condition_value_2):

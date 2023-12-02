@@ -206,17 +206,17 @@ class AdminGui:
                                 'Start Date': Start_date_, 'End Date': End_date_,'Status':'Ongoing'}
                     plan_list = [
                         {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
-                         'End Date': End_date_,'Status':'Ongoing'}]  # 空字典
+                         'End Date': End_date_,'Status':'Ongoing'}]  
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                    with open('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                    with open(self.admin.plan_file, 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
                     # order all the plan after adding a new plan
-                    plan = pd.read_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv')  
+                    plan = pd.read_csv(self.admin.plan_file)  
                     plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
                     sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv', index=False)
+                    sorted_plan.to_csv(self.admin.plan_file, index=False)
                     messagebox.showinfo('infor', 'Create a plan successfully')
                     self.Description.set('')
                     self.Location.set('')
@@ -240,16 +240,16 @@ class AdminGui:
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
                     print(Start_date_)
                     print(End_date_)
-                    with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                    with open(self.admin.plan_file, 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
 
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
                     ## Order plan using pandas
-                    plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv") 
+                    plan = pd.read_csv(self.admin.plan_file) 
                     plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
                     sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv", index=False)
+                    sorted_plan.to_csv(self.admin.plan_file, index=False)
                     ## reminde admin
                     messagebox.showinfo('infor', 'Create a plan successfully')
                     ## clean all the blank after add a plan successfully and show the plan ID 
@@ -303,18 +303,18 @@ class AdminGui:
         # plan_data = PlanData()
         # this is to show if the end date in the plan has arrived, this End date will show "None"
         index = 0
-        # 如果开始时间到了今天 创建的计划自动变为ongoing
-        # 如果结束时间到了今天 创建的计划自动变为 finished
-        df = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")
+        # with time passes, if start date arrives today, the status change from not starte to ongoing
+        # with time passes, if end date arrives today, the status change from ongoing to finished
+        df = pd.read_csv(self.admin.plan_file)
         df.set_index("Plan_ID", inplace=True)  # 日期列设置为index
         today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
         df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Not started'), "Status"] = "Ongoing"
         df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
         # print(df) # just for test
-        df.to_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
-        # 将上面自动更新之后的显示在表中
+        df.to_csv(self.admin.plan_file)
+        # the update can be seen in table
         index = 0
-        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', encoding='utf-8') as plan_file:
+        with open(self.admin.plan_file, 'r', encoding='utf-8') as plan_file:
             read = csv.DictReader(plan_file)
             self.plan_update_list = []
             for row in read:
@@ -346,6 +346,7 @@ class AdminGui:
                 print(self.status)
                 print('test2')
                 isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
+                # if isok:
                 if isok:
                     def update_item():
                         item = self.table.selection()
@@ -353,56 +354,43 @@ class AdminGui:
                         temp = self.table.item(selected, 'values')
                         plan_edate = temp[-2]
                         end_up = 'Finished'
-                        print(temp[0])
-                        print(temp[1])
-                        print(temp[2])
-                        print(temp[3])
-                        print(temp[4])
                         end_date_today = time.strftime("%d/%m/%Y",time.localtime(time.time()))
-                        print('今天是'+ end_date_today)
-                        # 显示变化
+                        number_id = int(temp[0][1:])
+                         # add the new one (which has been edite based on the old one)
                         self.table.item(selected, values=(temp[0], temp[1], temp[2], temp[3], end_date_today,end_up))
-                        #储存新的变化后的计划进去
                         plan_end_dic = {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2],
-                                        'Start Date': temp[3], 'End Date': end_date_today,'Status':end_up}
+                                        'Start Date': temp[3], 'End Date': end_date_today,'Status':end_up, 'Numeric_ID':number_id}
                         plan_end_list = [
                             {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2], 'Start Date': temp[3],
-                             'End Date': end_date_today,'Status':end_up}]
-                        header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                        # 先加入
-                        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a',
+                             'End Date': end_date_today,'Status':end_up,'Numeric_ID':number_id}]
+                        header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
+                        with open(self.admin.plan_file, 'a',
                                   newline='', encoding='utf-8') as f:
                             writer = csv.DictWriter(f, fieldnames=header)
                             writer.writerows(plan_end_list)
                         self.admin.insert_new_plan(plan_end_dic)
-
-                        print(plan_end_list)
-                        # 然后删除
-                        print('test2 change')
-                        print(temp[0])
-                        print(temp[1])
-                        print(temp[2])
-                        print(temp[3])
-                        print(temp[4])
-                        header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
+                        # delect the old one 
+                        header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
                         for x in self.plan_data_:
                             print('>>>>====', x)
+                            print(x['End Date'])
+
                             if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
                                     temp[4] == x['End Date'] and temp[5] == 'Ongoing':
                                 yy = self.plan_data_.remove(x)
-                            elif int(temp[0]) == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
-                                    temp[4] == x['End Date'] and temp[5] == 'Ongoing':
+                                print('yes')
 
-                                    yy = self.plan_data_.remove(x)
-                                    print('yes or not')
                         print(self.plan_data_)
-
-                        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'w', newline='') as csvfile:
-                            fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status']
+                        with open(self.admin.plan_file, 'w', newline='') as csvfile:
+                            fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status','Numeric_ID']
                             writer = csv.DictWriter(csvfile, fieldnames=fields)
                             writer.writeheader()
                             for row in self.plan_data_:
                                 writer.writerow(row)
+                        plan = pd.read_csv(self.admin.plan_file)  
+                        plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
+                        sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
+                        sorted_plan.to_csv(self.admin.plan_file, index=False)
 
                     self.table.bind('<ButtonRelease-1>', update_item())
 
@@ -483,9 +471,9 @@ class AdminGui:
                         'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_,' Plan_ID':Plan_ID_C}
             camp_plan_list = [
                 {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
-                 'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_, 'Plan_ID': Plan_ID_C}]  # 空字典
+                 'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_, 'Plan_ID': Plan_ID_C}]  
             header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Capacity', 'Plan_ID']
-            with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\camps_file.csv', 'a', newline='', encoding='utf-8') as f:
+            with open(self.admin.camp_file, 'a', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=header)
 
                 writer.writerows(camp_plan_list)
