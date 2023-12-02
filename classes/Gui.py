@@ -3,10 +3,11 @@ from tkinter import ttk, messagebox
 import csv
 import re
 
-class UserRegistration:
+class Volunteer_Register:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("User Registration")
+        self.root.title("Volunteer Registration")
+        self.root.geometry("500x600")
 
         self.frame = ttk.Frame(self.root)
         self.frame.pack(fill=tk.BOTH, expand=True)
@@ -97,24 +98,24 @@ class UserRegistration:
         self.scrollable_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
 
-        self.center_window()
+        #self.center_window()
 
         self.root.mainloop()
 
     def on_mousewheel(self, event):
         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-    def center_window(self):
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
+  #  def center_window(self):
+  #      screen_width = self.root.winfo_screenwidth()
+  #      screen_height = self.root.winfo_screenheight()
 
-        window_width = 505
-        window_height = 600 
+  #      window_width = 505
+  #      window_height = 600 
 
-        x = (screen_width - window_width) // 2
-        y = (screen_height - window_height) // 2
+  #      x = (screen_width - window_width) // 2
+  #      y = (screen_height - window_height) // 2
 
-        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+  #      self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
     def register (self):
         username = self.username_entry.get()
@@ -125,6 +126,7 @@ class UserRegistration:
         camp_id = self.selected_camp_id.get()
         availability = self.availability_entry.get()
         password = self.password_entry.get()
+        account_type = "Volunteer"
 
         try:
             self.validate_username(username)
@@ -135,7 +137,7 @@ class UserRegistration:
             self.validate_password(password)
 
             with open ("intro-programming/files/logindetails.csv", "a") as file:
-                file.write(f"{username},{password},{True}\n")
+                file.write(f"{username},{password},{True},{account_type}\n")
 
             with open ("intro-programming/files/volunteers.csv", "a") as file:
                 file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability}\n")
@@ -298,5 +300,5 @@ class UserRegistration:
         return True
 
 if __name__ == "__main__":
-    registration = UserRegistration()
+    registration = Volunteer_Register()
 
