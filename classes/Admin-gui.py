@@ -139,7 +139,7 @@ class AdminGui:
             col = unresolved_columns[i]
             self.requests_tree.heading(col, text=col)
             self.requests_tree.column(col, stretch=False, width=column_widths[i])
-        for index, row in (self.unresolved.iterrows()):
+        for index, row in (self.unresolved[::-1].iterrows()):
             values = [row['Camp_ID'], row['Volunteer'], row['food_pac'], row['medical_sup'], row['tents'], row['date']]
             self.requests_tree.insert("", "end", values=values)
         self.requests_tree.bind("<ButtonRelease-1>", self.grant_specific_request)
@@ -166,7 +166,8 @@ class AdminGui:
             col = resolved_columns[i]
             self.resolved_tree.heading(col, text=col)
             self.resolved_tree.column(col, stretch=False, width=column_widths[i])
-        for index, row in (self.resolved.iterrows()):
+        for index, row in (self.resolved[::-1].iterrows()):
+            
             values = [row['Camp_ID'], row['Volunteer'], row['food_pac'], row['medical_sup'], row['tents'], row['date']]
             self.resolved_tree.insert("", "end", values=values)
         
