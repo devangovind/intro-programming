@@ -24,9 +24,7 @@ class Admin:
                 self.plan_list.append(row)
 
 
-
-
-## Change some functions to fit the admin.gui(for admin feature a-c)
+## Change some functions to fit the admin.gui(for admin feature a-c and adding a new camp)
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):
         plan = pd.read_csv(self.plan_file)
@@ -85,6 +83,17 @@ class Admin:
         return column_values
 
     
+
+
+
+
+
+
+
+
+
+
+
 
 
 
