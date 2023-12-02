@@ -3,11 +3,16 @@ from tkinter import ttk, messagebox
 import csv
 import re
 
+# Filepath for MAC
+logindetails_filepath = "intro-programming/files/logindetails.csv"
+camps_filepath = "intro-programming/files/camps_file.csv"
+volunteers_filepath = "intro-programming/files/volunteers.csv" 
+
 class Volunteer_Register:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Volunteer Registration")
-        self.root.geometry("500x600")
+        self.root.geometry("950x500")
 
         self.frame = ttk.Frame(self.root)
         self.frame.pack(fill=tk.BOTH, expand=True)
@@ -19,15 +24,15 @@ class Volunteer_Register:
         self.scrollable_frame = ttk.Frame(self.canvas)
         self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor=tk.NW)
 
-        self.username_label = tk.Label(self.scrollable_frame, text = "\nUsername:\nYour username should be between 8 and 16 characters long\nand only consist of letters a-z and numbers 0-9")
+        self.username_label = tk.Label(self.scrollable_frame, text = "\nUsername:\nYour username should be between 8 and 16 characters long and only consist of letters a-z and numbers 0-9")
         self.username_entry = tk.Entry(self.scrollable_frame, validate="key", validatecommand=(self.root.register(self.validate_username_entry), "%P"))
         self.username_status = tk.Label(self.scrollable_frame, text="")
 
-        self.first_name_label = tk.Label(self.scrollable_frame, text = "First Name:\nYour first name should be between 0 and 20 letters long\nand the first letter should be capitalized ")
+        self.first_name_label = tk.Label(self.scrollable_frame, text = "First Name:\nYour first name should be between 0 and 20 letters long and the first letter should be capitalized ")
         self.first_name_entry = tk.Entry(self.scrollable_frame, validate="key", validatecommand=(self.root.register(self.validate_first_name_entry), "%P"))
         self.first_name_status = tk.Label(self.scrollable_frame, text="")
 
-        self.last_name_label = tk.Label(self.scrollable_frame, text = "Last Name:\nYour last name should be between 0 and 20 letters long\nand the first letter should be capitalized")
+        self.last_name_label = tk.Label(self.scrollable_frame, text = "Last Name:\nYour last name should be between 0 and 20 letters long and the first letter should be capitalized")
         self.last_name_entry = tk.Entry(self.scrollable_frame, validate="key", validatecommand=(self.root.register(self.validate_last_name_entry), "%P"))
         self.last_name_status = tk.Label(self.scrollable_frame, text="")
 
@@ -49,7 +54,7 @@ class Volunteer_Register:
         self.availability_entry.insert(0, "0000000")
 
     
-        self.password_label = tk.Label(self.scrollable_frame, text = "\nPassword:\nYour password should contain at least one capital letter, at least one of '?' or '!',\nletters a-z and numbers 0-9 and be between 8 and 16 characters long")
+        self.password_label = tk.Label(self.scrollable_frame, text = "\nPassword:\nYour password should contain at least one capital letter, at least one of '?' or '!', letters a-z and numbers 0-9 and be between 8 and 16 characters long")
         self.password_entry = tk.Entry(self.scrollable_frame, show = "*",validate="key", validatecommand=(self.root.register(self.validate_password_entry), "%P"))
         self.password_status = tk.Label(self.scrollable_frame, text="")
 
@@ -135,12 +140,29 @@ class Volunteer_Register:
             self.validate_phone(phone)
             self.validate_age(age)
             self.validate_password(password)
-
-            with open ("intro-programming/files/logindetails.csv", "a") as file:
+            
+            # update logindetails file
+            with open (logindetails_filepath, "a") as file:
                 file.write(f"{username},{password},{True},{account_type}\n")
 
-            with open ("intro-programming/files/volunteers.csv", "a") as file:
+            # update volunteers file
+            with open (volunteers_filepath, "a") as file:
                 file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability}\n")
+
+            # update camps file
+            camp_data = []
+            with open(camps_filepath, "r") as file:
+                reader = csv.reader(file)
+                header = next(reader)
+                for row in reader:
+                    if row[0] == camp_id:
+                        row[2] = str(int(row[2]) + 1)  # Increment the number of volunteers
+                    camp_data.append(row)
+
+            with open(camps_filepath, "w", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow(header)
+                writer.writerows(camp_data)
         
             messagebox.showinfo("Success", "Registration successful!")
             self.root.destroy()
@@ -149,7 +171,7 @@ class Volunteer_Register:
             messagebox.showerror("Error", str(e))
 
     def validate_username(self, username):
-        with open("intro-programming/files/logindetails.csv", "r") as file:
+        with open(logindetails_filepath, "r") as file:
             file_reader = csv.reader(file)
             next(file_reader)
             for row in file_reader:
@@ -217,7 +239,7 @@ class Volunteer_Register:
     def read_camp_id_values_from_csv(self):
         camp_id_values = []
         try:
-            with open("intro-programming/files/camps_file.csv", "r") as file:
+            with open(camps_filepath, "r") as file:
                 reader = csv.reader(file)
                 next(reader)  
                 for row in reader:
