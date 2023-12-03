@@ -419,16 +419,67 @@ class VolunteerGui:
         refugee_id_lbl = tk.Label(self.content_frame, text="Refugee ID:", font=('Arial', 16))
         refugee_id_inp = tk.Entry(self.content_frame)
         refugee_id_inp.insert(0, suggested_refugee_id)
-        medical_condition_lbl = tk.Label(self.content_frame, text="Medical Condition:", font=('Arial', 16))
-        medical_condition_inp = tk.Entry(self.content_frame)
-        num_relatives_lbl = tk.Label(self.content_frame, text="Number of Relatives:", font=('Arial', 16))
+
+        # Dropdown for Medical Status
+        medical_status_lbl = tk.Label(self.content_frame, 
+                                      text="Medical status:", 
+                                      font=('Arial', 16))
+        medical_status = ['Healthy', 
+                          'Needs attention', 
+                          'Critical care required']
+        medical_status_var = tk.StringVar(self.content_frame)
+        medical_status_var.set(medical_status[0])
+        medical_status_dropdown = tk.OptionMenu(self.content_frame, 
+                                                medical_status_var, 
+                                                *medical_status)
+        medical_status_inp = tk.Entry(self.content_frame)
+        medical_status_dropdown.config(width=17)
+        medical_status_lbl.pack(pady=10)
+        medical_status_dropdown.pack()
+
+        # Dropdown for Medical Condition
+        medical_conditions = self.refugee.get_medical_conditions()
+        medical_conditions_var = tk.StringVar(self.content_frame)
+        medical_conditions_yscrollbar = tk.Scrollbar(self.content_frame) # added scroll bar
+        medical_conditions_yscrollbar.pack(side='right', fill='y')
+        medical_conditions_lbl = tk.Label(self.content_frame, 
+                                          text="Medical Condition:", 
+                                          font=('Arial', 16))
+        medical_conditions_lbl.pack()
+        medical_conditions_inp = tk.Entry(self.content_frame)
+        conditions_list = tk.Listbox(self.content_frame,
+                                     medical_conditions_var,
+                                     selectmode="multiple",
+                                     yscrollcommand = medical_conditions_yscrollbar.set)
+        conditions_list.pack()
+
+        medical_conditions_yscrollbar.config(command=conditions_list.yview)
+        for each_condition in range(len(medical_conditions)):
+            conditions_list.insert(medical_conditions[each_condition])
+            conditions_list.itemconfig(each_condition, bg='grey')
+        
+        # Input field for Medical Description
+        medical_description_lbl = tk.Label(self.content_frame, 
+                                           text="Medical Description",
+                                           font=('Arial', 16))
+        medical_description_inp = tk.Entry(self.content_frame)
+
+        # Input field for Number of Relatives
+        num_relatives_lbl = tk.Label(self.content_frame, 
+                                     text="Number of Relatives:", 
+                                     font=('Arial', 16))
         num_relatives_inp = tk.Entry(self.content_frame)
 
         # Pack the new widgets
         refugee_id_lbl.pack(pady=10)
         refugee_id_inp.pack()
-        medical_condition_lbl.pack(pady=10)
-        medical_condition_inp.pack()
+
+        medical_status_lbl.pack(pady=10)
+        medical_status_inp.pack()
+
+        medical_description_lbl.pack(pady=10)
+        medical_description_inp.pack()
+
         num_relatives_lbl.pack(pady=10)
         num_relatives_inp.pack()
 
@@ -437,7 +488,9 @@ class VolunteerGui:
                             command=lambda: self.submit_refugee_profile(
                                 refugee_id_inp.get(),
                                 Camp_ID_var.get(),
-                                medical_condition_inp.get(),
+                                medical_status_inp.get(),
+                                medical_conditions_inp.get(),
+                                medical_description_inp.get(),
                                 num_relatives_inp.get()))
         submit_btn.pack(pady=20)
 
