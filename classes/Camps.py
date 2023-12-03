@@ -45,7 +45,25 @@ class Camps:
         else:
             # Displaying the merged data
             return camp_resources
-        
+
+    def display_all_camp_resources(self):
+        try:
+            # Load the data from both CSV files
+            camp_data = pd.read_csv(self.camps_filepath)
+            resources_data = pd.read_csv(self.resource_filepath)
+
+            # Merge the two datasets on Camp_ID
+            all_camps_resources = pd.merge(camp_data, resources_data, on='Camp_ID', how='inner')
+
+            # Check if the merged data is empty
+            if all_camps_resources.empty:
+                return pd.DataFrame()  # Return an empty DataFrame if no data is available
+            else:
+                # Return the merged data for all camps
+                return all_camps_resources
+        except Exception as e:
+            print(f"An error occurred while trying to display all camp resources: {e}")
+            return pd.DataFrame()  # Return an empty DataFrame in case of error 
 
     # def dataVis(self):
     #     # resources_data = pd.read_csv(self.resource_filepath)

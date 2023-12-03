@@ -1,4 +1,4 @@
-Volunteer,Camp_ID,food_pac,medical_sup,tents,date, Resolved
+Volunteer,Camp_ID,food_pac,medical_sup,tents,date,Resolved
 volunteer1,C12345,145,500,120,01/01/2023,False
 volunteer2,C23456,145,500,120,03/01/2023,False
-volunteer3,C34567,300,300,300,01/12/2023,FALSE
+volunteer3,C34567,11,11,11,03/12/2023,False

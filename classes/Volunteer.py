@@ -36,24 +36,24 @@ class Volunteer:
         else: return "No volunteer data"
         
     
-    def edit_volunteer_details(self, fname, sname, phone, age):
+    def edit_volunteer_details(self, fname, sname, phone, age, availability):
         
-        if self.validate_personal_details(fname, sname, phone, age):
+        if self.validate_personal_details(fname, sname, phone, age, availability):
             self.volunteer_data['First Name'] = fname.strip().capitalize()
             self.volunteer_data['Last Name'] = sname.strip().capitalize()
             self.volunteer_data['Phone'] = int(phone)
             self.volunteer_data['Age'] = int(age)
             # self.volunteer_data['Camp_ID'] = Camp_ID
-            # self.volunteer_data['Availabiltiy'] = availability
+            self.volunteer_data['Availability'] = availability
             self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
             self.volunteer_file.to_csv(self.volunteer_path, index=False)
             return True
         else:
             return self.errors
        
-    def validate_personal_details(self, fname, sname, phone, age):
+    def validate_personal_details(self, fname, sname, phone, age, availability):
         alphabet = "^[a-zA-Z\s]+$"
-        self.errors = ["", "", "", ""]
+        self.errors = ["", "", "", "", ""]
         
         
         def fname_validate():
@@ -104,23 +104,27 @@ class Volunteer:
                     self.errors[3] = ""
             else:
                 self.errors[3] = ("Age must be number")
+
+        def availability_validate():
+            if "1" not in str(availability):
+                self.errors[4] = "Availability must be at least one day per week."
+
         # def camp_validate():
         #     camp = Camps()
         #     camp_data = camp.get_data()
         #     camps = camp_data['camp_id']
         #     if Camp_ID not in camps.values:
         #         raise ValueError("Camp_ID does not exist")
-        fname_validate(), sname_validate(), phone_validate(), age_validate()
-        if self.errors == ["", "", "", ""]:
+        fname_validate(), sname_validate(), phone_validate(), age_validate(), availability_validate()
+        if self.errors == ["", "", "", "", ""]:
             return True
         return False
 
-
-    def edit_camp_details(self, camp_id, availability, capacity):
-        if self.validate_camp_details(camp_id, availability, capacity):
-           print('v', availability)
+    def edit_camp_details(self, camp_id, capacity):
+        if self.validate_camp_details(camp_id, capacity):
+           print("camp details validated")
            self.volunteer_data['Camp_ID'] = camp_id
-           self.volunteer_data['Availability'] = int(availability)
+        #    self.volunteer_data['Availability'] = int(availability)
            self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
            self.volunteer_file.to_csv(self.volunteer_path, index=False)
            camps = Camps()
@@ -129,14 +133,34 @@ class Volunteer:
         #   call by saying camps.write_data(camp_id, capacity=capacity)
            camps_data = camps.get_data()
            camps_row = camps_data[camps_data['Camp_ID'] == camp_id].copy()
-           camps_row['Num_Of_Refugees'] = int(capacity)
+           camps_row['Capacity'] = int(capacity)
+           camps_row = camps_row.values.tolist()[0]
            camps.write_data(camp_id, camps_row)
            return True
         else:
+           print("camp details not validated")
            return self.camperrors
-           
-        
-    def validate_camp_details(self, camp_id, availability, capacity):
+
+    # def edit_camp_details(self, camp_id, availability, capacity):
+    #     if self.validate_camp_details(camp_id, availability, capacity):
+    #        print('v', availability)
+    #        self.volunteer_data['Camp_ID'] = camp_id
+    #        self.volunteer_data['Availability'] = int(availability)
+    #        self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
+    #        self.volunteer_file.to_csv(self.volunteer_path, index=False)
+    #        camps = Camps()
+    #     #    when csv is done maybe change to write_data function definition like this:
+    #     #    write_data(self, Camp_ID, Num_Of_Refugees=None, capacity=None). and then just specify which values are to be changed
+    #     #   call by saying camps.write_data(camp_id, capacity=capacity)
+    #        camps_data = camps.get_data()
+    #        camps_row = camps_data[camps_data['Camp_ID'] == camp_id].copy()
+    #        camps_row['Num_Of_Refugees'] = int(capacity)
+    #        camps.write_data(camp_id, camps_row)
+    #        return True
+    #     else:
+    #        return self.camperrors
+    
+    def validate_camp_details(self, camp_id, capacity):
         self.camperrors = [""] 
         def capacity_validate():
             if capacity.isdigit():
@@ -152,6 +176,7 @@ class Volunteer:
         if self.camperrors == [""]:
             return True
         return False
+        
     
     def edit_resources_req_details(self, username, camp_id, food, medical_supplies, tents):
         volunteer_username = username
@@ -186,21 +211,16 @@ class Volunteer:
             input_food = int(food_entry)
             input_medical_supplies = int(medical_supplies_entry)
             input_tents = int(tents_entry)
-            responded = 'FALSE'
+            responded = 'False'
 
-            # self.create_resource_req(volunteer_username, volunteer_camp, input_food, input_medical_supplies, input_tents,responded)
-            # if volunteer_username in pd.read_csv(self.resource_req)['']
-            # if volunteer alrd made previous request, overwrite the previous request
-            # if volunteer had not made previous request, write to csv
-            req_df = pd.read_csv(self.resource_req_path, index_col=1)
-            print(req_df)
-            # if volunteer_username in req_df['Username']:
-            print(req_df.iloc[:,1])
-            # print(volunteer_username in req_df.iloc[:,0])
-            print(volunteer_camp in req_df.iloc[:,1])
-            if volunteer_camp in req_df.iloc[:,1]:
-                req_df = req_df.drop(f'{volunteer_camp}')  
-                req_df.to_csv(self.resource_req_path, index=True)
+            # if volunteer alrd in camp with previous request, overwrite the previous request
+            # if camp had not made previous request, write to csv
+            req_df = pd.read_csv(self.resource_req_path)
+
+            if volunteer_camp in req_df.iloc[:,1].values:
+                req_df = req_df[req_df['Camp_ID'] != str(volunteer_camp)]
+                # print(req_df)
+                req_df.to_csv(self.resource_req_path, index=False)
 
             with open(self.resource_req_path, "a") as file:
                 file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{today},{responded}\n")
