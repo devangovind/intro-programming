@@ -1,17 +1,27 @@
 Refugee_ID,Camp_ID,MedicalStatus,MedicalCondition,MedicalDescription,NumberOfRelatives
-R001,C12345,Healthy,,,3
-R002C23456,Needs attention,Minor injuries,,3,
-R003,C34567,Healthy,,,2
-R004,C45678,Healthy,,,0
-R005,C56789,Healthy,,,1
-R006,C67890,Healthy,,,2
-R007,C78901,Healthy,,,5
-R008,C24356,Need attention,Starvation,,3
-R009,C24356,Need attention,Hypothermia,,4
-R010,C12345,Healthy,,,2
-R011,C12345,Need attention,,,0
-R012,C12345,Critial,Major injuries,2
-R013,C34567,Healthy,,,4
-R014,C56789,Critical,Sepsis,,0
-R015,C24356,Healthy,,,0
-R016,C24356,Healthy,,4
+R001,C12345,Healthy,,,3.0
+R002C23456,Needs attention,Minor injuries,,3.0,
+R003,C34567,Healthy,,,2.0
+R004,C45678,Healthy,,,0.0
+R005,C56789,Healthy,,,1.0
+R006,C67890,Healthy,,,2.0
+R007,C78901,Healthy,,,5.0
+R008,C24356,Need attention,Starvation,,3.0
+R009,C24356,Need attention,Hypothermia,,4.0
+R010,C12345,Healthy,,,2.0
+R011,C12345,Need attention,,,0.0
+R012,C12345,Critial,Major injuries,2.0,
+R013,C34567,Healthy,,,4.0
+R014,C56789,Critical,Sepsis,,0.0
+R015,C24356,Healthy,,,0.0
+R016,C24356,Healthy,,4.0,
+R017,C24356,Healthy,,,4.0
+R018,C24356,Healthy,,,4.0
+R019,C24356,Healthy,,,4.0
+R020,C24356,Healthy,,,4.0
+R021,C12345,Healthy,,,4.0
+R022,C12345,Healthy,,,4.0
+R023,C12345,Healthy,,,4.0
+R024,C12345,Healthy,,,4.0
+R025,C12345,Healthy,,,4.0
+R026,C12345,Healthy,,,4.0

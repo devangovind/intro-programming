@@ -12,9 +12,9 @@ from Camps import Camps
 # these functions are NOT in class because they are used in different classes to validate admin and volunteers
 
 # Filepaths for windows
-logindetails_filepath = "../files/logindetails.csv"
-camps_filepath = "../files/camps_file.csv"  
-volunteers_filepath = "../files/volunteers.csv" 
+logindetails_filepath = "./files/logindetails.csv"
+camps_filepath = "./files/camps_file.csv"  
+volunteers_filepath = "./files/volunteers.csv" 
 
 # Filepaths for MAC
 # logindetails_filepath = "intro-programming/files/logindetails.csv"  
