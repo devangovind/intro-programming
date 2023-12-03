@@ -224,23 +224,23 @@ class VolunteerGui:
                 i += 1
 
         # Change current camp section
-        selected_camp_change_camp = tk.StringVar(self.content_frame)
-        selected_camp_change_camp.set(camps_ids[saved_idx])
+        self.selected_camp_change_camp = tk.StringVar(self.content_frame)
+        self.selected_camp_change_camp.set(camps_ids[saved_idx])
         str_out_change_camp = tk.StringVar(self.content_frame)
         str_out_change_camp.set('Output')
 
 
         curr_volunteer = self.volunteer.username
         volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0]
-        new_options_list = []
+        self.new_options_list = []
         for id in camps_ids:
             if id != volunteer_curr_camp:
-                new_options_list.append(id)
-        change_camp_str = f'Change your Camp from {volunteer_curr_camp} (current) to:'
-        change_camp_menu_lbl = tk.Label(self.content_frame, text=change_camp_str, font=('Arial', 14))
+                self.new_options_list.append(id)
+        self.change_camp_menu = f'Change your Camp from {volunteer_curr_camp} (current) to:'
+        self.change_camp_menu_lbl = tk.Label(self.content_frame, text=self.change_camp_menu, font=('Arial', 14))
         # in options, show all camps except current one because if volunteer were to change camps, cannot change to their current camp
-        change_camps_menu = tk.OptionMenu(self.content_frame, selected_camp_change_camp, *new_options_list) 
-        change_camp_menu_lbl.pack()
+        change_camps_menu = tk.OptionMenu(self.content_frame, self.selected_camp_change_camp, *self.new_options_list) 
+        self.change_camp_menu_lbl.pack()
         change_camps_menu.pack()
         # self.change_camps_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 10))
         # self.change_camps_error.config(fg="red")
@@ -248,7 +248,7 @@ class VolunteerGui:
 
         cancel_btn = tk.Button(self.content_frame, text="Cancel", font=('Arial', 13), command=self.welcome_message)
         cancel_btn.pack(pady=5)
-        submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 13), command=lambda: self.submit_change_camp_req())
+        submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 13), command=lambda: self.submit_switch_camp())
         submit_btn.pack()
 
         section_line_txt = "--------------------------------------------------------------------------------"
@@ -341,9 +341,6 @@ class VolunteerGui:
             
         self.content_frame.bind('<Configure>', resize)
 
-    def submit_change_camp_req(self):
-        pass
-
     def submit_camp(self, Camp_ID, capacity):
         res = self.volunteer.edit_camp_details(Camp_ID, capacity)
         if res == True:
@@ -371,50 +368,42 @@ class VolunteerGui:
             self.medical_sup_error.config(text=res[1])
             self.tents_error.config(text=res[2])
 
-
-
     def display_resources(self):
         self.clear_content()
         title = tk.Label(self.content_frame, text="View Camp Details", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=(20, 10))
+        # Add the explanation label here, right below the title
+        explanation_label = tk.Label(self.content_frame, text="Your camp is highlighted. Select it and use 'Show Pie Chart' to view its resources in pie chart.",
+                                     font=('Arial', 10), fg='grey')
+        explanation_label.pack(pady=(5, 10))
 
-        # Assuming 'volunteer_camp_id' is set elsewhere after login
         curr_volunteer = self.volunteer.username
-        # volunteer_data = self.volunteer.get_volunteer_data()
-        self.volunteer_camp_id = str(self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0])
-        # self.volunteer_camp_id = "C12345"  # Replace with dynamic retrieval of the volunteer's camp ID
+        self.volunteer_camp_id = str(self.volunteer_data.loc[self.volunteer_data['Username'] == curr_volunteer, 'CampID'].values[0])
 
-        # Create Treeview widget if it does not exist
         if self.tree_view is None:
             self.tree_view_frame = tk.Frame(self.content_frame)
             self.tree_view_frame.pack(fill='both', expand=True, pady=10)
-            
-            # Scrollbars for the Treeview
+
             tree_scroll = tk.Scrollbar(self.tree_view_frame)
             tree_scroll.pack(side='right', fill='y')
             tree_xscroll = tk.Scrollbar(self.tree_view_frame, orient='horizontal')
             tree_xscroll.pack(side='bottom', fill='x')
 
-            # Create the Treeview widget
             self.tree_view = ttk.Treeview(self.tree_view_frame, yscrollcommand=tree_scroll.set, 
-                                          xscrollcommand=tree_xscroll.set, show='headings')
+                                        xscrollcommand=tree_xscroll.set, selectmode='browse', show='headings')
             self.tree_view.pack(side='left', fill='both', expand=True)
 
-            # Configure the scrollbars
             tree_scroll.config(command=self.tree_view.yview)
             tree_xscroll.config(command=self.tree_view.xview)
 
-            # Define columns
             columns = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'food_pac', 'medical_sup', 'tents']
             self.tree_view['columns'] = columns
 
-            # Create column headings
             for col in columns:
                 self.tree_view.heading(col, text=col, anchor='center')
                 self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
 
-            # Style configuration
             style = ttk.Style(self.content_frame)
             style.theme_use("default")
             style.configure("Treeview",
@@ -424,26 +413,38 @@ class VolunteerGui:
                             fieldbackground="#D3D3D3")
             style.map('Treeview', background=[('selected', '#347083')])
 
-        # Clear the existing entries in the Treeview, if any
         for item in self.tree_view.get_children():
             self.tree_view.delete(item)
 
         try:
-            # Retrieve the camp resources
-            df_output = self.camps.display_camp_resources(self.volunteer_camp_id)  # Assume this returns a DataFrame
+            all_camps_df = self.camps.display_all_camp_resources()  # Adjust this line to fetch data for all camps
 
-            # Add data to the treeview
-            for index, row in df_output.iterrows():
-                self.tree_view.insert("", 'end', values=list(row))
+            for index, row in all_camps_df.iterrows():
+                camp_id = row['Camp_ID']
+                inserted = self.tree_view.insert("", 'end', values=list(row))
+                if camp_id == self.volunteer_camp_id:
+                    self.tree_view.item(inserted, tags=('current_camp',))
 
-            # Show 'Show Pie Chart' button only if camp details are successfully displayed
-            show_chart_btn = tk.Button(self.content_frame, text="Show Pie Chart", command=self.show_pie_chart_of_resources)
+            self.tree_view.tag_configure('current_camp', background='#007bff')
+
+            def is_current_camp_selected(event):
+                selected_item = self.tree_view.focus()
+                return self.tree_view.item(selected_item, 'tags') == ('current_camp',)
+
+            show_chart_btn = tk.Button(self.content_frame, text="Show Pie Chart",
+                                    command=lambda: self.show_pie_chart_of_resources(self.volunteer_camp_id),
+                                    state='disabled')
             show_chart_btn.pack(pady=10)
+
+            def on_treeview_select(event):
+                show_chart_btn['state'] = 'normal' if is_current_camp_selected(event) else 'disabled'
+
+            self.tree_view.bind('<<TreeviewSelect>>', on_treeview_select)
 
             def resize(e):
                 size = e.width / 70
                 show_chart_btn.config(font=('Arial', int(size)))
-            
+
             self.content_frame.bind('<Configure>', resize)
 
         except Exception as e:
@@ -451,7 +452,8 @@ class VolunteerGui:
             error_label = tk.Label(self.content_frame, text="Error displaying camp resources.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
 
-    def show_pie_chart_of_resources(self):
+
+    def show_pie_chart_of_resources(self,volunteer_camp_id):
         # Retrieve values for food_pac, medical_sup, tents from the Treeview
         # Assume the Treeview has one row with these values at indices 4, 5, 6
         item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
@@ -461,6 +463,7 @@ class VolunteerGui:
 
         # Call the create_pie_chart function
         create_pie_chart(resource_values, resource_labels, 'Camp Resource Distribution')
+
 
     def add_refugee(self):
         self.clear_content()
@@ -513,6 +516,45 @@ class VolunteerGui:
             
         self.content_frame.bind('<Configure>', resize)
 
+    def submit_switch_camp(self):
+        # Obtain the new camp ID from the OptionMenu widget
+        new_camp_id = self.selected_camp_change_camp.get()
+
+        # Get the current volunteer's username and their current camp ID
+        curr_volunteer = self.volunteer.username
+        volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username'] == curr_volunteer, 'CampID'].values[0]
+
+        # Ensure that the new camp ID is different from the current one
+         # Ensure that the new camp ID is different from the current one
+        if new_camp_id != volunteer_curr_camp:
+            # Call the switch_volunteer_camp method from the Volunteer class instance
+            success = self.volunteer.switch_volunteer_camp(new_camp_id)
+            
+            if success:
+                # Update the volunteer_data DataFrame with the new camp ID
+                self.volunteer_data.loc[self.volunteer_data['Username'] == curr_volunteer, 'CampID'] = new_camp_id
+
+                # Provide feedback to the user
+                self.str_out_change_camp.set(f"Camp changed successfully to {new_camp_id}.")
+                self.change_camp_menu_lbl.config(text=f"Your camp has been changed to {new_camp_id}.")
+
+                # Reset the OptionMenu to the new camp ID or update the camp list
+                # You'll need to update the 'camps_ids' list and then reset the OptionMenu
+                # This is an example and may need adjustment based on your actual UI setup
+                self.camps_ids = [camp_id for camp_id in self.camps_ids if camp_id != new_camp_id]
+                self.change_camps_menu['menu'].delete(0, 'end')
+                for camp_id in self.camps_ids:
+                    self.change_camps_menu['menu'].add_command(label=camp_id, 
+                                                            command=lambda value=camp_id: self.selected_camp_change_camp.set(value))
+                self.selected_camp_change_camp.set(new_camp_id)
+            else:
+                # Provide feedback about the failure
+                self.str_out_change_camp.set("Failed to change camp. Please try again.")
+        else:
+            # Provide feedback if the selected camp is the same as the current camp
+            self.str_out_change_camp.set("You are already in this camp.")
+                    
+
 
     def submit_refugee_profile(self, refugee_id, Camp_ID, medical_condition, num_relatives):
         # Call create_refugee_profile from Refugee class
@@ -535,9 +577,4 @@ class VolunteerGui:
         # Reset the tree_view to None to allow re-creation
         self.tree_view = None
 
-    # def run(self):
-    #     self.root.mainloop()
 
-# dummy = Volunteer("volunteer1")
-# VGui = VolunteerGui(dummy)
-# VGui.run()

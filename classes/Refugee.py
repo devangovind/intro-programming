@@ -4,7 +4,7 @@ from Camps import Camps
 class Refugee:
     def __init__(self) -> None:
         # Filepaths for windows
-        self.refugee_path = "../files/refugee.csv"
+        self.refugee_path = "files\\refugee.csv"
 
         # Filepaths for MAC
         # self.refugee_path = "intro-programming/files/refugee.csv"  

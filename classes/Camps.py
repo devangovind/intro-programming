@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 class Camps:
     def __init__(self):
         # Filepaths for windows
-        self.camps_filepath = "../files/camps_file.csv"  # Update to the path where camps.csv is located
-        self.resource_filepath = "../files/resources.csv"
+        self.camps_filepath = "files\\camps_file.csv"  # Update to the path where camps.csv is located
+        self.resource_filepath = "files\\resources.csv"
 
         # Filepaths for MAC
         # self.camps_filepath = "intro-programming/files/camps_file.csv"  # Update to the path where camps.csv is located
@@ -45,7 +45,7 @@ class Camps:
         else:
             # Displaying the merged data
             return camp_resources
-
+    
     def display_all_camp_resources(self):
         try:
             # Load the data from both CSV files
@@ -63,52 +63,11 @@ class Camps:
                 return all_camps_resources
         except Exception as e:
             print(f"An error occurred while trying to display all camp resources: {e}")
-            return pd.DataFrame()  # Return an empty DataFrame in case of error 
+            return pd.DataFrame()  # Return an empty DataFrame in case of error
 
-    # def dataVis(self):
-    #     # resources_data = pd.read_csv(self.resource_filepath)
-    #     # plt.pie(resources_data, autopct="%1.1f%%")
-
-    #     # plt.title("My Tasks")
-    #     # plt.axis("equal")
-
-    #     # plt.show()
-    #     my_data = [300, 500, 700]
-    #     my_labels = ["Tasks Pending", "Tasks Ongoing", "Tasks Completed"]
-
-    #     plt.pie(my_data, labels=my_labels, autopct="%1.1f%%")
-
-    #     plt.title("My Tasks")
-    #     plt.axis("equal")
-
-    #     plt.show()
 
 # Testing the Camps class
 if __name__ == "__main__":
     camps = Camps()
-    
-    # # Test getting camp data
-    # data = camps.get_data()
-    # print("Camp Data:")
-    # print(data)
-    
-    # # Test getting camp IDs
-    # camp_ids = camps.get_camp_ids()
-    # print("\nCamp IDs:")
-    # print(camp_ids)
-    
-    # # Test writing data
-    # # This is a placeholder for new_row which you need to replace with the actual data format you expect.
-    # new_row = data.iloc[0].copy()  # Let's just use the first row as a dummy new row for testing
-    # new_row['population'] += 1  # Incrementing population for testing
-    # write_result = camps.write_data(camp_ids[0], new_row)
-    # print("\nWrite Result:")
-    # print(write_result)
-    
-    # # Re-fetch data to confirm write
-    # updated_data = camps.get_data()
-    # print("\nUpdated Camp Data:")
-    # print(updated_data)
-
-    # print(camps.display_camp_resources('C12345'))
-    camps.dataVis()
+    x = camps.display_all_camp_resources()
+    print(x)

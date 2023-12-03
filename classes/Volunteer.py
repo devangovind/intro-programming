@@ -15,11 +15,11 @@ class Volunteer:
         self.username = username
 
         # Filepaths for windows
-        self.camp_path = "../files/camps_file.csv"
-        self.resource_path = "../files/resources.csv"
-        self.volunteer_path = '../files/volunteers.csv'
-        self.resource_req_path = "../files/resource_request.csv"
-
+        self.camp_path = "files\\camps_file.csv"
+        self.resource_path = "files\\resources.csv"
+        self.volunteer_path = 'files\\volunteers.csv'
+        self.resource_req_path = "files\\resource_request.csv"
+        self.volunteer_file = None
 
         # Filepaths for MAC
         # self.camp_path = "intro-programming/files/camps_file.csv"  
@@ -50,7 +50,8 @@ class Volunteer:
             return True
         else:
             return self.errors
-       
+
+
     def validate_personal_details(self, fname, sname, phone, age, availability):
         alphabet = "^[a-zA-Z\s]+$"
         self.errors = ["", "", "", "", ""]
@@ -109,16 +110,54 @@ class Volunteer:
             if "1" not in str(availability):
                 self.errors[4] = "Availability must be at least one day per week."
 
-        # def camp_validate():
-        #     camp = Camps()
-        #     camp_data = camp.get_data()
-        #     camps = camp_data['camp_id']
-        #     if Camp_ID not in camps.values:
-        #         raise ValueError("Camp_ID does not exist")
+
         fname_validate(), sname_validate(), phone_validate(), age_validate(), availability_validate()
         if self.errors == ["", "", "", "", ""]:
             return True
         return False
+
+
+    def switch_volunteer_camp(self, new_camp_id):
+        # Load the volunteer's current data if not already loaded
+        if self.volunteer_file is None:
+            self.get_volunteer_data()
+
+        # Retrieve the volunteer's row using their username
+        volunteer_row = self.volunteer_file[self.volunteer_file['Username'] == self.username]
+
+        # Check if volunteer data exists
+        if volunteer_row.empty:
+            return False
+
+        # Retrieve the original CampID before updating
+        original_camp_id = volunteer_row['CampID'].iloc[0]
+
+        # Update the camps data
+        camps = Camps()
+        camps_data = camps.get_data()
+
+        # Decrease Num_Of_Volunteers in the original camp if it's not the same as the new camp
+        if original_camp_id != new_camp_id:
+            original_camp_index = camps_data.index[camps_data['Camp_ID'] == original_camp_id].tolist()
+            if original_camp_index:
+                camps_data.loc[original_camp_index[0], 'Num_Of_Volunteers'] -= 1
+
+            # Increase Num_Of_Volunteers in the new camp
+            new_camp_index = camps_data.index[camps_data['Camp_ID'] == new_camp_id].tolist()
+            if new_camp_index:
+                camps_data.loc[new_camp_index[0], 'Num_Of_Volunteers'] += 1
+
+            # Write the changes back to the CSV file
+            camps_data.to_csv(camps.camps_filepath, index=False)
+
+        # Update the volunteer's camp ID
+        self.volunteer_file.loc[self.volunteer_file['Username'] == self.username, 'CampID'] = new_camp_id
+
+        # Write the changes back to the CSV file
+        self.volunteer_file.to_csv(self.volunteer_path, index=False)
+
+        return True
+
 
     def edit_camp_details(self, camp_id, capacity):
         if self.validate_camp_details(camp_id, capacity):
@@ -141,30 +180,12 @@ class Volunteer:
            print("camp details not validated")
            return self.camperrors
 
-    # def edit_camp_details(self, camp_id, availability, capacity):
-    #     if self.validate_camp_details(camp_id, availability, capacity):
-    #        print('v', availability)
-    #        self.volunteer_data['Camp_ID'] = camp_id
-    #        self.volunteer_data['Availability'] = int(availability)
-    #        self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
-    #        self.volunteer_file.to_csv(self.volunteer_path, index=False)
-    #        camps = Camps()
-    #     #    when csv is done maybe change to write_data function definition like this:
-    #     #    write_data(self, Camp_ID, Num_Of_Refugees=None, capacity=None). and then just specify which values are to be changed
-    #     #   call by saying camps.write_data(camp_id, capacity=capacity)
-    #        camps_data = camps.get_data()
-    #        camps_row = camps_data[camps_data['Camp_ID'] == camp_id].copy()
-    #        camps_row['Num_Of_Refugees'] = int(capacity)
-    #        camps.write_data(camp_id, camps_row)
-    #        return True
-    #     else:
-    #        return self.camperrors
-    
+
     def validate_camp_details(self, camp_id, capacity):
         self.camperrors = [""] 
         def capacity_validate():
             if capacity.isdigit():
-                if int(capacity) > 1000000:
+                if int(capacity) > 800:
                     self.camperrors[0] = ("Capacity too high")
                 elif int(capacity) <= 0:
                     self.camperrors[0] = ("Capacity must be positive")
@@ -231,27 +252,22 @@ class Volunteer:
             return self.errors
 
 
-# if __name__ == "__main__":
-#     # Creating an instance of the Volunteer class
-#     volunteer = Volunteer("test_user")
+def main():
+    # Example setup for testing
+    volunteer_username = "volunteer3"  # Replace with a valid username
+    new_camp_id = "C67890"      # Replace with a valid new camp ID
 
-#     # Testing create_refugee_profile
-#     print("Creating Refugee Profile:")
-#     print(volunteer.create_refugee_profile("R005", "camp_01", "Healthy", 4))
+    # Create a Volunteer instance
+    volunteer = Volunteer(username=volunteer_username)
+    
+    # Call the method to switch the volunteer's camp
+    success = volunteer.switch_volunteer_camp(new_camp_id)
 
-#     # Testing validate_refugee_existence
-#     print("\nValidating Refugee Existence:")
-#     print("Refugee R004 exists:", volunteer.validate_refugee_existence("R004"))
+    # Print the result
+    if success:
+        print(f"Successfully switched to camp {new_camp_id}.")
+    else:
+        print("Failed to switch camps.")
 
-#     # Testing display_camp_resources
-#     print("\nDisplaying Camp Resources:")
-#     print(volunteer.display_camp_resources("camp_01"))
-
-
-# volunteer = Volunteer('volunteer1')
-# # need to think about order of functions here. get_vol_data needs to be called before edit so maybe needs to be in __init__
-# # if no volunteer data do we then do a create_data function?
-# volunteer.get_volunteer_data()
-# volunteer.edit_volunteer_data("dev", "gov", 1, 3, "camp_01", "01")
-# volunteer.edit_volunteer_data("dev2", "A", "3", "cap", "01")
-# volunteer.edit_volunteer_data("  ", "sad", "324s2", "cap", "01")
+if __name__ == "__main__":
+    main()
