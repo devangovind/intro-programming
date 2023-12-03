@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 
 class Camps:
     def __init__(self):
-        # Filepaths for windows
-        self.camps_filepath = "files\\camps_file.csv"  # Update to the path where camps.csv is located
-        self.resource_filepath = "files\\resources.csv"
-
         # Filepaths for MAC
-        # self.camps_filepath = "intro-programming/files/camps_file.csv"  # Update to the path where camps.csv is located
-        # self.resource_filepath = "intro-programming/files/resources.csv"
+        # self.camps_filepath = "files\\camps_file.csv"  # Update to the path where camps.csv is located
+        # self.resource_filepath = "files\\resources.csv"
+
+        # Filepaths for windows
+        self.camps_filepath = "../files/camps_file.csv"  # Update to the path where camps.csv is located
+        self.resource_filepath = "../files/resources.csv"
 
     def get_data(self):
         self.camps_data = pd.read_csv(self.camps_filepath)

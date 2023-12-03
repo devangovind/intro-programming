@@ -229,7 +229,6 @@ class VolunteerGui:
         str_out_change_camp = tk.StringVar(self.content_frame)
         str_out_change_camp.set('Output')
 
-
         curr_volunteer = self.volunteer.username
         volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0]
         self.new_options_list = []
@@ -262,21 +261,29 @@ class VolunteerGui:
         str_out = tk.StringVar(self.content_frame)
         str_out.set('Output')
 
-        camps_menu_lbl = tk.Label(self.content_frame, text="Edit Camp:", font=('Arial', 14))
-        camps_menu = tk.OptionMenu(self.content_frame, selected_camp, *camps_ids)
-        camps_menu_lbl.pack()
-        camps_menu.pack(pady=3)
-
-        current_capacity = camps_data.loc[camps_data['Camp_ID'] == camps_ids[saved_idx], 'Num_Of_Refugees'].iloc[0]
-        capacity_string = f'Edit Current Camp ({camps_ids[saved_idx]}) Capacity:'
-        capacity_lbl = tk.Label(self.content_frame, text=capacity_string, font=('Arial', 14))
-        capacity_lbl.pack()
         def my_show(*args):
             # dynamically updates string display of camp_id according to optionmenu selection
             str_out.set(selected_camp.get())
             capacity_string = f'Edit Current Camp ({selected_camp.get()}) Capacity:'
             capacity_lbl["text"] = capacity_string
+
+            #dynamically changes entry default to displayed camp_id 
+            capacity_inp.delete(0, "end")
+            current_capacity = camps_data.loc[camps_data['Camp_ID'] == str(selected_camp.get()), 'Capacity'].iloc[0]
+            capacity_inp.insert(0, current_capacity)
+            
         selected_camp.trace('w', my_show)
+
+        camps_menu_lbl = tk.Label(self.content_frame, text="Edit Camp:", font=('Arial', 14))
+        camps_menu = tk.OptionMenu(self.content_frame, selected_camp, *camps_ids)
+        camps_menu_lbl.pack()
+        camps_menu.pack(pady=3)
+
+        current_capacity = camps_data.loc[camps_data['Camp_ID'] == volunteer_curr_camp, 'Capacity'].iloc[0]
+        # current_capacity = camps_data.loc[camps_data['Camp_ID'] == str(selected_camp.get()), 'Capacity'].iloc[0]
+        capacity_string = f'Edit Current Camp ({camps_ids[saved_idx]}) Capacity:'
+        capacity_lbl = tk.Label(self.content_frame, text=capacity_string, font=('Arial', 14))
+        capacity_lbl.pack()
         
         capacity_inp = tk.Entry(self.content_frame)
         capacity_inp.insert(0, current_capacity)
@@ -341,6 +348,50 @@ class VolunteerGui:
             
         self.content_frame.bind('<Configure>', resize)
 
+    def submit_switch_camp(self):
+        # Obtain the new camp ID from the OptionMenu widget
+        new_camp_id = self.selected_camp_change_camp.get()
+
+        # Get the current volunteer's username and their current camp ID
+        curr_volunteer = self.volunteer.username
+        volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username'] == curr_volunteer, 'CampID'].values[0]
+
+        # Ensure that the new camp ID is different from the current one
+        if new_camp_id != volunteer_curr_camp:
+            # Call the switch_volunteer_camp method from the Volunteer class instance
+            success = self.volunteer.switch_volunteer_camp(new_camp_id)
+            
+            if success:
+                # Update the volunteer_data DataFrame with the new camp ID
+                self.volunteer_data.loc[self.volunteer_data['Username'] == curr_volunteer, 'CampID'] = new_camp_id
+
+                # Provide feedback to the user
+                messagebox.showinfo("Success", "Your current camp has been successfully updated!")
+                self.welcome_message()
+                # self.str_out_change_camp.set(f"Camp changed successfully to {new_camp_id}.")
+                # self.change_camps_error.config(text="Camp changed successfully", fg="green")
+                # self.change_camp_menu_lbl.config(text=f"Your camp has been changed to {new_camp_id}.")
+                
+                # Reset the OptionMenu to the new camp ID or update the camp list
+                # You'll need to update the 'camps_ids' list and then reset the OptionMenu
+                # This is an example and may need adjustment based on your actual UI setup
+                # self.camps_ids = [camp_id for camp_id in self.camps_ids if camp_id != new_camp_id]
+                # self.change_camps_menu['menu'].delete(0, 'end')
+                # for camp_id in self.camps_ids:
+                #     self.change_camps_menu['menu'].add_command(label=camp_id, 
+                #                                             command=lambda value=camp_id: self.selected_camp_change_camp.set(value))
+                # self.selected_camp_change_camp.set(new_camp_id)
+    
+            else:
+                # Provide feedback about the failure
+                # self.str_out_change_camp.set("Failed to change camp. Please try again.")
+                messagebox.showerror("Error", "Failed to change camp. Please try again.")
+        else:
+            # Provide feedback if the selected camp is the same as the current camp
+            # self.str_out_change_camp.set("You are already in this camp.")
+            messagebox.showerror("Error", "You are already in this camp.")
+            
+
     def submit_camp(self, Camp_ID, capacity):
         res = self.volunteer.edit_camp_details(Camp_ID, capacity)
         if res == True:
@@ -397,7 +448,7 @@ class VolunteerGui:
             tree_scroll.config(command=self.tree_view.yview)
             tree_xscroll.config(command=self.tree_view.xview)
 
-            columns = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'food_pac', 'medical_sup', 'tents']
+            columns = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'Capacity', 'food_pac', 'medical_sup', 'tents']
             self.tree_view['columns'] = columns
 
             for col in columns:
@@ -458,7 +509,7 @@ class VolunteerGui:
         # Assume the Treeview has one row with these values at indices 4, 5, 6
         item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
         row = self.tree_view.item(item, 'values')
-        resource_values = [int(row[4]), int(row[5]), int(row[6])]  # Convert to int
+        resource_values = [int(row[5]), int(row[6]), int(row[7])]  # Convert to int
         resource_labels = ['food_pac', 'medical_sup', 'tents']
 
         # Call the create_pie_chart function
@@ -515,46 +566,7 @@ class VolunteerGui:
             submit_btn.config(font=('Arial', int(size)))
             
         self.content_frame.bind('<Configure>', resize)
-
-    def submit_switch_camp(self):
-        # Obtain the new camp ID from the OptionMenu widget
-        new_camp_id = self.selected_camp_change_camp.get()
-
-        # Get the current volunteer's username and their current camp ID
-        curr_volunteer = self.volunteer.username
-        volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username'] == curr_volunteer, 'CampID'].values[0]
-
-        # Ensure that the new camp ID is different from the current one
-         # Ensure that the new camp ID is different from the current one
-        if new_camp_id != volunteer_curr_camp:
-            # Call the switch_volunteer_camp method from the Volunteer class instance
-            success = self.volunteer.switch_volunteer_camp(new_camp_id)
-            
-            if success:
-                # Update the volunteer_data DataFrame with the new camp ID
-                self.volunteer_data.loc[self.volunteer_data['Username'] == curr_volunteer, 'CampID'] = new_camp_id
-
-                # Provide feedback to the user
-                self.str_out_change_camp.set(f"Camp changed successfully to {new_camp_id}.")
-                self.change_camp_menu_lbl.config(text=f"Your camp has been changed to {new_camp_id}.")
-
-                # Reset the OptionMenu to the new camp ID or update the camp list
-                # You'll need to update the 'camps_ids' list and then reset the OptionMenu
-                # This is an example and may need adjustment based on your actual UI setup
-                self.camps_ids = [camp_id for camp_id in self.camps_ids if camp_id != new_camp_id]
-                self.change_camps_menu['menu'].delete(0, 'end')
-                for camp_id in self.camps_ids:
-                    self.change_camps_menu['menu'].add_command(label=camp_id, 
-                                                            command=lambda value=camp_id: self.selected_camp_change_camp.set(value))
-                self.selected_camp_change_camp.set(new_camp_id)
-            else:
-                # Provide feedback about the failure
-                self.str_out_change_camp.set("Failed to change camp. Please try again.")
-        else:
-            # Provide feedback if the selected camp is the same as the current camp
-            self.str_out_change_camp.set("You are already in this camp.")
                     
-
 
     def submit_refugee_profile(self, refugee_id, Camp_ID, medical_condition, num_relatives):
         # Call create_refugee_profile from Refugee class

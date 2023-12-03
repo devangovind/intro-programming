@@ -14,17 +14,19 @@ class Volunteer:
     def __init__(self, username):
         self.username = username
 
-        # Filepaths for windows
-        self.camp_path = "files\\camps_file.csv"
-        self.resource_path = "files\\resources.csv"
-        self.volunteer_path = 'files\\volunteers.csv'
-        self.resource_req_path = "files\\resource_request.csv"
-        self.volunteer_file = None
-
         # Filepaths for MAC
-        # self.camp_path = "intro-programming/files/camps_file.csv"  
-        # self.resource_path = "intro-programming/files/resources.csv"  
-        # self.volunteer_path = "intro-programming/files/volunteers.csv" 
+        # self.camp_path = "files\\camps_file.csv"
+        # self.resource_path = "files\\resources.csv"
+        # self.volunteer_path = 'files\\volunteers.csv'
+        # self.resource_req_path = "files\\resource_request.csv"
+        # self.volunteer_file = None
+
+        # Filepaths for windows
+        self.camp_path = "../files/camps_file.csv"  
+        self.resource_path = "../files/resources.csv"  
+        self.volunteer_path = "../files/volunteers.csv" 
+        self.resource_req_path = "../files/resource_request.csv"
+        self.volunteer_file = None
 
     
     def get_volunteer_data(self):
@@ -185,7 +187,7 @@ class Volunteer:
         self.camperrors = [""] 
         def capacity_validate():
             if capacity.isdigit():
-                if int(capacity) > 800:
+                if int(capacity) > 10000:
                     self.camperrors[0] = ("Capacity too high")
                 elif int(capacity) <= 0:
                     self.camperrors[0] = ("Capacity must be positive")
@@ -252,22 +254,22 @@ class Volunteer:
             return self.errors
 
 
-def main():
-    # Example setup for testing
-    volunteer_username = "volunteer3"  # Replace with a valid username
-    new_camp_id = "C67890"      # Replace with a valid new camp ID
+# def main():
+#     # Example setup for testing
+#     volunteer_username = "volunteer3"  # Replace with a valid username
+#     new_camp_id = "C67890"      # Replace with a valid new camp ID
 
-    # Create a Volunteer instance
-    volunteer = Volunteer(username=volunteer_username)
+#     # Create a Volunteer instance
+#     volunteer = Volunteer(username=volunteer_username)
     
-    # Call the method to switch the volunteer's camp
-    success = volunteer.switch_volunteer_camp(new_camp_id)
+#     # Call the method to switch the volunteer's camp
+#     success = volunteer.switch_volunteer_camp(new_camp_id)
 
-    # Print the result
-    if success:
-        print(f"Successfully switched to camp {new_camp_id}.")
-    else:
-        print("Failed to switch camps.")
+#     # Print the result
+#     if success:
+#         print(f"Successfully switched to camp {new_camp_id}.")
+#     else:
+#         print("Failed to switch camps.")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
