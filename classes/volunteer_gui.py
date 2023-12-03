@@ -405,6 +405,19 @@ class VolunteerGui:
         # Generate and suggest a Refugee ID
         suggested_refugee_id = self.refugee.generate_refugee_id()
         
+        
+        def submit_refugee_profile(self, camp_id, medical_status, medical_condition, medical_description, num_relatives):
+            # Call create_refugee_profile from Refugee class
+            result = self.refugee.creat_refugee_profile(self, 
+                                                        camp_id, 
+                                                        medical_status, 
+                                                        medical_condition, 
+                                                        medical_description, 
+                                                        num_relatives)
+            messagebox.showinfo("Result", result)
+            if result == "Refugee profile created successfully":
+                self.welcome_message()
+        
         # Dropdown for Camp ID
         Camp_ID_lbl = tk.Label(self.content_frame, text="Camp ID:", font=('Arial', 16))
         Camp_IDs = self.camps.get_camp_ids()  # Get the list of camp IDs
@@ -424,9 +437,10 @@ class VolunteerGui:
         medical_status_lbl = tk.Label(self.content_frame, 
                                       text="Medical status:", 
                                       font=('Arial', 16))
-        medical_status = ['Healthy', 
+        medical_status = ['Choose health status',
+                          'Healthy', 
                           'Needs attention', 
-                          'Critical care required']
+                          'Critical']
         medical_status_var = tk.StringVar(self.content_frame)
         medical_status_var.set(medical_status[0])
         medical_status_dropdown = tk.OptionMenu(self.content_frame, 
@@ -434,30 +448,17 @@ class VolunteerGui:
                                                 *medical_status)
         medical_status_inp = tk.Entry(self.content_frame)
         medical_status_dropdown.config(width=17)
-        medical_status_lbl.pack(pady=10)
-        medical_status_dropdown.pack()
 
         # Dropdown for Medical Condition
-        medical_conditions = self.refugee.get_medical_conditions()
-        medical_conditions_var = tk.StringVar(self.content_frame)
-        medical_conditions_yscrollbar = tk.Scrollbar(self.content_frame) # added scroll bar
-        medical_conditions_yscrollbar.pack(side='right', fill='y')
-        medical_conditions_lbl = tk.Label(self.content_frame, 
-                                          text="Medical Condition:", 
-                                          font=('Arial', 16))
-        medical_conditions_lbl.pack()
+        medical_condition_lbl = tb.Label(self.content_frame,
+                  text="Select Condition (if applicable):",
+                  font=('Arial', 16))
+        medical_conditions_var = self.refugee.get_medical_conditions()
+        medical_condition_combo = tb.Combobox(self.content_frame, bootstyle="success",
+                                         values=medical_conditions_var)
         medical_conditions_inp = tk.Entry(self.content_frame)
-        conditions_list = tk.Listbox(self.content_frame,
-                                     medical_conditions_var,
-                                     selectmode="multiple",
-                                     yscrollcommand = medical_conditions_yscrollbar.set)
-        conditions_list.pack()
+        medical_condition_combo.config(width=17)
 
-        medical_conditions_yscrollbar.config(command=conditions_list.yview)
-        for each_condition in range(len(medical_conditions)):
-            conditions_list.insert(medical_conditions[each_condition])
-            conditions_list.itemconfig(each_condition, bg='grey')
-        
         # Input field for Medical Description
         medical_description_lbl = tk.Label(self.content_frame, 
                                            text="Medical Description",
@@ -475,17 +476,20 @@ class VolunteerGui:
         refugee_id_inp.pack()
 
         medical_status_lbl.pack(pady=10)
-        medical_status_inp.pack()
+        medical_status_dropdown.pack()
+        
+        medical_condition_lbl.pack(pady=10)
+        medical_condition_combo.pack()
 
         medical_description_lbl.pack(pady=10)
-        medical_description_inp.pack()
+        medical_description_inp.pack(padx=10,pady=10)
 
         num_relatives_lbl.pack(pady=10)
         num_relatives_inp.pack()
 
         # Submit Button
         submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 14), 
-                            command=lambda: self.submit_refugee_profile(
+                            command=lambda: submit_refugee_profile(
                                 refugee_id_inp.get(),
                                 Camp_ID_var.get(),
                                 medical_status_inp.get(),
@@ -500,15 +504,6 @@ class VolunteerGui:
             
         self.content_frame.bind('<Configure>', resize)
 
-
-    def submit_refugee_profile(self, refugee_id, Camp_ID, medical_condition, num_relatives):
-        # Call create_refugee_profile from Refugee class
-        result = self.refugee.create_refugee_profile(Camp_ID, medical_condition, 
-                                                     num_relatives, refugee_id)
-        messagebox.showinfo("Result", result)
-        if result == "Refugee profile created successfully":
-            self.welcome_message()
-
     # When click logout button, destory volunteer menu
     def logout(self):
         self.root.destroy()
@@ -522,9 +517,9 @@ class VolunteerGui:
         # Reset the tree_view to None to allow re-creation
         self.tree_view = None
 
-    # def run(self):
-    #     self.root.mainloop()
+    def run(self):
+        self.root.mainloop()
 
-# dummy = Volunteer("volunteer1")
-# VGui = VolunteerGui(dummy)
-# VGui.run()
+dummy = Volunteer("volunteer1")
+VGui = VolunteerGui(dummy, loginwindow=None)
+VGui.run()

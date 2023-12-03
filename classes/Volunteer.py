@@ -17,7 +17,7 @@ class Volunteer:
         # Filepaths for windows
         self.camp_path = "../files/camps_file.csv"
         self.resource_path = "../files/resources.csv"
-        self.volunteer_path = '../files/volunteers.csv'
+        self.volunteer_path = "../files/volunteers.csv"
         self.resource_req_path = "../files/resource_request.csv"
 
 

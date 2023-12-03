@@ -9,8 +9,8 @@ class Admin:
     pass
 
   def __init__(self):
-        self.camps_file = 'files/camps.csv'
-        self.resources_file = 'files/resources.csv'
+        self.camps_file = '../files/camps.csv'
+        self.resources_file = '../files/resources.csv'
         self.camp_id = None
 
   def read_csv(self, filepath):
