@@ -5,6 +5,9 @@ from Camps import Camps
 from Plans import Plans
 from Resource_requests import Resource_requests
 import pandas as pd
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from Admin_Data_Vis import create_bar_graph, create_resources_bar_graph
 
 class AdminGui:
     def __init__(self, admin):
@@ -44,6 +47,55 @@ class AdminGui:
         self.logout_btn.grid(row=0, column=5)
         self.headerarea.pack(padx=20)
         self.nav_bar = [self.headerarea, self.home_btn,self.display_plans_btn, self.create_plan_btn, self.manage_camps_btn, self.manage_volunteers_btn, self.logout_btn]
+
+    # def show_pie_chart_of_resources(self,volunteer_camp_id):
+    #     resource_values = 
+    #     resource_labels = ['food_pac', 'medical_sup', 'tents']
+
+    #     # Call the create_pie_chart function
+    #     create_pie_chart(resource_values, resource_labels, 'Camp Resource Distribution')
+        
+    def display_graphs(self, camps_or_plans, volunteers_or_refugees):
+        self.camps_or_plans = camps_or_plans
+        self.volunteers_or_refugees = volunteers_or_refugees
+        new_window = tk.Toplevel(self.root)
+        new_window.title("Camp Data Visualisation")
+        new_window.geometry("800x800")
+        
+        fig = create_bar_graph(self.camps_or_plans, self.volunteers_or_refugees)
+        
+        if fig is not None:
+            canvas = FigureCanvasTkAgg(fig, master=new_window)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    
+    def display_resources_graph(self):
+        new_window = tk.Toplevel(self.root)
+        new_window.title("Resources Data Visualisation")
+        new_window.geometry("1400x800")
+        
+        fig = create_resources_bar_graph()
+        
+        if fig is not None:
+            canvas = FigureCanvasTkAgg(fig, master=new_window)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    
+    def display_refugee_graph_camps(self):
+        self.display_graphs("camps","refugees")
+
+    def display_volunteer_graph_camps(self):
+        self.display_graphs("camps","volunteers")
+        
+    def display_refugee_graph_plans(self):
+        self.display_graphs("plans","refugees")
+
+    def display_volunteer_graph_plans(self):
+        self.display_graphs("plans","volunteers")
+        
+    def display_resources_camps(self):
+        self.display_resources_graph()
+            
     def welcome_message(self):
         self.clear_content()
         welcome_back = f'Welcome Back, Admin'
@@ -99,9 +151,37 @@ class AdminGui:
         self.unresolved = self.requests.get_unresolved()
         request_btn_text = f'Resource Requests ({len(self.unresolved)})'
         request_btn = tk.Button(self.root, text=request_btn_text, font= ("Arial", 16), command=self.resource_requests_list)
-        request_btn.pack(pady=50)
+        request_btn.pack(pady=10)
         self.filter_camps()
-
+        
+        data_vis_label_res = tk.Label(self.root, text="Resources Data Visualisation:", font=('Arial', 18))
+        data_vis_label_res.pack()
+        
+        self.display_resources_btn_camps = tk.Button(self.root, text="Resources per Camp", font=('Arial', 16), command=self.display_resources_camps)
+        self.display_resources_btn_camps.pack(pady=10)
+        
+        
+        data_vis_label_camps = tk.Label(self.root, text="Camp Data Visualisation:", font=('Arial', 18))
+        data_vis_label_camps.pack()
+        
+        self.display_refugees_btn_camps = tk.Button(self.root, text="Refugees per Camp", font=('Arial', 16), command=self.display_refugee_graph_camps)
+        self.display_refugees_btn_camps.pack(pady=10)
+        
+        self.display_volunteers_btn_camps = tk.Button(self.root, text="Volunteers per Camp", font=('Arial', 16), command=self.display_volunteer_graph_camps) 
+        self.display_volunteers_btn_camps.pack(pady=10)
+        
+        data_vis_label_plans = tk.Label(self.root, text="Plan Data Visualisation:", font=('Arial', 18))
+        data_vis_label_plans.pack()
+        
+        self.display_refugees_btn_plans = tk.Button(self.root, text="Refugees per Plan", font=('Arial', 16), command=self.display_refugee_graph_plans)
+        self.display_refugees_btn_plans.pack(pady=10)
+        
+        self.display_volunteers_btn_plans = tk.Button(self.root, text="Volunteers per Plan", font=('Arial', 16), command=self.display_volunteer_graph_plans) 
+        self.display_volunteers_btn_plans.pack(pady=10)
+        
+        # self.show_pie_chart_btn = tk.Button(self.root, text="Show Pie Chart of Resources", command=self.show_pie_chart_of_resources(CAMP_ID))
+        # self.show_pie_chart_btn.pack(pady=10)
+        
     def filter_camps(self, event=None):
         for item in self.camps_tree.get_children():
             self.camps_tree.delete(item)
