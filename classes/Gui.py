@@ -156,7 +156,7 @@ class Volunteer_Register:
                 header = next(reader)
                 for row in reader:
                     if row[0] == camp_id:
-                        row[2] = str(int(row[2]) + 1)  # Increment the number of volunteers
+                        row[2] = str(int(row[2]) + 1)  # Increment the number of volunteers by 1
                     camp_data.append(row)
 
             with open(camps_filepath, "w", newline="") as file:
