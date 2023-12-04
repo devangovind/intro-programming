@@ -142,6 +142,7 @@ class Volunteer_Register:
             self.validate_last_name(last_name)
             self.validate_phone(phone)
             self.validate_age(age)
+            self.validate_availability() 
             self.validate_password(password)
             
             # update logindetails file
@@ -252,11 +253,9 @@ class Volunteer_Register:
         return camp_id_values
     
     def validate_availability(self):
-        for var in self.availability_variables:
-            if var.get() == 1:
-                return
-            
-        raise ValueError("Availability must be at least one day per week.")
+        selected_days = [var.get() for var in self.availability_variables]
+        if sum(selected_days) == 0:
+            raise ValueError("Please select at least one day of the week in Availability.")
 
     def validate_password(self, password):
         pw_chars = r'^[A-Za-z0-9!?]+$'
