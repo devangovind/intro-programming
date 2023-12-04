@@ -10,9 +10,12 @@ class Admin:
 
         self.plan_file = "files\\plan_file.csv"
         self.camp_file = "files\\camps_file.csv"
-        self.resource_path = "files\\resources.csv"
+        self.resource_file = "files\\resources.csv"
         self.login_file = 'files\\logindetails.csv'
         self.plans_data = pd.read_csv(self.plan_file)
+        self.users = pd.read_csv(self.login_file)
+        self.volunteer_file = 'files\volunteers.csv'
+        self.camp_id = None
         self.users = pd.read_csv(self.login_file)
 
 

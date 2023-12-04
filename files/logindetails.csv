@@ -1,5 +1,5 @@
 Username,Password,Active,Account Type
 admin,111,True,Admin
-volunteer1,111,False,Volunteer
-volunteer2,111,False,Volunteer
-volunteer3,111,False,Volunteer
+volunteer1,111,True,Volunteer
+volunteer2,111,True,Volunteer
+volunteer3,111,True,Volunteer

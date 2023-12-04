@@ -1,17 +1,15 @@
 from Admin import Admin
 import tkinter as tk
 from tkinter import messagebox, END
-from tkinter import ttk
+from tkinter import messagebox, ttk, simpledialog
 from tkcalendar import *
 import csv
 import datetime
 import time
 from datetime import date
 import pandas as pd 
-from tkinter import messagebox, ttk, simpledialog
 from Camps import Camps
 from Plans import Plans
-# from Resource_requests import Resource_requests
 from Resource_requests import Resource_requests
 
 
@@ -21,7 +19,7 @@ class AdminGui:
         self.e_date = None
         self.camp_num_id = None
         self.root = tk.Tk()
-        self.root.geometry("800x600")
+        self.root.geometry("800x800")
         self.root.title("Volunteer View")
         self.admin = admin
         # self.volunteer_data = self.volunteer.get_volunteer_data()
