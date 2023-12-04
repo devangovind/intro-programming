@@ -250,6 +250,13 @@ class Volunteer_Register:
         except FileNotFoundError:
             messagebox.showerror("Error", "Camp ID CSV file not found.")
         return camp_id_values
+    
+    def validate_availability(self):
+        for var in self.availability_variables:
+            if var.get() == 1:
+                return
+            
+        raise ValueError("Availability must be at least one day per week.")
 
     def validate_password(self, password):
         pw_chars = r'^[A-Za-z0-9!?]+$'
