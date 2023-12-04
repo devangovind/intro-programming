@@ -10,19 +10,22 @@ class Admin:
 
         self.plan_file = "files\\plan_file.csv"
         self.camp_file = "files\\camps_file.csv"
-        self.resource_file = "files\\resources.csv"
+        self.resources_file = "files\\resources.csv"
         self.login_file = 'files\\logindetails.csv'
+        self.volunteer_file = 'files\\volunteers.csv'
         self.plans_data = pd.read_csv(self.plan_file)
         self.users = pd.read_csv(self.login_file)
-        self.volunteer_file = 'files\volunteers.csv'
         self.camp_id = None
-        self.users = pd.read_csv(self.login_file)
+       
 
 
         # Filepaths for MAC
         # self.plan_file = 'intro-programming/files/plan_file.csv'
         # self.camps_file = 'intro-programming/files/camps_file.csv'
         # self.resources_file = 'intro-programming/files/resources.csv'
+        # self.login_file = 'intro-programming/files/logindetails.csv'
+        # self.volunteer_file = 'intro-programming/files/volunteers.csv'
+
 
         self.camp_id = None
         with open(self.plan_file, 'r', encoding='utf-8') as plan_file:

@@ -19,7 +19,7 @@ class AdminGui:
         self.e_date = None
         self.camp_num_id = None
         self.root = tk.Tk()
-        self.root.geometry("800x800")
+        self.root.geometry("800x660")
         self.root.title("Volunteer View")
         self.admin = admin
         # self.volunteer_data = self.volunteer.get_volunteer_data()
