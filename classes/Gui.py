@@ -49,11 +49,13 @@ class Volunteer_Register:
         self.selected_camp_id = tk.StringVar()
         self.camp_id_dropdown = ttk.Combobox(self.scrollable_frame, textvariable=self.selected_camp_id, values=self.camp_id_values)
 
-        self.availability_label = tk.Label(self.scrollable_frame, text = "\nAvailability:\nSet 0000000 to the default value")
-        self.availability_entry = tk.Entry(self.scrollable_frame)
-        self.availability_entry.insert(0, "0000000")
+        self.availability_label = tk.Label(self.scrollable_frame, text="\nAvailability:")
+        self.availability_variables = [tk.IntVar() for _ in range(7)]
+        self.availability_checkboxes = [
+            tk.Checkbutton(self.scrollable_frame, text=day, variable=self.availability_variables[i])
+            for i, day in enumerate(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
+        ]
 
-    
         self.password_label = tk.Label(self.scrollable_frame, text = "\nPassword:\nYour password should contain at least one capital letter, at least one of '?' or '!', letters a-z and numbers 0-9 and be between 8 and 16 characters long")
         self.password_entry = tk.Entry(self.scrollable_frame, show = "*",validate="key", validatecommand=(self.root.register(self.validate_password_entry), "%P"))
         self.password_status = tk.Label(self.scrollable_frame, text="")
@@ -88,7 +90,8 @@ class Volunteer_Register:
         self.camp_id_dropdown.pack()
 
         self.availability_label.pack()
-        self.availability_entry.pack()
+        for checkbox in self.availability_checkboxes:
+            checkbox.pack()
 
         self.password_label.pack()
         self.password_entry.pack()
@@ -129,7 +132,7 @@ class Volunteer_Register:
         phone = self.phone_entry.get()
         age = self.age_entry.get()
         camp_id = self.selected_camp_id.get()
-        availability = self.availability_entry.get()
+        availability_binary = "".join(str(var.get()) for var in self.availability_variables)
         password = self.password_entry.get()
         account_type = "Volunteer"
 
@@ -147,7 +150,7 @@ class Volunteer_Register:
 
             # update volunteers file
             with open (volunteers_filepath, "a") as file:
-                file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability}\n")
+                file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability_binary}\n")
 
             # update camps file
             camp_data = []
