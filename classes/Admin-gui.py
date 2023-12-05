@@ -322,21 +322,13 @@ class AdminGui:
 
         header = ['plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
         self.table = ttk.Treeview(self.root)
-        self.root.table = self.table
+        self.table = self.table
         self.table.configure(columns=header, show='headings')
         for item in header:
             self.table.column(item, width=120, anchor=tk.CENTER)
             self.table.heading(item, text=item)
 
-        # self.root.table.pack(fill=tk.BOTH, expand=True)
-
-    def camps_vis(self):
-        # when data visualisation is ready. we can have each camp name be clickable to bring up a new screen with the data visualised
-        self.clear_content()
-        title = tk.Label(self.root, text="Manage Camps", font=('Arial', 24))
-        title.pack(pady=20)
-        plans_data = self.plans.get_data()
-
+        # self.table.pack(fill=tk.BOTH, expand=True)
         # tk.Button(self.root, text='End a plan', command=self.end_plan).pack(side='left', pady=20)
         # tk.Button(self.root, text='refresh', command= self.refresh_plan).pack(side='left', pady=20)
         # plan_data = PlanData()
@@ -346,29 +338,29 @@ class AdminGui:
         index = 0
         # with time passes, if start date arrives today, the status change from not starte to ongoing
         # with time passes, if end date arrives today, the status change from ongoing to finished
-        df = pd.read_csv(self.admin.plan_file)
+        df = pd.read_csv(self.admin.plans_file)
         df.set_index("Plan_ID", inplace=True)  # 日期列设置为index
         today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
         df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Not started'), "Status"] = "Ongoing"
         df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
         # print(df) # just for test
-        df.to_csv(self.admin.plan_file)
+        df.to_csv(self.admin.plans_file)
         # the update can be seen in table
         index = 0
-        with open(self.admin.plan_file, 'r', encoding='utf-8') as plan_file:
+        with open(self.admin.plans_file, 'r', encoding='utf-8') as plan_file:
             read = csv.DictReader(plan_file)
             self.plan_update_list = []
             for row in read:
                 self.plan_update_list.append(row)
         print(self.plan_update_list)
         for plan in self.plan_update_list:
-            self.root.table.insert('', 'end', values=(plan['Plan_ID'], plan['Description'],
+            self.table.insert('', 'end', values=(plan['Plan_ID'], plan['Description'],
                                                           plan['Location'], plan['Start Date'], plan['End Date'],plan['Status']))
-        vsb = ttk.Scrollbar(self.root.table, orient="vertical", command=self.table.yview)
+        vsb = ttk.Scrollbar(self.table, orient="vertical", command=self.table.yview)
 
         self.table.configure(yscrollcommand=vsb.set)
 
-        self.root.table.pack(fill=tk.BOTH, expand=True)
+        self.table.pack(fill=tk.BOTH, expand=True)
         vsb.pack(side="right", fill="y")
         tk.Button(self.root, text='End a plan', command=self.end_plan).pack(side='left', pady=20)
 
@@ -540,8 +532,6 @@ class AdminGui:
         self.clear_content()
         title = tk.Label(self.root, text="Manage Camps", font=('Arial', 24))
         title.pack(pady=20)
-        display_btn = tk.Button(self.root, text="Camp World Map", font= ("Arial", 16), command=self.camps_vis)
-        display_btn.pack(pady=50)
         plans_data = self.admin.get_data()
         plans_ids = ["All Plans"]
         for val in plans_data['Plan_ID']:
