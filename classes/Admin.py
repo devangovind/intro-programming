@@ -7,23 +7,32 @@ import pandas as pd
 from Camps import Camps
 from datetime import date
 from datetime import datetime
+from Plans import humanitarian_plan
 
 class Admin:
 
     # add functions here
     # remember for functions added the first parameter has to be a self
-    def create_humanitarian_plan(self):
-        pass
-  
-
     def __init__(self):
         self.plans_file = './files/plans.csv'
         self.camps_file = './files/camps_file.csv'
         self.resources_file = './files/resources.csv'
         self.login_file = './files/logindetails.csv'
         self.volunteer_file = './files/volunteers.csv'
+        # self.plans_file = "files\\plan_file.csv"
+        # self.camps_file = "files\\camps_file.csv"
+        # self.resources_file = "files\\resources.csv"
+        # self.login_file = 'files\\logindetails.csv'
+        # self.volunteer_file = 'files\\volunteers.csv'
+        self.plans_data = pd.read_csv(self.plans_file)
+        self.users = pd.read_csv(self.login_file)
         self.camp_id = None
         self.users = pd.read_csv(self.login_file)
+        with open(self.plans_file, 'r', encoding='utf-8') as plan_file:
+            read = csv.DictReader(plan_file)
+            self.plan_list = []
+            for row in read:
+                self.plan_list.append(row)
 
 
  # FOR (C) DISPLAY PLAN
@@ -54,6 +63,67 @@ class Admin:
           
  
  # FOR (D) ACCOUNT ACTIVATION
+    def get_data(self):
+        return self.plans_data
+## Change some functions to fit the admin.gui(for admin feature a-c and adding a new camp)
+## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
+    def last_plan_id(self):
+        plan = pd.read_csv(self.plans_file)
+        plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
+        last_plan = plan.loc[plan['Numeric_ID'].idxmax()]
+        last_plan_id = last_plan['Plan_ID']
+        num_ = int(last_plan_id[1:])
+        return num_
+    
+    def last_camp_id(self):
+        camps = pd.read_csv(self.camps_file)
+        camps['Numeric_ID'] = camps['Camp_ID'].str.extract('(\d+)').astype(int)
+        last_plan = camps.loc[camps['Numeric_ID'].idxmax()]
+        last_plan_id = last_plan['Camp_ID']
+        num_ = int(last_plan_id[1:])
+        return num_
+
+## This is to justify the type of the date input
+    def is_date(self, date):
+        return isinstance(date, datetime.date)
+## This is to make sure the start date
+    def check_start_day(self, date):
+
+        today = date.today()
+        plan_start_date = date
+        if today <= plan_start_date:
+            return False
+        else:
+            return True
+## This is to make sure the end date
+    def check_end_date(self,end_date,start_day):
+        if end_date > start_day:
+            return False
+        else:
+            return True
+    # def plan_id_plus_1(self):
+    #     self.plan_id  = self.plan_id + 1
+    #     return str(self.plan_id)
+
+## This is to refresh the plan after creating a plan 
+    def insert_new_plan(self, new_plan):
+        self.plan_list.append(new_plan)
+
+## This is to choose the plan which can be added a new camp 
+    def valid_plan(self):
+        column_to_check = 5  
+        condition_value = 'Ongoing'
+        condition_value_2 = 'Not started'  
+        target_column_index = 0  
+        column_values = []
+        with open(self.plans_file, 'r', newline='') as input_file:
+            csv_reader = csv.reader(input_file)
+            for row in csv_reader:
+                if (row[column_to_check] == condition_value or row[column_to_check] == condition_value_2):
+                    column_values.append(row[target_column_index])
+        return column_values
+
+# FOR (D) ACCOUNT ACTIVATION
 
 
     def save_changes(self):
@@ -302,8 +372,6 @@ class Admin:
             return True
         else:
             return self.resource_errors
-
-
 
 if __name__ == "__main__":
     admin = Admin()
