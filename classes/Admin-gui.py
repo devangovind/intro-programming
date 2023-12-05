@@ -556,7 +556,7 @@ class AdminGui:
             filtered_data = self.camps_data[self.camps_data["Plan_ID"] == selected_plan]
         for index, row in (filtered_data.iterrows()):
             resources = self.camps.get_resource_data(row['Camp_ID'])
-            values=[row['Camp_ID'], row['Plan_ID'], row['Num_Of_Volunteers'],row['Num_Of_Refugees'], 50, resources[0], resources[1], resources[2], "Allocate Resources"]
+            values=[row['Camp_ID'], row['Plan_ID'], row['Num_Of_Volunteers'],row['Num_Of_Refugees'], row['Capacity'], resources[0], resources[1], resources[2], "Allocate Resources"]
             self.camps_tree.insert("", "end", values=values)
 
     def resource_requests_list(self):
