@@ -687,7 +687,6 @@ class AdminGui:
                     self.allocate_resources(camp_id, curr_resources, suggest_resources_dict)
     def allocate_resources(self, camp_id, curr_resources, suggest_resources_dict, requested_resources=None):
             self.clear_content()
-           
             if requested_resources != None:
                 requested_strings = [f'Requested Food: {requested_resources[0]}', f'Requested Medical: {requested_resources[1]}', f'Requested Tents: {requested_resources[2]}']
             else:
@@ -708,7 +707,6 @@ class AdminGui:
             self.food_inp.pack()
             requested_food_lbl.pack()
             suggest_food_lbl.pack()
-            
             self.food_error.pack(pady=(0,10))
             med_lbl = tk.Label(self.root, text="Edit medical supplies:", font=('Arial', 18))
             self.med_inp = tk.Entry(self.root)
@@ -765,6 +763,7 @@ class AdminGui:
             self.food_error.config(text="Food supplies saved", fg="green")
             self.med_error.config(text="Medical supplies saved", fg="green")
             self.tents_error.config(text="Tents saved", fg="green")
+            self.requests.write_data(camp_id)
             self.root.update_idletasks()
             messagebox.showinfo("Success", "Resources Successfully Allocated!")
             self.manage_camps()
@@ -794,7 +793,6 @@ class AdminGui:
         camps_menu_lbl.pack()
         camps_menu.pack()
         all_buttons = tk.Frame(self.root)
-       
         all_buttons.columnconfigure(1, weight=1)
         all_buttons.columnconfigure(2, weight=1)
         activate_all_btn = tk.Button(all_buttons, text="Activate All", font=('Arial', 16), command=self.activate_all)
