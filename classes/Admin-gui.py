@@ -27,6 +27,8 @@ class AdminGui:
         # self.volunteer_data = self.volunteer.get_volunteer_data()
         self.volunteer_file = "./files/volunteers.csv"
         self.users_file = "./files/logindetails.csv"
+        # self.users_file = 'files\\logindetails.csv'
+        # self.volunteer_file = 'files\\volunteers.csv'
         self.create_nav_bar()
         self.welcome_message()
         self.camps = Camps()
@@ -143,7 +145,6 @@ class AdminGui:
         # Get the plan_ID automatically
         self.plan_id_num = (self.admin.last_plan_id() + 1)
         self.plan_id = "P"+str(self.plan_id_num)
-
         # The plan_ID can be shown in the window and admin can not edit
         self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',16))
         # Build the entry
@@ -178,7 +179,6 @@ class AdminGui:
                 messagebox.showwarning(title='Create a new plan-start date',
                                        message='Please using take the button to choose the date')
                 # return False
-
         self.valid_input_sdate = tk.StringVar()
         sCMD = self.root.register(stest)
         self.start_date = tk.Entry(date_frames, textvariable=self.valid_input_sdate, validate='focusin',
@@ -189,7 +189,6 @@ class AdminGui:
             if self.end_date.get() is not None:
                 messagebox.showwarning(title='Create a new plan--end date',
                                        message='Please using take the button to choose the date')
-
         self.valid_input_edate = tk.StringVar()
         eCMD = self.root.register(etest)
         self.end_date = tk.Entry(date_frames, textvariable=self.valid_input_edate, validate='focusin',
@@ -197,7 +196,6 @@ class AdminGui:
         self.end_date.grid(row=2, column=2)
 
     #  This method is to get the date using calendar and judge whether it is valid or not
-
     def pick_sdate(self):
         self.date_window = tk.Toplevel()
         self.date_window.grab_set()
@@ -353,6 +351,7 @@ class AdminGui:
                 self.end_date.delete(0, END)
                 self.e_date = None
                 self.s_date = None
+
     def display_world_map(self):
         new_window = tk.Toplevel(self.root)
         new_window.title("Geographical Plans Visualisation")
@@ -379,11 +378,6 @@ class AdminGui:
         for item in header:
             self.table.column(item, width=120, anchor=tk.CENTER)
             self.table.heading(item, text=item)
-
-        # self.table.pack(fill=tk.BOTH, expand=True)
-        # tk.Button(self.root, text='End a plan', command=self.end_plan).pack(side='left', pady=20)
-        # tk.Button(self.root, text='refresh', command= self.refresh_plan).pack(side='left', pady=20)
-        # plan_data = PlanData()
         # this is to show if the end date in the plan has arrived, this End date will show "None"
         self.display_world_map_button = tk.Button(self.root, text="Display world map of plans", font=('Arial', 16), command=self.display_world_map)
         self.display_world_map_button.pack(pady=10)
@@ -391,11 +385,10 @@ class AdminGui:
         # with time passes, if start date arrives today, the status change from not starte to ongoing
         # with time passes, if end date arrives today, the status change from ongoing to finished
         df = pd.read_csv(self.admin.plans_file)
-        df.set_index("Plan_ID", inplace=True)  # 日期列设置为index
+        df.set_index("Plan_ID", inplace=True)  
         today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
         df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Not started'), "Status"] = "Ongoing"
         df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
-
         df.to_csv(self.admin.plans_file)
         # the update can be seen in table
         index = 0
@@ -430,16 +423,12 @@ class AdminGui:
                 self.plan_sdate = temp[-3]
                 self.plan_edate = temp[-2]
                 self.status = temp[-1]
-
                 self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate, '%d/%m/%Y').date()
                 # self.plan_edate_date = datetime.datetime.strptime(self.plan_edate,'%d/%m/%Y').date()
-
             self.table.bind('<ButtonRelease-1>', valid_item_())
-
             if self.plan_sdate_date > date.today():
                 messagebox.showinfo(title='Info', message='This plan has not started! It cannot be ended')
             elif self.status == 'Ongoing':
-
                 isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
                 # if isok:
                 if isok:
@@ -467,8 +456,6 @@ class AdminGui:
                         # delect the old one 
                         header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
                         for x in self.plan_data_:
-                   
-
                             if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
                                     temp[4] == x['End Date'] and temp[5] == 'Ongoing':
                                 yy = self.plan_data_.remove(x)
@@ -485,12 +472,8 @@ class AdminGui:
                         plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
                         sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
                         sorted_plan.to_csv(self.admin.plans_file, index=False)
-
                     self.table.bind('<ButtonRelease-1>', update_item())
-
             elif self.status == 'Finished':
-
-
                 messagebox.showinfo(title='Info', message='This plan has aready ended')
         elif not item:
             messagebox.showinfo(title='Info', message='Please choose a plan！！！')
@@ -500,7 +483,6 @@ class AdminGui:
         # Get the value by admin using entry
         self.capacity = tk.StringVar()
         # self.camp_num_id = tk.StringVar()
-
         # Build the label
         tk.Label(self.root, text='Add a new camp', font=('Arial', 24)).pack(pady=10)
         tk.Label(self.root, text='Plan_ID:', font=('Arial', 18)).pack()
@@ -514,8 +496,6 @@ class AdminGui:
         tk.Label(self.root, text='Camp_ID:', font=('Arial', 18)).pack(pady=10)
         self.camp_id_num = (self.admin.last_camp_id() + 1)
         self.camp_id = "C"+str(self.camp_id_num)
-
-
         # The plan_ID can be shown in the window and admin can not edit
         self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 16))
         self.camp_id_label.pack()
@@ -547,13 +527,12 @@ class AdminGui:
         tk.Button(self.root, text='Save this camp', font=('Arial', 12), command=self.save_camp).pack(pady=10)
 
     def save_camp(self):
-        #选择的那个plan（要加入camp的那个)
+        #Choose the plan 
         Plan_ID_C = self.plan_id_camp.get()
         Camp_ID  = self.camp_id
         Capacity_ = self.capacity.get()
         Num_v = 0
         Num_r = 0
-
         if int(Capacity_) < 100 or int(Capacity_)>1000:
             messagebox.showwarning(title='Create a new camp', message='Please choose capacity between 100 and 1000')
         elif int(Capacity_) >= 100 and int(Capacity_) <=1000:
@@ -565,12 +544,9 @@ class AdminGui:
             header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Capacity', 'Plan_ID']
             with open(self.admin.camps_file, 'a', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=header)
-
                 writer.writerows(camp_plan_list)
             self.admin.insert_new_plan(camp_plan_dic)
             messagebox.showinfo('infor', 'Create a camp in specific plan successfully')
-            # self.plan_id = self.plan_id + 1
-            # self.Plan_Id_entry.insert(END, self.plan_id)
             self.capacity.set('')
             self.camp_id_num_1 = int(self.camp_id[1:])+1
             self.camp_id = "C" + str(self.camp_id_num_1)
