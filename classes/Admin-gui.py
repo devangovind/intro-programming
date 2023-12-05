@@ -11,6 +11,9 @@ import pandas as pd
 from Camps import Camps
 from Plans import Plans
 from Resource_requests import Resource_requests
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from Admin_Data_Vis import create_world_map
 
 
 class AdminGui:
@@ -287,6 +290,17 @@ class AdminGui:
                 self.end_date.delete(0, END)
                 self.e_date = None
                 self.s_date = None
+    def display_world_map(self):
+        new_window = tk.Toplevel(self.root)
+        new_window.title("Geographical Plans Visualisation")
+        new_window.geometry("1200x800")
+        
+        fig = create_world_map()
+        
+        if fig is not None:
+            canvas = FigureCanvasTkAgg(fig, master=new_window)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     ## This is to show the plan by table
 
@@ -310,6 +324,8 @@ class AdminGui:
         # tk.Button(self.root, text='refresh', command= self.refresh_plan).pack(side='left', pady=20)
         # plan_data = PlanData()
         # this is to show if the end date in the plan has arrived, this End date will show "None"
+        self.display_world_map_button = tk.Button(self.root, text="Display world map of plans", font=('Arial', 16), command=self.display_world_map)
+        self.display_world_map_button.pack(pady=10)
         index = 0
         # with time passes, if start date arrives today, the status change from not starte to ongoing
         # with time passes, if end date arrives today, the status change from ongoing to finished
