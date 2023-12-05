@@ -13,6 +13,8 @@ class AdminGui:
         self.root.title("Admin View")
         self.admin = admin
         # self.volunteer_data = self.volunteer.get_volunteer_data()
+        self.volunteer_file = "./files/volunteers.csv"
+        self.users_file = "./files/logindetails.csv"
         self.create_nav_bar()
         self.welcome_message()
         self.camps = Camps()
@@ -301,8 +303,8 @@ class AdminGui:
     def manage_volunteers(self):
         self.clear_content()
         # add code here to edit volunteer data
-        self.volunteer_data = pd.read_csv("./files/volunteers.csv")
-        self.users = pd.read_csv("./files/logindetails.csv")
+        self.volunteer_data = pd.read_csv(self.volunteer_file)
+        self.users = pd.read_csv(self.users_file)
         title = tk.Label(self.root, text="Manage Volunteers", font=('Arial', 24))
         title.pack(pady=20)
         camps_ids = ["All Camps"]
