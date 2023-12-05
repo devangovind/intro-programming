@@ -37,20 +37,22 @@ class VolunteerGui:
         self.headerarea.columnconfigure(3, weight=1)
         self.headerarea.columnconfigure(4, weight=1)
         self.headerarea.columnconfigure(5, weight=1)
-        self.home_btn = tk.Button(self.headerarea, text="Home", font=('Arial', 16), command=self.welcome_message)
+        self.home_btn = tk.Button(self.headerarea, text="Home", font=('Arial', 11), command=self.welcome_message)
         self.home_btn.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-        self.edit_details_btn = tk.Button(self.headerarea, text="Edit Personal Details", font=('Arial', 16), command=self.edit_details)
+        self.edit_details_btn = tk.Button(self.headerarea, text="Edit Personal Details", font=('Arial', 11), command=self.edit_details)
         self.edit_details_btn.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
-        self.edit_camp_btn = tk.Button(self.headerarea, text="Edit Camp Details", font=('Arial', 16), command=self.edit_camp)
+        self.edit_camp_btn = tk.Button(self.headerarea, text="Edit Camp Details", font=('Arial', 11), command=self.edit_camp)
         self.edit_camp_btn.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
-        self.view_camp_btn = tk.Button(self.headerarea, text="View Camp Details", font=('Arial', 16), command=self.display_resources)
+        self.view_camp_btn = tk.Button(self.headerarea, text="View Camp Details", font=('Arial', 11), command=self.display_resources)
         self.view_camp_btn.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
-        self.add_refugee_btn = tk.Button(self.headerarea, text="Create Refugee Profile", font=('Arial', 16), command=self.add_refugee) 
+        self.add_refugee_btn = tk.Button(self.headerarea, text="Create Refugee Profile", font=('Arial', 11), command=self.add_refugee) 
         self.add_refugee_btn.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
-        self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 16), command=self.logout)
-        self.logout_btn.grid(row=0, column=5, padx=10, pady=10, sticky="nsew")
+        self.view_refugees_btn = tk.Button(self.headerarea, text="View Refugees", font=('Arial', 11), command=self.view_refugee) 
+        self.view_refugees_btn.grid(row=0, column=5, padx=10, pady=10, sticky="nsew")
+        self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 11), command=self.logout)
+        self.logout_btn.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
         self.headerarea.pack(fill ="both", padx=20)
-        self.nav_bar = [self.headerarea, self.home_btn,self.edit_camp_btn, self.edit_details_btn, self.view_camp_btn, self.add_refugee_btn, self.logout_btn]
+        self.nav_bar = [self.headerarea, self.home_btn,self.edit_camp_btn, self.edit_details_btn, self.view_camp_btn, self.add_refugee_btn, self.view_refugees_btn, self.logout_btn]
 
         def resize(e):
             size = e.width / 70
@@ -663,6 +665,11 @@ class VolunteerGui:
             self.med_status_error.config(text=result[1])
             self.num_relatives_error.config(text=result[2])
 
+    def view_refugee(self):
+        self.clear_content()
+        title = tk.Label(self.content_frame, text="View Refugee Details", font=('Arial', 18))
+        title.config(fg="medium slate blue")
+        title.pack(pady=(20, 10))
 
 
     # When click logout button, destory volunteer menu

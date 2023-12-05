@@ -94,49 +94,25 @@ class Refugee:
         else:
             return self.errors
 
-    # def update_camp_info(self, refugee_id):
-    #     refugee_data = pd.read_csv(self.refugee_path)
-    #     selected_refugee = refugee_data.loc[refugee_data['Refugee_ID'] == refugee_id]
-    #     if selected_refugee.empty:
-    #         return "Refugee not found"
+    def display_all_refugees(self):
+        try:
+            # Load the data from both CSV files
+            refugee_data = pd.read_csv(self.refugee_path)
 
-    #     camp_id = selected_refugee['Camp_ID'].values[0]
-    #     num_relatives = selected_refugee['NumberOfRelatives'].values[0]
-
-    #     camp_info = pd.read_csv(self.camps_path)
-    #     camp = camp_info.loc[camp_info['Camp_ID'] == camp_id]
-
-    #     # if camp.empty:
-    #     #     return "Camp not found"
-
-    #     camp_capacity = camp['Capacity'].values[0]
-    #     current_num_refugees = camp['Num_Of_Refugees'].values[0]
-
-    #     if current_num_refugees + num_relatives + 1 < camp_capacity:
-    #         camp_info.loc[camp_info['Camp_ID'] == camp_id, 'Num_Of_Refugees'] += (num_relatives + 1)
-    #         try:
-    #             camp_info.to_csv(self.camps_path, index=False)
-    #             print(f"Number of refugees for {camp_id} updated and written to CSV successfully.")
-    #             return "Camp information updated successfully"
-    #         except Exception as e:
-    #             print(f"An error occurred while writing to the CSV: {e}")
-    #             return "Failed to update camp information"
-    #     elif current_num_refugees + num_relatives + 1 == camp_capacity:
-    #         camp_info.loc[camp_info['Camp_ID'] == camp_id, 'Num_Of_Refugees'] += (num_relatives + 1)
-    #         try:
-    #             camp_info.to_csv(self.camps_path, index=False)
-    #             print(f"Number of refugees for {camp_id} updated and written to CSV successfully. Camp is now full.")
-    #             return "Camp information updated successfully, camp is now full."
-    #         except Exception as e:
-    #             print(f"An error occurred while writing to the CSV: {e}")
-    #             return "Failed to update camp information"
-    #     else:
-    #         return "Camp is full"    
+            # Check if the merged data is empty
+            if refugee_data.empty:
+                return pd.DataFrame()  # Return an empty DataFrame if no data is available
+            else:
+                # Return the merged data for all camps
+                return refugee_data
+        except Exception as e:
+            print(f"An error occurred while trying to display all camp resources: {e}")
+            return pd.DataFrame()  # Return an empty DataFrame in case of error 
    
 if __name__ == "__main__":
     refugee = Refugee()
     
     # Example usage of create_refugee_profile_auto_id method
-    result = refugee.create_refugee_profile('C24356','Need attention',4)
+    # result = refugee.create_refugee_profile('C24356','Need attention',4)
 
-    print(result)
+    # print(result)

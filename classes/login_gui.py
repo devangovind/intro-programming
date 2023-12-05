@@ -202,7 +202,7 @@ class Volunteer_Register:
 
         # configure the canvas
         my_canvas.configure(yscrollcommand=my_scrollbar.set)
-        my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=(0,0,500,800)))
+        my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=(0,0,900,900)))
         
         # create another frame inside the canvas
         second_frame = Frame(my_canvas)
@@ -236,10 +236,24 @@ class Volunteer_Register:
         self.selected_camp_id.set('')
         self.camp_id_dropdown = ttk.Combobox(second_frame, textvariable=self.selected_camp_id, values=self.camp_id_values)
 
-        self.availability_label = tk.Label(second_frame, text = "\nAvailability:\nSet 0000000 to the default value")
-        self.availability_entry = tk.Entry(second_frame)
-        self.availability_entry.insert(0, "0000000")
-
+        self.availability_label = tk.Label(second_frame, text="\nAvailability:")
+        self.mon_var = tk.IntVar(value=0)
+        self.tue_var = tk.IntVar(value=0)
+        self.wed_var = tk.IntVar(value=0)
+        self.thu_var = tk.IntVar(value=0)
+        self.fri_var = tk.IntVar(value=0)
+        self.sat_var = tk.IntVar(value=0)
+        self.sun_var = tk.IntVar(value=0)
+        self.availability_variables = [self.mon_var, self.tue_var, self.wed_var, self.thu_var, self.fri_var, self.sat_var, self.sun_var]
+        mon_box = tk.Checkbutton(second_frame, text="Monday", variable=self.mon_var, command=lambda: self.mon_var.set(1) if self.mon_var.get() == False else self.mon_var.set(0))
+        tue_box = tk.Checkbutton(second_frame, text="Tuesday", variable=self.tue_var, command=lambda: self.tue_var.set(1) if self.tue_var.get() == False else self.tue_var.set(0))
+        wed_box = tk.Checkbutton(second_frame, text="Wednesday", variable=self.wed_var, command=lambda: self.wed_var.set(1) if self.wed_var.get() == False else self.wed_var.set(0))
+        thu_box = tk.Checkbutton(second_frame, text="Thursday", variable=self.thu_var, command=lambda: self.thu_var.set(1) if self.thu_var.get() == False else self.thu_var.set(0))
+        fri_box = tk.Checkbutton(second_frame, text="Friday", variable=self.fri_var, command=lambda: self.fri_var.set(1) if self.fri_var.get() == False else self.fri_var.set(0))
+        sat_box = tk.Checkbutton(second_frame, text="Saturday", variable=self.sat_var, command=lambda: self.sat_var.set(1) if self.sat_var.get() == False else self.sat_var.set(0))
+        sun_box = tk.Checkbutton(second_frame, text="Sunday", variable=self.sun_var, command=lambda: self.sun_var.set(1) if self.sun_var.get() == False else self.sun_var.set(0))
+        self.availability_checkboxes = [
+            mon_box, tue_box, wed_box, thu_box, fri_box, sat_box, sun_box ]
     
         self.password_label = tk.Label(second_frame, text = "\nPassword:\nYour password should contain at least one capital letter, at least one of '?' or '!', letters a-z and numbers 0-9 and be between 8 and 16 characters long")
         self.password_entry = tk.Entry(second_frame, show = "*",validate="key", validatecommand=(self.register_window.register(self.validate_password_entry), "%P"))
@@ -274,8 +288,11 @@ class Volunteer_Register:
         self.camp_id_label.pack()
         self.camp_id_dropdown.pack()
 
+
         self.availability_label.pack()
-        self.availability_entry.pack()
+        for checkbox in self.availability_checkboxes:
+            checkbox.pack()
+        # self.avail_status.pack()
 
         self.password_label.pack()
         self.password_entry.pack()
@@ -286,19 +303,8 @@ class Volunteer_Register:
         self.confirm_password_status.pack()
 
         self.register_button.pack()
-
-        # self.center_window()
         
         self.register_window.mainloop()
-
-    # def center_window(self):
-    #     screen_width = self.root.winfo_screenwidth()
-    #     screen_height = self.root.winfo_screenheight()
-    #     window_width = 1000  
-    #     window_height = 800 
-    #     x = (screen_width - window_width) // 2
-    #     y = (screen_height - window_height) // 2
-    #     self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
     def register (self):
         username = self.username_entry.get()
@@ -307,7 +313,16 @@ class Volunteer_Register:
         phone = self.phone_entry.get()
         age = self.age_entry.get()
         camp_id = str(self.camp_id_dropdown.get())
-        availability = self.availability_entry.get()
+        availability_var = self.availability_variables
+        print(availability_var)
+        availability_bin = ""
+        for var in availability_var:
+            print(var.get())
+            if var.get():
+                availability_bin += "1"
+            else:
+                availability_bin += "0"
+        print(availability_bin)
         password = self.password_entry.get()
         account_type = "Volunteer"
 
@@ -317,13 +332,14 @@ class Volunteer_Register:
             self.validate_last_name(last_name)
             self.validate_phone(phone)
             self.validate_age(age)
+            self.validate_availability(availability_bin) 
             self.validate_password(password)
 
             with open (logindetails_filepath, "a") as file:
                 file.write(f"{username},{password},{True},{account_type}\n")
 
             with open (volunteers_filepath, "a") as file:
-                file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability}\n")
+                file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability_bin}\n")
 
             # update camps_file.csv
             self.camp_df = pd.read_csv(camps_filepath)
@@ -364,12 +380,15 @@ class Volunteer_Register:
         elif " " in first_name:
                 raise ValueError ("Do not enter spaces in name")
         
-        first_name_stripped = first_name.strip()    
+        first_name_stripped = first_name.strip()
+        first_letter = first_name_stripped[0]
 
-        if len(first_name)>20 or len(first_name) <0:
+        if len(first_name)>20 or len(first_name) <=0:
             raise ValueError ("Name has to be between 0-20 letters")
-        elif not first_name_stripped.istitle():
+        elif not first_letter.isupper():
             raise ValueError("The first letter of the name should be capitalized")
+        elif not first_name_stripped.istitle():
+            raise ValueError("Only the first letter of the name should be capitalized")
                 
 
     def validate_last_name(self, last_name):
@@ -380,11 +399,14 @@ class Volunteer_Register:
             raise ValueError ("Do not enter spaces in name")
         
         last_name_stripped = last_name.strip()
-           
-        if len(last_name)>20 or len(last_name) <0:
+        first_letter = last_name_stripped[0]
+
+        if len(last_name)>20 or len(last_name) <=0:
             raise ValueError    ("Name has to be between 0-20 letters")
-        elif not last_name_stripped.istitle():
+        elif not first_letter.isupper():
             raise ValueError("The first letter of the name should be capitalized")
+        elif not last_name_stripped.istitle():
+            raise ValueError("Only the first letter of the name should be capitalized")
 
     def validate_phone(self, phone):
         if phone.isdigit():
@@ -405,7 +427,11 @@ class Volunteer_Register:
             raise ValueError ("Do not enter spaces in age")
         else:
             raise ValueError ("Age must be number")
-        
+    
+    def validate_availability(self, availability_bin):
+        if availability_bin == "0000000":
+            raise ValueError("Please select at least one day of the week.")
+
     def read_camp_id_values_from_csv(self):
         camp_id_values = []
         try:
