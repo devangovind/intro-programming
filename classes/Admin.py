@@ -5,14 +5,16 @@ import datetime
 import csv
 import pandas as pd
 from Camps import Camps
-from Plans import humanitarian_plan
+# from datetime import date
+# from datetime import datetime
+
 
 class Admin:
 
     # add functions here
     # remember for functions added the first parameter has to be a self
     def __init__(self):
-        self.plans_file = './files/plans_file.csv'
+        self.plans_file = './files/plan_file.csv'
         self.camps_file = './files/camps_file.csv'
         self.resources_file = './files/resources.csv'
         self.login_file = './files/logindetails.csv'
@@ -24,7 +26,6 @@ class Admin:
         # self.volunteer_file = 'files\\volunteers.csv'
         self.plans_data = pd.read_csv(self.plans_file)
         self.users = pd.read_csv(self.login_file)
-        self.users = pd.read_csv(self.login_file)
         with open(self.plans_file, 'r', encoding='utf-8') as plan_file:
             read = csv.DictReader(plan_file)
             self.plan_list = []
@@ -32,34 +33,33 @@ class Admin:
                 self.plan_list.append(row)
 
 
- # FOR (C) DISPLAY PLAN
+ # FOR (A)(B)(C) DISPLAY PLAN AND END A PLAN
 
 
     def check_event_ended(self, plan_id):
         plans = pd.read_csv(self.plans_file)
         plan_details = plans[plans["Plan_ID"]== plan_id]
         plan_end_date_str = plan_details.iloc[0,-1]
-        today = datetime.date.today()
+        today = date.today()
         plan_end_date = datetime.strptime(plan_end_date_str, "%d/%m/%Y").date()
         #returns True if end date has occured and False if end date has not
         return today > plan_end_date 
      
 
-    def display_plan(self, plan_id):
-        camps = pd.read_csv(self.camps_file)
-        plans = pd.read_csv(self.plans_file)
+    # def display_plan(self, plan_id):
+    #     camps = pd.read_csv(self.camps_file)
+    #     plans = pd.read_csv(self.plans_file)
 
-        if self.check_event_ended(plan_id):
-            return "This humanitarian plan has ended."
-        else:
-            plan_details = camps[camps['Plan_ID']== plan_id]
-            if plan_details.empty:
-                return "This humanitarian plan does not exist."
-            else:
-                return plan_details[["Camp_ID","Num_Of_Refugees","Num_Of_Volunteers"]]
+    #     if self.check_event_ended(plan_id):
+    #         return "This humanitarian plan has ended."
+    #     else:
+    #         plan_details = camps[camps['Plan_ID']== plan_id]
+    #         if plan_details.empty:
+    #             return "This humanitarian plan does not exist."
+    #         else:
+    #             return plan_details[["Camp_ID","Num_Of_Refugees","Num_Of_Volunteers"]]
           
  
- # FOR (D) ACCOUNT ACTIVATION
     def get_data(self):
         return self.plans_data
 ## Change some functions to fit the admin.gui(for admin feature a-c and adding a new camp)
@@ -224,19 +224,19 @@ class Admin:
             print(row)
 
 
-    def menu(self):
-        while True:
-            print("1. Create a new humanitarian plan")
-            print("2. Display the humanitarian plans")
+    # def menu(self):
+    #     while True:
+    #         print("1. Create a new humanitarian plan")
+    #         print("2. Display the humanitarian plans")
 
-            a = int(input("Please enter your requirement: "))
+    #         a = int(input("Please enter your requirement: "))
 
-            if a == 1:
-                self.create_humanitarian_plan()
-            elif a == 2:
-                self.display_plans()
-            else:
-                print("Please enter the valid number again!")
+    #         if a == 1:
+    #             self.create_humanitarian_plan()
+    #         elif a == 2:
+    #             self.display_plans()
+    #         else:
+    #             print("Please enter the valid number again!")
 
                 
     def set_camp_id(self):
