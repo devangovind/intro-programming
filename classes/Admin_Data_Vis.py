@@ -141,7 +141,7 @@ def create_world_map():
 
     df_plans = pd.read_csv("./files/plans_file.csv") # Load data
 
-    df_locations = pd.read_csv("./files/usa_cities.csv")
+    df_locations = pd.read_csv("./files/countries.csv")
     
     df_merged = pd.merge(df_plans, df_locations, on='Location') # Merge data
     worldmap = geopandas.read_file(geopandas.datasets.get_path("naturalearth_lowres")) # Load world map
