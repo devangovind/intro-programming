@@ -3,7 +3,8 @@ import pandas as pd
 import csv
 class Plans:
     def __init__(self):
-        self.plans_file = './files/plans_file.csv'
+        self.plans_file = './files/plan_file.csv'
+        # self.plans_file = 'files\\plan_file.csv'
         self.plans_data = pd.read_csv(self.plans_file)
     def get_data(self):
         return self.plans_data

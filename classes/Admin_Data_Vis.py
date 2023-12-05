@@ -138,7 +138,9 @@ def create_resources_bar_graph():
 
 
 def create_world_map():
+
     df_plans = pd.read_csv("./files/plans_file.csv") # Load data
+
     df_locations = pd.read_csv("./files/usa_cities.csv")
     
     df_merged = pd.merge(df_plans, df_locations, on='Location') # Merge data
