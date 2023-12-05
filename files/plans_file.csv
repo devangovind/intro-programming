@@ -1,17 +1,16 @@
 Plan_ID,Description,Location,Start Date,End Date,Status,Numeric_ID
-P1,Provide aid to refugees,New York,1/1/2023,10/1/2023,Finished,1
-P2,Community support project,Los Angeles,15/2/2023,25/12/2023,Ongoing,2
-P3,Medical assistance program,Chicago,20/3/2023,26/11/2023,Finished,3
-P4,Education outreach initiative,Miami,5/4/2023,15/4/2023,Finished,4
-P5,Food distribution campaign,San Francisco,10/5/2023,20/12/2023,Ongoing,5
-P6,Shelter building project,Seattle,25/6/2023,5/12/2023,Finished,6
-P7,Environmental sustainability effort,Dallas,8/8/2023,18/8/2023,Finished,7
-P8,Disaster relief program,Houston,12/9/2023,22/9/2023,Finished,8
-P9,Crisis counseling services,Phoenix,18/10/2023,28/10/2023,Finished,9
-P10,Infrastructure development project,Denver,27/11/2023,27/12/2023,Ongoing,10
-P11,Infrastructure development project,Denver,1/1/2024,10/1/2024,Not started,11
-P12,Infrastructure development project,Denver,1/1/2024,10/1/2024,Not started,12
-P13,Disaster relief program,Houston,5/11/2023,15/4/2024,Ongoing,13
-P14,Disaster relief program,Houston,5/11/2023,15/4/2024,Ongoing,14
-P15,Education outreach initiative,Miami,5/11/2023,15/4/2024,Ongoing,15
-P16,Provide aid to refugees,New York,1/1/2024,10/1/2024,Not started,16
+P1,Provide aid to refugees,Singapore,1/1/2023,10/1/2023,Finished,1
+P2,Community support project,Malaysia,15/2/2023,25/2/2023,Ongoing,2
+P3,Medical assistance program,Greece,20/3/2023,30/3/2023,Finished,3
+P4,Education outreach initiative,Iraq,5/4/2023,15/4/2023,Finished,4
+P5,Food distribution campaign,Italy,10/5/2023,20/5/2023,Ongoing,5
+P6,Shelter building project,China,25/6/2023,5/12/2024,Ongoing,6
+P7,Environmental sustainability effort,Russia,8/8/2023,18/8/2023,Finished,7
+P8,Disaster relief program,Canada,12/9/2023,22/9/2023,Finished,8
+P9,Crisis counseling services,Iran,18/10/2023,28/10/2023,Finished,9
+P10,Infrastructure development project,India,24/12/2023,1/12/2024,Not Started,10
+
+
+
+
+
