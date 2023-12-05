@@ -1,15 +1,14 @@
-Refugee_ID,Camp_ID,MedicalCondition,Medical Description,NumberOfRelatives
-R001,C12345,Healthy,,3
-R002,C23456,Needs attention,Minor injuries,5
-R003,C34567,Healthy,,2
-R004,C45678,Healthy,,0
-R005,C56789,Healthy,,1
-R006,C67890,Healthy,,2
-R007,C78901,Healthy,,5
-R008,C24356,Need attention,Starvation,3
-R009,C24356,Need attention,Hypothermia,4
-R010,C12345,Healthy,,2
-R011,C12345,Need attention,,0
-R012,C12345,Critical,Major injuries,2
-R013,C34567,Healthy,,4
-R014,C56789,Critical,Sepsis,0
+Refugee_ID,Camp_ID,MedicalStatus,MedicalCondition,MedicalDescription,NumberOfRelatives
+R001,C12345,Needs attention,,,0
+R002,C23456,Needs attention,,,0
+R003,C34567,Needs attention,Hypothermia,,1
+R004,C45678,Healthy,No Condition,,2
+R005,C56789,Healthy,No Condition,,3
+R006,C67890,Healthy,No Condition,,4
+R007,C78901,Critial,Others,,5
+R008,C24356,Critial,,,6
+R009,C24356,Critial,,,7
+R010,C24357,Critial,,,8
+R011,C45678,Needs attention,Others,urgh,1
+R012,C45678,Healthy,Minor injuries,please work,4
+R013,C45678,Needs attention,Seizure/Epilepsy,please work omg,5

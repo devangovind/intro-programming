@@ -518,7 +518,7 @@ class VolunteerGui:
 
     def add_refugee(self):
         self.clear_content()
-        title = tk.Label(self.content_frame, text="Create Refugee Profile", font=('Arial', 18))
+        title = tk.Label(self.content_frame, text="Create Refugee Profile", font=('Arial', 16))
         title.config(fg="medium slate blue")
         title.pack(pady=15)
         
@@ -526,40 +526,112 @@ class VolunteerGui:
         suggested_refugee_id = self.refugee.generate_refugee_id()
         
         # Dropdown for Camp ID
-        Camp_ID_lbl = tk.Label(self.content_frame, text="Camp ID:", font=('Arial', 16))
+        Camp_ID_lbl = tk.Label(self.content_frame, text="Camp ID:*", font=('Arial', 14))
         Camp_IDs = self.camps.get_camp_ids()  # Get the list of camp IDs
+        camp_df = self.camps.get_data()
+        # get list of camp IDs that have yet to reach capacity; user can only select from these camps
+        avail_Camp_IDs = []
+        for camp in Camp_IDs:
+            camp_info = camp_df.loc[camp_df['Camp_ID'] == camp]
+            camp_capacity = camp_info['Capacity'].values[0]
+            current_num_refugees = camp_info['Num_Of_Refugees'].values[0]
+            if camp_capacity > current_num_refugees:
+                avail_Camp_IDs.append(camp)
+            else:
+                continue
+
         Camp_ID_var = tk.StringVar(self.content_frame)
-        Camp_ID_var.set(Camp_IDs[0])  # Set default value
-        Camp_ID_dropdown = tk.OptionMenu(self.content_frame, Camp_ID_var, *Camp_IDs)
+        Camp_ID_var.set(avail_Camp_IDs[0])  # Set default value
+        Camp_ID_dropdown = tk.OptionMenu(self.content_frame, Camp_ID_var, *avail_Camp_IDs)
         Camp_ID_dropdown.config(width=17)
-        Camp_ID_lbl.pack(pady=10)
+        
+
+        self.Camp_ID_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 10))
+        self.Camp_ID_error.config(fg="red")
+        Camp_ID_lbl.pack(pady=3)
         Camp_ID_dropdown.pack()
+        self.Camp_ID_error.pack()
 
         # Create input fields for Refugee ID, Medical Condition, and Number of Relatives
-        refugee_id_lbl = tk.Label(self.content_frame, text="Refugee ID:", font=('Arial', 16))
+        refugee_id_lbl = tk.Label(self.content_frame, text="[Do not change] Refugee ID:*", font=('Arial', 14))
         refugee_id_inp = tk.Entry(self.content_frame)
         refugee_id_inp.insert(0, suggested_refugee_id)
-        medical_condition_lbl = tk.Label(self.content_frame, text="Medical Condition:", font=('Arial', 16))
-        medical_condition_inp = tk.Entry(self.content_frame)
-        num_relatives_lbl = tk.Label(self.content_frame, text="Number of Relatives:", font=('Arial', 16))
-        num_relatives_inp = tk.Entry(self.content_frame)
 
-        # Pack the new widgets
-        refugee_id_lbl.pack(pady=10)
-        refugee_id_inp.pack()
-        medical_condition_lbl.pack(pady=10)
-        medical_condition_inp.pack()
-        num_relatives_lbl.pack(pady=10)
+        # Dropdown for Medical Status
+        medical_status_lbl = tk.Label(self.content_frame, 
+                                      text="Medical status:*", 
+                                      font=('Arial', 14))
+        medical_status = ['Choose health status',
+                          'Healthy', 
+                          'Needs attention', 
+                          'Critical']
+        medical_status_var = tk.StringVar(self.content_frame)
+        medical_status_var.set(medical_status[0])
+        medical_status_dropdown = tk.OptionMenu(self.content_frame, 
+                                                medical_status_var, 
+                                                *medical_status)
+        # medical_status_inp = tk.Entry(self.content_frame)
+        medical_status_dropdown.config(width=17)
+        self.med_status_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 10))
+        self.med_status_error.config(fg="red")
+        
+        # Dropdown for Medical Condition
+        medical_condition_lbl = tk.Label(self.content_frame,
+                  text="Primary Medical Condition (if applicable):",
+                  font=('Arial', 16))
+        medical_conditions = ["No Condition", "Diabetes", "Heart Attack", "Physical Trauma", "Sepsis", "Haemorrhage", "Stroke",
+                                  "Seizure/Epilepsy", "Dengue", "Malaria", "Tuberculosis", "AIDS/HIV", "COVID-19", 
+                                  "Starvation", "Hypothermia", "Major injuries", "Minor injuries", "Others"]
+        medical_conditions_var = tk.StringVar(self.content_frame)
+        medical_conditions_var.set(medical_conditions[0])
+        medical_condition_dropdown = tk.OptionMenu(self.content_frame, 
+                                                medical_conditions_var, 
+                                                *medical_conditions)
+    
+
+        # Input field for Medical Description
+        medical_description_lbl = tk.Label(self.content_frame, 
+                                           text="Medical Description (Provide more details on Medical Condition):",
+                                           font=('Arial', 14))
+        medical_description_inp = tk.Entry(self.content_frame, width=100)
+
+        # Input field for Number of Relatives
+        num_relatives_lbl = tk.Label(self.content_frame, 
+                                     text="Number of Relatives:*", 
+                                     font=('Arial', 14))
+        num_relatives_inp = tk.Entry(self.content_frame)
+        self.num_relatives_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 10))
+        self.num_relatives_error.config(fg="red")
+
+        # Pack the widgets
+        refugee_id_lbl.pack()
+        refugee_id_inp.pack(pady=10)
+
+        medical_status_lbl.pack()
+        medical_status_dropdown.pack()
+        self.med_status_error.pack()
+
+        medical_condition_lbl.pack()
+        # medical_condition_inp.pack()
+        medical_condition_dropdown.pack(pady=10)
+
+        medical_description_lbl.pack()
+        medical_description_inp.pack(pady=15)
+        
+        num_relatives_lbl.pack()
         num_relatives_inp.pack()
+        self.num_relatives_error.pack(pady=3)
 
         # Submit Button
-        submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 14), 
+        submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 12), 
                             command=lambda: self.submit_refugee_profile(
                                 refugee_id_inp.get(),
                                 Camp_ID_var.get(),
-                                medical_condition_inp.get(),
+                                medical_status_var.get(),
+                                medical_conditions_var.get(),
+                                medical_description_inp.get(),
                                 num_relatives_inp.get()))
-        submit_btn.pack(pady=20)
+        submit_btn.pack(pady=10)
 
         def resize(e):
             size = e.width / 70
@@ -568,13 +640,30 @@ class VolunteerGui:
         self.content_frame.bind('<Configure>', resize)
                     
 
-    def submit_refugee_profile(self, refugee_id, Camp_ID, medical_condition, num_relatives):
+    def submit_refugee_profile(self, refugee_id, Camp_ID, medical_status, medical_condition, medical_description, num_relatives):
         # Call create_refugee_profile from Refugee class
-        result = self.refugee.create_refugee_profile(Camp_ID, medical_condition, 
-                                                     num_relatives, refugee_id)
-        messagebox.showinfo("Result", result)
+        result = self.refugee.create_refugee_profile(Camp_ID, 
+                                                     medical_status, 
+                                                     medical_condition, 
+                                                     medical_description,
+                                                     num_relatives, 
+                                                     refugee_id)
         if result == "Refugee profile created successfully":
+            self.Camp_ID_error.config(text="Camp ID Saved Successfully", fg="green")
+            self.med_status_error.config(text="Medical Status Saved Successfully", fg="green")
+            self.num_relatives_error.config(text="Number of Relatives Saved Successfully", fg="green")
+            messagebox.showinfo("Result", result)
             self.welcome_message()
+        elif result == "Failed to write refugee profile to CSV":
+            messagebox.showerror("Error", "Failed to create refugee profile. Please try again.")
+        elif result == "Refugee already exists":
+            messagebox.showerror("Error", "Refugee already exists in our records.")
+        else:
+            self.Camp_ID_error.config(text=result[0])
+            self.med_status_error.config(text=result[1])
+            self.num_relatives_error.config(text=result[2])
+
+
 
     # When click logout button, destory volunteer menu
     def logout(self):

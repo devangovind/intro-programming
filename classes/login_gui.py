@@ -8,6 +8,7 @@ import re
 from volunteer_gui import VolunteerGui
 from Volunteer import Volunteer
 from Camps import Camps
+import pandas as pd
 
 # these functions are NOT in class because they are used in different classes to validate admin and volunteers
 
@@ -16,7 +17,7 @@ from Camps import Camps
 # camps_filepath = "files\\camps_file.csv"  
 # volunteers_filepath = "files\\volunteers.csv" 
 
-# Filepaths for MAC
+# Filepaths for windows
 logindetails_filepath = "../files/logindetails.csv"  
 camps_filepath = "../files/camps_file.csv"  
 volunteers_filepath = "../files/volunteers.csv" 
@@ -232,6 +233,7 @@ class Volunteer_Register:
         self.camp_id_label = tk.Label(second_frame, text = "Camp_ID:\nChoose your Camp ID")
         self.camp_id_values = self.read_camp_id_values_from_csv()  
         self.selected_camp_id = tk.StringVar()
+        self.selected_camp_id.set('')
         self.camp_id_dropdown = ttk.Combobox(second_frame, textvariable=self.selected_camp_id, values=self.camp_id_values)
 
         self.availability_label = tk.Label(second_frame, text = "\nAvailability:\nSet 0000000 to the default value")
@@ -304,7 +306,7 @@ class Volunteer_Register:
         last_name = self.last_name_entry.get()
         phone = self.phone_entry.get()
         age = self.age_entry.get()
-        camp_id = self.selected_camp_id.get()
+        camp_id = str(self.camp_id_dropdown.get())
         availability = self.availability_entry.get()
         password = self.password_entry.get()
         account_type = "Volunteer"
@@ -322,6 +324,14 @@ class Volunteer_Register:
 
             with open (volunteers_filepath, "a") as file:
                 file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability}\n")
+
+            # update camps_file.csv
+            self.camp_df = pd.read_csv(camps_filepath)
+            self.camp_data = self.camp_df[self.camp_df['Camp_ID'] == camp_id].copy()
+            self.camp_index = self.camp_data.index
+            self.camp_data['Num_Of_Volunteers'] += 1
+            self.camp_df.iloc[self.camp_index, :] = self.camp_data
+            self.camp_df.to_csv(camps_filepath, index=False)
         
             messagebox.showinfo("Success", "Registration successful!")
             self.register_window.destroy()

@@ -163,9 +163,7 @@ class Volunteer:
 
     def edit_camp_details(self, camp_id, capacity):
         if self.validate_camp_details(camp_id, capacity):
-           print("camp details validated")
            self.volunteer_data['Camp_ID'] = camp_id
-        #    self.volunteer_data['Availability'] = int(availability)
            self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
            self.volunteer_file.to_csv(self.volunteer_path, index=False)
            camps = Camps()
@@ -179,7 +177,6 @@ class Volunteer:
            camps.write_data(camp_id, camps_row)
            return True
         else:
-           print("camp details not validated")
            return self.camperrors
 
 
