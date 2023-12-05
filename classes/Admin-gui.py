@@ -5,7 +5,7 @@ from Camps import Camps
 from Plans import Plans
 from Resource_requests import Resource_requests
 import pandas as pd
-# from tkcalendar import *
+from tkcalendar import *
 import csv
 import datetime
 import time
@@ -64,9 +64,9 @@ class AdminGui:
         self.display_plans_btn = tk.Button(self.headerarea, text="Display Existing Plans", font=('Arial', 16),
                                            command=self.display_plans)
         self.display_plans_btn.grid(row=0, column=2)
-        self.display_plans_btn = tk.Button(self.headerarea, text="Creat a new camp", font=('Arial', 16),
+        self.create_camp_btn = tk.Button(self.headerarea, text="Create a new camp", font=('Arial', 16),
                                     command=self.add_camp)
-        self.display_plans_btn.grid(row=0, column=3)
+        self.create_camp_btn.grid(row=0, column=3)
         self.manage_camps_btn = tk.Button(self.headerarea, text="Manage Camps", font=('Arial', 16),
                                           command=self.manage_camps)
         self.manage_camps_btn.grid(row=0, column=4)
@@ -76,7 +76,7 @@ class AdminGui:
         self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 16))
         self.logout_btn.grid(row=0, column=6)
         self.headerarea.pack(padx=20)
-        self.nav_bar = [self.headerarea, self.home_btn, self.display_plans_btn, self.create_plan_btn,
+        self.nav_bar = [self.headerarea, self.home_btn, self.display_plans_btn, self.create_plan_btn, self.create_camp_btn,
                         self.manage_camps_btn, self.manage_volunteers_btn, self.logout_btn]
 
     def welcome_message(self):
@@ -119,7 +119,7 @@ class AdminGui:
         # When admin click the entry date, admin will be informed that they need to use calendar
         def stest(content, reason, name):
             if self.start_date.get() is not None:
-                messagebox.showwarning(title='Creat a new plan-start date',
+                messagebox.showwarning(title='Create a new plan-start date',
                                        message='Please using take the button to choose the date')
                 # return False
 
@@ -131,7 +131,7 @@ class AdminGui:
 
         def etest(content, reason, name):
             if self.end_date.get() is not None:
-                messagebox.showwarning(title='Creat a new plan--end date',
+                messagebox.showwarning(title='Create a new plan--end date',
                                        message='Please using take the button to choose the date')
 
         self.valid_input_edate = tk.StringVar()
@@ -205,10 +205,10 @@ class AdminGui:
         # ensure all the blank is not empty
         if len(self.des_entry.get()) == 0 or len(self.loc_entry.get()) == 0 or len(self.start_date.get()) == 0 or len(
                 self.end_date.get()) == 0:
-            messagebox.showwarning(title='Creat a new plan', message='Please fill in all the entry')
+            messagebox.showwarning(title='Create a new plan', message='Please fill in all the entry')
         # ensure choosing the date using calendar
         elif Start_date_ == None or End_date_ == None:
-            messagebox.showwarning(title='Creat a new plan', message='Please using take the button to choose the date')
+            messagebox.showwarning(title='Create a new plan', message='Please using take the button to choose the date')
             self.start_date.delete(0, END)
             self.end_date.delete(0, END)
             self.e_date = None
@@ -295,7 +295,7 @@ class AdminGui:
             else:
                 # print(var_start_day!=Start_date_)
                 self.admin.is_date(var_start_day)
-                messagebox.showwarning(title='Creat a new plan',
+                messagebox.showwarning(title='Create a new plan',
                                        message='Please reuse the button to enter the date using calendar ')
                 self.start_date.delete(0, END)
                 self.end_date.delete(0, END)
@@ -330,7 +330,7 @@ class AdminGui:
 
         # self.root.table.pack(fill=tk.BOTH, expand=True)
 
-    def manage_camps(self):
+    def camps_vis(self):
         # when data visualisation is ready. we can have each camp name be clickable to bring up a new screen with the data visualised
         self.clear_content()
         title = tk.Label(self.root, text="Manage Camps", font=('Arial', 24))
@@ -540,6 +540,8 @@ class AdminGui:
         self.clear_content()
         title = tk.Label(self.root, text="Manage Camps", font=('Arial', 24))
         title.pack(pady=20)
+        display_btn = tk.Button(self.root, text="Camp World Map", font= ("Arial", 16), command=self.camps_vis)
+        display_btn.pack(pady=50)
         plans_data = self.admin.get_data()
         plans_ids = ["All Plans"]
         for val in plans_data['Plan_ID']:
