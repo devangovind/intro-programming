@@ -5,8 +5,6 @@ import datetime
 import csv
 import pandas as pd
 from Camps import Camps
-from datetime import date
-from datetime import datetime
 from Plans import humanitarian_plan
 
 class Admin:
@@ -41,7 +39,7 @@ class Admin:
         plans = pd.read_csv(self.plans_file)
         plan_details = plans[plans["Plan_ID"]== plan_id]
         plan_end_date_str = plan_details.iloc[0,-1]
-        today = date.today()
+        today = datetime.date.today()
         plan_end_date = datetime.strptime(plan_end_date_str, "%d/%m/%Y").date()
         #returns True if end date has occured and False if end date has not
         return today > plan_end_date 

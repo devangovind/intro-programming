@@ -7,7 +7,7 @@ from Resource_requests import Resource_requests
 import pandas as pd
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from Admin_Data_Vis import create_bar_graph, create_resources_bar_graph
+from Admin_Data_Vis import create_bar_graph, create_resources_bar_graph, create_world_map
 from tkcalendar import *
 import csv
 import datetime
@@ -276,15 +276,15 @@ class AdminGui:
                         {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
                          'End Date': End_date_,'Status':'Ongoing'}]  
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                    with open(self.admin.plan_file, 'a', newline='', encoding='utf-8') as f:
+                    with open(self.admin.plans_file, 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
                     # order all the plan after adding a new plan
-                    plan = pd.read_csv(self.admin.plan_file)  
+                    plan = pd.read_csv(self.admin.plans_file)  
                     plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
                     sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv(self.admin.plan_file, index=False)
+                    sorted_plan.to_csv(self.admin.plans_file, index=False)
                     messagebox.showinfo('infor', 'Create a plan successfully')
                     self.Description.set('')
                     self.Location.set('')
@@ -411,6 +411,10 @@ class AdminGui:
         self.table.pack(fill=tk.BOTH, expand=True)
         vsb.pack(side="right", fill="y")
         tk.Button(self.root, text='End a plan', command=self.end_plan).pack(side='left', pady=20)
+        self.display_refugees_btn_plans = tk.Button(self.root, text="Refugees per Plan", font=('Arial', 16), command=self.display_refugee_graph_plans)
+        self.display_refugees_btn_plans.pack(pady=10)
+        self.display_volunteers_btn_plans = tk.Button(self.root, text="Volunteers per Plan", font=('Arial', 16), command=self.display_volunteer_graph_plans) 
+        self.display_volunteers_btn_plans.pack(pady=10)
 
     def end_plan(self):
         item = self.table.selection()
@@ -639,11 +643,6 @@ class AdminGui:
         data_vis_label_plans = tk.Label(self.root, text="Plan Data Visualisation:", font=('Arial', 18))
         data_vis_label_plans.pack()
         
-        self.display_refugees_btn_plans = tk.Button(self.root, text="Refugees per Plan", font=('Arial', 16), command=self.display_refugee_graph_plans)
-        self.display_refugees_btn_plans.pack(pady=10)
-        
-        self.display_volunteers_btn_plans = tk.Button(self.root, text="Volunteers per Plan", font=('Arial', 16), command=self.display_volunteer_graph_plans) 
-        self.display_volunteers_btn_plans.pack(pady=10)
         
         # self.show_pie_chart_btn = tk.Button(self.root, text="Show Pie Chart of Resources", command=self.show_pie_chart_of_resources(CAMP_ID))
         # self.show_pie_chart_btn.pack(pady=10)
