@@ -138,28 +138,39 @@ class AdminGui:
         self.Description = tk.StringVar()
         self.Location = tk.StringVar()
         # Build the label
-        tk.Label(self.root, text='Add a new plan',font = ('Arial',20)).place(x=270, y=60)
-        tk.Label(self.root, text='Plan_ID:',font = ('Arial',12)).place(x=300, y=110)
-        tk.Label(self.root, text='Description:',font = ('Arial',12)).place(x=300, y=170)
-        tk.Label(self.root, text='Location:',font = ('Arial',12)).place(x=300, y=250)
-        tk.Label(self.root, text='Start_Date:',font = ('Arial',12)).place(x=300, y=330)
-        tk.Label(self.root, text='End_Date:',font = ('Arial',12)).place(x=300, y=390)
+        tk.Label(self.root, text='Add a new plan',font = ('Arial',24)).pack(pady=10)
+        tk.Label(self.root, text='Plan_ID:',font = ('Arial',18)).pack()
         # Get the plan_ID automatically
         self.plan_id_num = (self.admin.last_plan_id() + 1)
         self.plan_id = "P"+str(self.plan_id_num)
 
         # The plan_ID can be shown in the window and admin can not edit
-        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
+        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',16))
         # Build the entry
-        self.plan_id_label.place(x=300, y=140)
+        self.plan_id_label.pack(pady=10)
+        tk.Label(self.root, text='Description:',font = ('Arial',18)).pack()
         self.des_entry = tk.Entry(self.root, width=30, textvariable=self.Description)
-        self.des_entry.place(x=300, y=210)
+        self.des_entry.pack(pady=10)
+        tk.Label(self.root, text='Location:',font = ('Arial',18)).pack()
         self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
-        self.loc_entry.place(x=300, y=290)
+        self.loc_entry.pack(pady=10)
+        date_frames = tk.Frame()
+        date_frames.columnconfigure(1, weight=1)
+        date_frames.columnconfigure(2, weight=1)
+        date_frames.columnconfigure(3,weight=1)
+        date_frames.rowconfigure(1, weight=1)
+        date_frames.rowconfigure(2, weight=1)
+        tk.Label(date_frames, text='Start Date:',font = ('Arial',18)).grid(row=1, column=1, sticky="e")
+        tk.Label(date_frames, text='End Date:',font = ('Arial',18)).grid(row=2, column=1, sticky="e")
+    
+        
+        
         # Build the button
-        sdate_button = tk.Button(self.root, text='choose the start date',font = ('Arial',10),command=self.pick_sdate).place(x=460, y=350)
-        edate_button = tk.Button(self.root, text='choose the end date', font = ('Arial',10),command=self.pick_edate).place(x=460, y=410)
-        tk.Button(self.root, text='Save this plan', command=self.save_data,font = ('Arial',12)).place(x=300, y=480)
+
+        sdate_button = tk.Button(date_frames, text='Choose the start date',command=self.pick_sdate).grid(row=1, column=3, sticky="w")
+        edate_button = tk.Button(date_frames, text='Choose the end date',command=self.pick_edate).grid(row=2, column=3, sticky="w")
+        date_frames.pack(pady=20)
+        tk.Button(self.root, text='Save this plan', command=self.save_data,font = ('Arial',18)).pack()
 
         # When admin click the entry date, admin will be informed that they need to use calendar
         def stest(content, reason, name):
@@ -170,9 +181,9 @@ class AdminGui:
 
         self.valid_input_sdate = tk.StringVar()
         sCMD = self.root.register(stest)
-        self.start_date = tk.Entry(self.root, textvariable=self.valid_input_sdate, validate='focusin',
+        self.start_date = tk.Entry(date_frames, textvariable=self.valid_input_sdate, validate='focusin',
                                    validatecommand=(sCMD, '%P', '%V', '%W'))
-        self.start_date.place(x=300, y=360)
+        self.start_date.grid(row=1, column=2)
 
         def etest(content, reason, name):
             if self.end_date.get() is not None:
@@ -181,9 +192,9 @@ class AdminGui:
 
         self.valid_input_edate = tk.StringVar()
         eCMD = self.root.register(etest)
-        self.end_date = tk.Entry(self.root, textvariable=self.valid_input_edate, validate='focusin',
+        self.end_date = tk.Entry(date_frames, textvariable=self.valid_input_edate, validate='focusin',
                                  validatecommand=(eCMD, '%P', '%V', '%W'))
-        self.end_date.place(x=300, y=420)
+        self.end_date.grid(row=2, column=2)
 
     #  This method is to get the date using calendar and judge whether it is valid or not
 
@@ -301,16 +312,16 @@ class AdminGui:
                          'End Date': End_date_,'Status':'Not started'}]  # 空字典
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
              
-                    with open(self.admin.plan_file, 'a', newline='', encoding='utf-8') as f:
+                    with open(self.admin.plans_file, 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
 
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
                     ## Order plan using pandas
-                    plan = pd.read_csv(self.admin.plan_file) 
+                    plan = pd.read_csv(self.admin.plans_file) 
                     plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
                     sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv(self.admin.plan_file, index=False)
+                    sorted_plan.to_csv(self.admin.plans_file, index=False)
                     ## reminde admin
                     messagebox.showinfo('infor', 'Create a plan successfully')
                     ## clean all the blank after add a plan successfully and show the plan ID 
@@ -324,7 +335,7 @@ class AdminGui:
                     self.plan_id = "P" + str(self.plan_id_num_1)
                     self.plan_id_label.destroy()
                     self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
-                    self.plan_id_label.place(x=300, y=140)
+                    self.create_new_plan()
             ## check the date 
             elif self.admin.check_end_date(self.e_date, self.s_date):
                 messagebox.showwarning(title='Choose start date', message='The end date cannot before start date')
@@ -363,7 +374,7 @@ class AdminGui:
 
         header = ['plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
         self.table = ttk.Treeview(self.root)
-        self.table = self.table
+
         self.table.configure(columns=header, show='headings')
         for item in header:
             self.table.column(item, width=120, anchor=tk.CENTER)
@@ -448,7 +459,7 @@ class AdminGui:
                             {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2], 'Start Date': temp[3],
                              'End Date': end_date_today,'Status':end_up,'Numeric_ID':number_id}]
                         header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
-                        with open(self.admin.plan_file, 'a',
+                        with open(self.admin.plans_file, 'a',
                                   newline='', encoding='utf-8') as f:
                             writer = csv.DictWriter(f, fieldnames=header)
                             writer.writerows(plan_end_list)
@@ -464,16 +475,16 @@ class AdminGui:
 
 
 
-                        with open(self.admin.plan_file, 'w', newline='') as csvfile:
+                        with open(self.admin.plans_file, 'w', newline='') as csvfile:
                             fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status','Numeric_ID']
                             writer = csv.DictWriter(csvfile, fieldnames=fields)
                             writer.writeheader()
                             for row in self.plan_data_:
                                 writer.writerow(row)
-                        plan = pd.read_csv(self.admin.plan_file)  
+                        plan = pd.read_csv(self.admin.plans_file)  
                         plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
                         sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                        sorted_plan.to_csv(self.admin.plan_file, index=False)
+                        sorted_plan.to_csv(self.admin.plans_file, index=False)
 
                     self.table.bind('<ButtonRelease-1>', update_item())
 
@@ -491,21 +502,30 @@ class AdminGui:
         # self.camp_num_id = tk.StringVar()
 
         # Build the label
-        tk.Label(self.root, text='Add a new camp', font=('Arial', 20)).place(x=270, y=60)
-        tk.Label(self.root, text='Plan_ID:', font=('Arial', 12)).place(x=300, y=110)
-        tk.Label(self.root, text='Camp_ID:', font=('Arial', 12)).place(x=300, y=180)
-        # tk.Label(self.root, text='Num_Of_Refugees:', font=('Arial', 12)).place(x=300, y=240)
-        # tk.Label(self.root, text='Num_Of_Volunteers:', font=('Arial', 12)).place(x=300, y=300)
-        tk.Label(self.root, text='Capacity (between 100-1000):', font=('Arial', 12)).place(x=300, y=360)
+        tk.Label(self.root, text='Add a new camp', font=('Arial', 24)).pack(pady=10)
+        tk.Label(self.root, text='Plan_ID:', font=('Arial', 18)).pack()
+        self.OPTIONS = self.admin.valid_plan()
 
+        self.plan_id_camp = tk.StringVar()
+        self.plan_id_camp.set(self.OPTIONS[0])
+
+        w = tk.OptionMenu(self.root, self.plan_id_camp, *self.OPTIONS)
+        w.pack()
+        tk.Label(self.root, text='Camp_ID:', font=('Arial', 18)).pack(pady=10)
         self.camp_id_num = (self.admin.last_camp_id() + 1)
         self.camp_id = "C"+str(self.camp_id_num)
 
 
         # The plan_ID can be shown in the window and admin can not edit
-        self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 12))
+        self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 16))
+        self.camp_id_label.pack()
+        # tk.Label(self.root, text='Num_Of_Refugees:', font=('Arial', 12)).place(x=300, y=240)
+        # tk.Label(self.root, text='Num_Of_Volunteers:', font=('Arial', 12)).place(x=300, y=300)
+        tk.Label(self.root, text='Capacity (between 100-1000):', font=('Arial', 18)).pack(pady=10)
+
+        
         # Build the entry
-        self.camp_id_label.place(x= 300, y=210)
+       
         # Get the valid plan_ID automatically
         # self.num_r_entry = tk.Entry(self.root, width=30)
         # self.num_r_entry.insert(END, '0')
@@ -517,21 +537,14 @@ class AdminGui:
         # self.num_v_entry.config(state='readonly')
         # self.des_entry.place(x=300, y=210)
         self.capacity_entry = tk.Entry(self.root, width=30, textvariable=self.capacity)
-        self.capacity_entry.place(x=300, y=390)
+        self.capacity_entry.pack()
         self.capacity_entry.config(
             validate="key",
             validatecommand=(self.root.register(lambda P: P.isdigit() or P == ""), "%P",),
         )
         # tk.Button(self.root, text='Save this camp',font=('Arial', 12),command=self.save_camp).place(x=300, y=430)
 
-        self.OPTIONS = self.admin.valid_plan()
-
-        self.plan_id_camp = tk.StringVar()
-        self.plan_id_camp.set(self.OPTIONS[0])
-
-        w = tk.OptionMenu(self.root, self.plan_id_camp, *self.OPTIONS)
-        w.place(x=300,y=140)
-        tk.Button(self.root, text='Save this camp', font=('Arial', 12), command=self.save_camp).place(x=300, y=430)
+        tk.Button(self.root, text='Save this camp', font=('Arial', 12), command=self.save_camp).pack(pady=10)
 
     def save_camp(self):
         #选择的那个plan（要加入camp的那个)
@@ -563,7 +576,8 @@ class AdminGui:
             self.camp_id = "C" + str(self.camp_id_num_1)
             self.camp_id_label.destroy()
             self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 12))
-            self.camp_id_label.place(x=300, y=210)
+
+            self.add_camp()
     def manage_camps(self):
         # when data visualisation is ready. we can have each camp name be clickable to bring up a new screen with the data visualised
         self.clear_content()
@@ -584,25 +598,21 @@ class AdminGui:
         info_lbl = tk.Label(self.root, text="Click on Allocate Resources to allocate to specific camp", font=('Arial', 16))
         info_lbl.pack()
         camp_columns = ["Camp ID", "Plan ID", "No. of Volunteers", "No. of Refugees", "Capacity", "Food Packages", "Medical Supplies", "Tents", "Action (Click) ⬇"]
-        column_widths = [60, 60, 100, 100, 60, 110, 110, 60, 130]
-        tree_view_frame= tk.Frame(self.root)
-        tree_view_frame.pack()
-        tree_view_frame.columnconfigure(0, weight=8)
-        tree_view_frame.columnconfigure(1, weight=1)
-        self.camps_tree = ttk.Treeview(tree_view_frame, columns=camp_columns, show="headings")
+        column_widths = [60, 60, 100, 100, 60, 150, 150, 70, 150]
+        self.camps_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
         for i in range(len(camp_columns)):
             col = camp_columns[i]
             self.camps_tree.heading(col, text=col)
-            self.camps_tree.column(col, stretch=False, width=column_widths[i])
+            self.camps_tree.column(col, width=column_widths[i], anchor=tk.CENTER)
         self.camps_tree.bind("<ButtonRelease-1>", self.can_allocate)        
-        scrollbar = ttk.Scrollbar(tree_view_frame, orient="vertical", command=self.camps_tree.yview)
+        scrollbar = ttk.Scrollbar(self.camps_tree, orient="vertical", command=self.camps_tree.yview)
         # Configure the Treeview to use the scrollbar
         self.camps_tree.configure(yscrollcommand=scrollbar.set)
         # Place the scrollbar on the right side of the Treeview
-        self.camps_tree.grid(row=0, column=0, sticky='nsew')
+        self.camps_tree.pack(fill=tk.BOTH, expand=True)
         
         # label.grid(row=0,column=1)
-        scrollbar.grid(row=0, column=1, sticky='ns')
+        scrollbar.pack(side="right", fill="y")
         self.unresolved = self.requests.get_unresolved()
         request_btn_text = f'Resource Requests ({len(self.unresolved)})'
         request_btn = tk.Button(self.root, text=request_btn_text, font= ("Arial", 16), command=self.resource_requests_list)
@@ -625,8 +635,6 @@ class AdminGui:
         self.display_volunteers_btn_camps = tk.Button(self.root, text="Volunteers per Camp", font=('Arial', 16), command=self.display_volunteer_graph_camps) 
         self.display_volunteers_btn_camps.pack(pady=10)
         
-        data_vis_label_plans = tk.Label(self.root, text="Plan Data Visualisation:", font=('Arial', 18))
-        data_vis_label_plans.pack()
         
         
         # self.show_pie_chart_btn = tk.Button(self.root, text="Show Pie Chart of Resources", command=self.show_pie_chart_of_resources(CAMP_ID))
@@ -657,6 +665,8 @@ class AdminGui:
         unresolved_columns = ["Camp ID", "Requester", "Food Packages Requested", "Medical Supplies Requested",
                               "Tents Requested", "Time Requested"]
         column_widths = [60, 120, 170, 170, 140, 100]
+        refresh_btn = tk.Button(self.root, text="Refresh", command=self.resource_requests_list)
+        refresh_btn.pack()
         grant_requests = tk.Button(self.root, text="Allocate all requested resources",
                                    command=self.grant_all_requests)
         grant_requests.pack()
@@ -864,23 +874,20 @@ class AdminGui:
         info_lbl.pack()
         camp_columns = ["Camp ID", "Username", "First Name", "Surname", "Phone", "Age", "Availability", "State", "Delete"]
         column_widths = [70, 80, 80, 80, 80, 40, 220, 70, 70]
-        tree_view_frame= tk.Frame(self.root)
-        tree_view_frame.pack()
-        tree_view_frame.columnconfigure(0, weight=8)
-        tree_view_frame.columnconfigure(1, weight=1)
-        self.volun_tree = ttk.Treeview(tree_view_frame, columns=camp_columns, show="headings")
+        self.volun_tree = ttk.Treeview(self.root, columns=camp_columns, show="headings")
         for i in range(len(camp_columns)):
             col = camp_columns[i]
             self.volun_tree.heading(col, text=col)
-            self.volun_tree.column(col, stretch=False, width=column_widths[i])
+            self.volun_tree.column(col, width=column_widths[i], anchor=tk.CENTER)
         self.volun_tree.bind("<ButtonRelease-1>", self.individual_volunteer)
-        scrollbar = ttk.Scrollbar(tree_view_frame, orient="vertical", command=self.volun_tree.yview)
+        scrollbar = ttk.Scrollbar(self.volun_tree, orient="vertical", command=self.volun_tree.yview)
         # Configure the Treeview to use the scrollbar
         self.volun_tree.configure(yscrollcommand=scrollbar.set)
         # Place the scrollbar on the right side of the Treeview
-        self.volun_tree.grid(row=0, column=0)
-        scrollbar.grid(row=0, column=1)
+        self.volun_tree.pack(fill=tk.BOTH, expand=True)
+        scrollbar.pack(side="right", fill="y")
         self.filter_volunteers()
+        tk.Label(self.root, text="").pack(pady=50) ##stops table going all the way to bottom
     def activate_all(self):
         self.admin.activate_all()
         self.manage_volunteers()
