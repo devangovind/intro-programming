@@ -14,7 +14,7 @@ class Admin:
     # add functions here
     # remember for functions added the first parameter has to be a self
     def __init__(self):
-        self.plans_file = './files/plan_file.csv'
+        self.plans_file = './files/plans_file.csv'
         self.camps_file = './files/camps_file.csv'
         self.resources_file = './files/resources.csv'
         self.login_file = './files/logindetails.csv'
