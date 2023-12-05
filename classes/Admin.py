@@ -206,17 +206,17 @@ class Admin:
             print(f"Error writing file {filepath}: {e}")
 
 
-    def create_humanitarian_plan(self):
-        description = input("Enter the description of the plan: ")
-        geographical_location = input("Enter the geographical location of the plan: ")
-        start_date = input("Enter the start date of the plan (YYYY/MM/DD): ")
+    # def create_humanitarian_plan(self):
+    #     description = input("Enter the description of the plan: ")
+    #     geographical_location = input("Enter the geographical location of the plan: ")
+    #     start_date = input("Enter the start date of the plan (YYYY/MM/DD): ")
         
-        plan = humanitarian_plan(description, geographical_location, start_date)
-        plan_data = plan.display_plan()
+    #     plan = humanitarian_plan(description, geographical_location, start_date)
+    #     plan_data = plan.display_plan()
     
-        plan_dict = {'description': description, 'geographical_location': geographical_location, 'start_date': start_date}
+    #     plan_dict = {'description': description, 'geographical_location': geographical_location, 'start_date': start_date}
 
-        self.write_csv(self.plans_file, plan_data)
+    #     self.write_csv(self.plans_file, plan_data)
 
     
     def display_plans(self):
