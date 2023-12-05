@@ -38,10 +38,7 @@ class AdminGui:
         self.plan_data_ = self.admin.plan_list
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
         # self.root.mainloop()
-        self.camps = Camps()
-        self.plans = Plans()
-        self.requests = Resource_requests()
-        self.camps_data = self.camps.get_data()
+        
 
     def create_nav_bar(self):
         self.headerarea = tk.Frame(self.root)
@@ -150,7 +147,7 @@ class AdminGui:
         # Get the plan_ID automatically
         self.plan_id_num = (self.admin.last_plan_id() + 1)
         self.plan_id = "P"+str(self.plan_id_num)
-        # print(self.plan_id)--> just for testing during coding
+
         # The plan_ID can be shown in the window and admin can not edit
         self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
         # Build the entry
@@ -223,8 +220,7 @@ class AdminGui:
             self.start_date.insert(0, self.s_date)
             self.date_window.destroy()
             # date = self.cal.get_date()
-            print(type(self.s_date))
-            print(self.admin.is_date(self.s_date))
+       
             return self.s_date
 
     def grab_edate(self):
@@ -236,9 +232,7 @@ class AdminGui:
             self.end_date.delete(0, END)
             self.end_date.insert(0, self.e_date)
             self.date_window.destroy()
-            # date = self.cal.get_date()
-            print(type(self.e_date))
-            print(self.admin.is_date(self.e_date))
+
         return self.e_date
 
     ## This is to save the new plan to csv file and it can be show directly later
@@ -306,8 +300,7 @@ class AdminGui:
                         {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
                          'End Date': End_date_,'Status':'Not started'}]  # 空字典
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                    print(Start_date_)
-                    print(End_date_)
+             
                     with open(self.admin.plan_file, 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
 
@@ -341,7 +334,7 @@ class AdminGui:
                 self.s_date = None
             ## check the data if using calendar 
             else:
-                # print(var_start_day!=Start_date_)
+
                 self.admin.is_date(var_start_day)
                 messagebox.showwarning(title='Create a new plan',
                                        message='Please reuse the button to enter the date using calendar ')
@@ -391,7 +384,7 @@ class AdminGui:
         today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
         df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Not started'), "Status"] = "Ongoing"
         df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
-        # print(df) # just for test
+
         df.to_csv(self.admin.plans_file)
         # the update can be seen in table
         index = 0
@@ -400,7 +393,7 @@ class AdminGui:
             self.plan_update_list = []
             for row in read:
                 self.plan_update_list.append(row)
-        print(self.plan_update_list)
+
         for plan in self.plan_update_list:
             self.table.insert('', 'end', values=(plan['Plan_ID'], plan['Description'],
                                                           plan['Location'], plan['Start Date'], plan['End Date'],plan['Status']))
@@ -426,17 +419,16 @@ class AdminGui:
                 self.plan_sdate = temp[-3]
                 self.plan_edate = temp[-2]
                 self.status = temp[-1]
-                print('test:' + self.plan_edate)
+
                 self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate, '%d/%m/%Y').date()
                 # self.plan_edate_date = datetime.datetime.strptime(self.plan_edate,'%d/%m/%Y').date()
 
             self.table.bind('<ButtonRelease-1>', valid_item_())
-            print(self.plan_sdate)
+
             if self.plan_sdate_date > date.today():
                 messagebox.showinfo(title='Info', message='This plan has not started! It cannot be ended')
             elif self.status == 'Ongoing':
-                print(self.status)
-                print('test2')
+
                 isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
                 # if isok:
                 if isok:
@@ -464,15 +456,14 @@ class AdminGui:
                         # delect the old one 
                         header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
                         for x in self.plan_data_:
-                            print('>>>>====', x)
-                            print(x['End Date'])
+                   
 
                             if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
                                     temp[4] == x['End Date'] and temp[5] == 'Ongoing':
                                 yy = self.plan_data_.remove(x)
-                                print('yes')
 
-                        print(self.plan_data_)
+
+
                         with open(self.admin.plan_file, 'w', newline='') as csvfile:
                             fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status','Numeric_ID']
                             writer = csv.DictWriter(csvfile, fieldnames=fields)
@@ -487,7 +478,7 @@ class AdminGui:
                     self.table.bind('<ButtonRelease-1>', update_item())
 
             elif self.status == 'Finished':
-                print(self.plan_edate)
+
 
                 messagebox.showinfo(title='Info', message='This plan has aready ended')
         elif not item:
@@ -510,7 +501,7 @@ class AdminGui:
         self.camp_id_num = (self.admin.last_camp_id() + 1)
         self.camp_id = "C"+str(self.camp_id_num)
 
-        # print(self.plan_id)--> just for testing during coding
+
         # The plan_ID can be shown in the window and admin can not edit
         self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 12))
         # Build the entry
@@ -549,13 +540,7 @@ class AdminGui:
         Capacity_ = self.capacity.get()
         Num_v = 0
         Num_r = 0
-        print(Plan_ID_C)
-        print(Capacity_)
-        print(Num_r)
-        print(Num_v)
-        print(Camp_ID)
-        print(type(Capacity_))
-        print(type(int(Capacity_)))
+
         if int(Capacity_) < 100 or int(Capacity_)>1000:
             messagebox.showwarning(title='Create a new camp', message='Please choose capacity between 100 and 1000')
         elif int(Capacity_) >= 100 and int(Capacity_) <=1000:
@@ -565,7 +550,7 @@ class AdminGui:
                 {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
                  'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_, 'Plan_ID': Plan_ID_C}]  
             header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Capacity', 'Plan_ID']
-            with open(self.admin.camp_file, 'a', newline='', encoding='utf-8') as f:
+            with open(self.admin.camps_file, 'a', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=header)
 
                 writer.writerows(camp_plan_list)
