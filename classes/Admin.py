@@ -5,14 +5,14 @@ import datetime
 
 class Admin:
     def __init__(self):
-            with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', encoding='utf-8') as plan_file:
+            with open('./plan_file.csv', 'r', encoding='utf-8') as plan_file:
                 read = csv.DictReader(plan_file)
                 self.plan_list = []
                 for row in read:
                     self.plan_list.append(row)
             # print(plan_list)
-            self.camps_file = 'intro-programming/files/camps_file.csv'
-            self.resources_file = 'intro-programming/files/resources.csv'
+            self.camps_file = './files/camps_file.csv'
+            self.resources_file = './files/resources.csv'
             self.camp_id = None
 
 
@@ -21,7 +21,7 @@ class Admin:
 ## Change some functions to fit the admin.gui(for admin feature a-c)
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):
-        plan = pd.read_csv('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv')
+        plan = pd.read_csv('./plan_file.csv')
         plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
         last_plan = plan.loc[plan['Numeric_ID'].idxmax()]
         last_plan_id = last_plan['Plan_ID']
@@ -29,7 +29,7 @@ class Admin:
         return num_
     
     def last_camp_id(self):
-        camps = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\camps_file.csv")
+        camps = pd.read_csv('./files/camps_file.csv')
         camps['Numeric_ID'] = camps['Camp_ID'].str.extract('(\d+)').astype(int)
         last_plan = camps.loc[camps['Numeric_ID'].idxmax()]
         last_plan_id = last_plan['Camp_ID']
@@ -74,7 +74,7 @@ class Admin:
 
         # 存储列中的值
         column_values = []
-        with open('C:\\Users\\96249\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', newline='') as input_file:
+        with open('./plan_file.csv', 'r', newline='') as input_file:
             csv_reader = csv.reader(input_file)
 
             # 遍历每一行并根据条件筛选并输出到控制台

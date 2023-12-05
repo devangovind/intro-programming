@@ -8,6 +8,9 @@ import datetime
 import time
 from datetime import date
 import pandas as pd 
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from Admin_Data_Vis import create_world_map
 
 
 
@@ -218,12 +221,12 @@ class AdminGui:
                         {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
                          'End Date': End_date_,'Status':'Ongoing'}]  # 空字典
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                    with open('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                    with open('./files/plan_file.csv' 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
 
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
-                    plan = pd.read_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv')  # 请替换为您的实际文件路径
+                    plan = pd.read_csv('./files/plan_file.csv')  # 请替换为您的实际文件路径
 
                     # 提取 'Plan_ID' 中的数字部分并转换为整数，创建新的列 'Numeric_ID'
                     plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
@@ -232,7 +235,7 @@ class AdminGui:
                     sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
 
                     # 将排序后的 DataFrame 存储回原始的 CSV 文件，覆盖原始数据
-                    sorted_plan.to_csv('C:\\Users\\96249\\Desktop\Python_CW\\intro-programming\\files\\plan_file.csv', index=False)
+                    sorted_plan.to_csv('./files/plan_file.csv', index=False)
                     messagebox.showinfo('infor', 'Create a plan successfully')
                     # self.plan_id = self.plan_id + 1
                     # self.Plan_Id_entry.insert(END, self.plan_id)
@@ -258,12 +261,12 @@ class AdminGui:
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
                     print(Start_date_)
                     print(End_date_)
-                    with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a', newline='', encoding='utf-8') as f:
+                    with open('./filesplan_file.csv', 'a', newline='', encoding='utf-8') as f:
                         writer = csv.DictWriter(f, fieldnames=header)
 
                         writer.writerows(plan_list)
                     self.admin.insert_new_plan(plan_dic)
-                    plan = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")  # 请替换为您的实际文件路径
+                    plan = pd.read_csv('./files/plan_file.csv')  # 请替换为您的实际文件路径
 
                     # 提取 'Plan_ID' 中的数字部分并转换为整数，创建新的列 'Numeric_ID'
                     plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
@@ -272,7 +275,7 @@ class AdminGui:
                     sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
 
                     # 将排序后的 DataFrame 存储回原始的 CSV 文件，覆盖原始数据
-                    sorted_plan.to_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv", index=False)
+                    sorted_plan.to_csv('./files/plan_file.csv', index=False)
 
                     messagebox.showinfo('infor', 'Create a plan successfully')
                     # self.plan_id = self.plan_id + 1
@@ -304,8 +307,21 @@ class AdminGui:
                 self.e_date = None
                 self.s_date = None
 
-    ## This is to show the plan by table
 
+    def display_world_map(self):
+        new_window = tk.Toplevel(self.root)
+        new_window.title("Geographical Plans Visualisation")
+        new_window.geometry("1200x800")
+        
+        fig = create_world_map()
+        
+        if fig is not None:
+            canvas = FigureCanvasTkAgg(fig, master=new_window)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    
+    ## This is to show the plan by table
+        
     def display_plans(self):
         self.clear_content()
         # add code here:
@@ -321,22 +337,27 @@ class AdminGui:
 
         self.root.table.pack(fill=tk.BOTH, expand=True)
         tk.Button(self.root, text='End a plan', command=self.end_plan).pack(side='left', pady=20)
+        
+        self.display_world_map_button = tk.Button(self.root, text="Display world map of plans", font=('Arial', 16), command=self.display_world_map)
+        self.display_world_map_button.pack(pady=10)
+        
+        
         # tk.Button(self.root, text='refresh', command= self.refresh_plan).pack(side='left', pady=20)
         # plan_data = PlanData()
         # this is to show if the end date in the plan has arrived, this End date will show "None"
         index = 0
         # 如果开始时间到了今天 创建的计划自动变为ongoing
         # 如果结束时间到了今天 创建的计划自动变为 finished
-        df = pd.read_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv")
+        df = pd.read_csv('./files/plan_file.csv')
         df.set_index("Plan_ID", inplace=True)  # 日期列设置为index
         today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
         df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Not started'), "Status"] = "Ongoing"
         df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
         # print(df) # just for test
-        df.to_csv("C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\plan_file.csv")
+        df.to_csv('./files/plan_file.csv')
         # 将上面自动更新之后的显示在表中
         index = 0
-        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'r', encoding='utf-8') as plan_file:
+        with open('./files/plan_file.csv', 'r', encoding='utf-8') as plan_file:
             read = csv.DictReader(plan_file)
             self.plan_update_list = []
             for row in read:
@@ -392,7 +413,7 @@ class AdminGui:
                              'End Date': end_date_today,'Status':end_up}]
                         header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
                         # 先加入
-                        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'a',
+                        with open('./files/plan_file.csv', 'a',
                                   newline='', encoding='utf-8') as f:
                             writer = csv.DictWriter(f, fieldnames=header)
                             writer.writerows(plan_end_list)
@@ -419,7 +440,7 @@ class AdminGui:
                                     print('yes or not')
                         print(self.plan_data_)
 
-                        with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\plan_file.csv', 'w', newline='') as csvfile:
+                        with open('./files/plan_file.csv', 'w', newline='') as csvfile:
                             fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status']
                             writer = csv.DictWriter(csvfile, fieldnames=fields)
                             writer.writeheader()
@@ -507,7 +528,7 @@ class AdminGui:
                 {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
                  'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_, 'Plan_ID': Plan_ID_C}]  # 空字典
             header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Capacity', 'Plan_ID']
-            with open('C:\\Users\\96249\\Desktop\\Python_CW\\intro-programming\\files\\camps_file.csv', 'a', newline='', encoding='utf-8') as f:
+            with open('./files/plan_file.csv', 'a', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=header)
 
                 writer.writerows(camp_plan_list)
