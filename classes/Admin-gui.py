@@ -294,7 +294,7 @@ class AdminGui:
             messagebox.showwarning(title='Create a new plan', message='Please fill in all the entries')
         # ensure choosing the date using calendar
         elif Start_date_ == None or End_date_ == None:
-            messagebox.showwarning(title='Create a new plan', message='Please using take the button to choose the date')
+            messagebox.showwarning(title='Create a new plan', message='Use buttons to choose start and end date')
             self.start_date.delete(0, END)
             self.end_date.delete(0, END)
             self.e_date = None
