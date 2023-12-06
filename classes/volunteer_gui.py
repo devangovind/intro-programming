@@ -288,7 +288,7 @@ class VolunteerGui:
         capacity_lbl.pack()
         
         capacity_inp = tk.Entry(self.content_frame)
-        capacity_inp.insert(0, current_capacity)
+        capacity_inp.insert(0, 100)
         capacity_inp.pack()
         self.capacity_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 10))
         self.capacity_error.config(fg="red")
@@ -670,6 +670,56 @@ class VolunteerGui:
         title = tk.Label(self.content_frame, text="View Refugee Details", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=(20, 10))
+
+        if self.tree_view is None:
+            self.tree_view_frame = tk.Frame(self.content_frame)
+            self.tree_view_frame.pack(fill='both', expand=True, pady=10)
+
+            tree_scroll = tk.Scrollbar(self.tree_view_frame)
+            tree_scroll.pack(side='right', fill='y')
+            tree_xscroll = tk.Scrollbar(self.tree_view_frame, orient='horizontal')
+            tree_xscroll.pack(side='bottom', fill='x')
+
+            self.tree_view = ttk.Treeview(self.tree_view_frame, yscrollcommand=tree_scroll.set, 
+                                        xscrollcommand=tree_xscroll.set, selectmode='browse', show='headings')
+            self.tree_view.pack(side='left', fill='both', expand=True)
+
+            tree_scroll.config(command=self.tree_view.yview)
+            tree_xscroll.config(command=self.tree_view.xview)
+
+            columns = ['Refugee_ID', 'Camp_ID', 'Medical Status', 'Medical Condition', 'Medical Description', 'Number of Relatives']
+            self.tree_view['columns'] = columns
+
+            for col in columns:
+                self.tree_view.heading(col, text=col, anchor='center')
+                self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
+
+            style = ttk.Style(self.content_frame)
+            style.theme_use("default")
+            style.configure("Treeview", background="#D3D3D3", foreground="black", rowheight=25, fieldbackground="#D3D3D3")
+            style.map('Treeview', background=[('selected', '#347083')])
+
+        for item in self.tree_view.get_children():
+            self.tree_view.delete(item)
+
+        try:
+            refugee_data = self.refugee.display_all_refugees()  # Call the function to get refugee data
+
+            for index, row in refugee_data.iterrows():
+                self.tree_view.insert("", 'end', values=list(row))
+
+        except Exception as e:
+            print("Failed to display refugee data:", e)
+            error_label = tk.Label(self.content_frame, text="Error displaying refugee data.", background='#f0f0f0', font=('Arial', 10))
+            error_label.pack(pady=10)
+
+    # def view_refugee(self):
+    #     self.clear_content()
+    #     title = tk.Label(self.content_frame, text="View Refugee Details", font=('Arial', 18))
+    #     title.config(fg="medium slate blue")
+    #     title.pack(pady=(20, 10))
+
+        
 
 
     # When click logout button, destory volunteer menu

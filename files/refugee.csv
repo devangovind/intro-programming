@@ -1,15 +1,15 @@
 Refugee_ID,Camp_ID,MedicalStatus,MedicalCondition,MedicalDescription,NumberOfRelatives
-R001,C12345,Needs attention,,,0
-R002,C23456,Needs attention,,,0
-R003,C34567,Needs attention,Hypothermia,,1
-R004,C45678,Healthy,No Condition,,2
-R005,C56789,Healthy,No Condition,,3
-R006,C67890,Healthy,No Condition,,4
-R007,C78901,Critial,Others,,5
-R008,C24356,Critial,,,6
-R009,C24356,Critial,,,7
-R010,C24357,Critial,,,8
-R011,C45678,Needs attention,Others,urgh,1
-R012,C45678,Healthy,Minor injuries,please work,4
-R013,C45678,Needs attention,Seizure/Epilepsy,please work omg,5
-R014,C45678,Healthy,Stroke,rrrrrr,5
+R001,C1,Needs attention,,,0
+R002,C2,Needs attention,,,0
+R003,C3,Needs attention,Hypothermia,,1
+R004,C4,Healthy,No Condition,,2
+R005,C5,Healthy,No Condition,,3
+R006,C6,Healthy,No Condition,,4
+R007,C7,Critial,Others,,5
+R008,C2,Critial,,,6
+R009,C2,Critial,,,7
+R010,C2,Critial,,,8
+R011,C4,Needs attention,Others,urgh,1
+R012,C4,Healthy,Minor injuries,please work,4
+R013,C4,Needs attention,Seizure/Epilepsy,please work omg,5
+R014,C4,Healthy,Stroke,rrrrrr,5
