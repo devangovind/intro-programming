@@ -1,6 +1,8 @@
 # Admin Class File
 
 from Plans import humanitarian_plan
+from Plans import Plans
+
 import datetime
 import csv
 import pandas as pd
@@ -23,7 +25,7 @@ class Admin:
         # self.users = pd.read_csv(self.login_file)
 
         # file path for windows
-        self.plans_file = '../files/plans.csv'
+        self.plans_file = '../files/plans_file.csv'
         self.camps_file = '../files/camps_file.csv'
         self.resources_file = '../files/resources.csv'
         self.login_file = '../files/logindetails.csv'
@@ -65,7 +67,9 @@ class Admin:
           
  
     def get_data(self):
+        self.plans_data = pd.read_csv(self.plans_file)
         return self.plans_data
+    
 ## Change some functions to fit the admin.gui(for admin feature a-c and adding a new camp)
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):

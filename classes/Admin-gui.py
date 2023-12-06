@@ -26,8 +26,8 @@ class AdminGui:
         self.root.title("Admin View")
         self.admin = admin
         # self.volunteer_data = self.volunteer.get_volunteer_data()
-        self.volunteer_file = "./files/volunteers.csv"
-        self.users_file = "./files/logindetails.csv"
+        # self.volunteer_file = "./files/volunteers.csv"
+        # self.users_file = "./files/logindetails.csv"
         # self.users_file = 'files\\logindetails.csv'
         # self.volunteer_file = 'files\\volunteers.csv'
         self.create_nav_bar()
@@ -38,10 +38,10 @@ class AdminGui:
         self.camps_data = self.camps.get_data()
         
         #for windows:
-        self.volunteer_filepath = "../files/volunteers.csv"
-        self.volunteer_data = pd.read_csv(self.volunteer_filepath)
-        self.login_filepath = "../files/logindetails.csv"
-        self.users = pd.read_csv(self.login_filepath)
+        self.volunteer_file = "../files/volunteers.csv"
+        self.volunteer_data = pd.read_csv(self.volunteer_file)
+        self.users_file = "../files/logindetails.csv"
+        self.users = pd.read_csv(self.users_file)
         
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
         # self.root.mainloop()
@@ -840,8 +840,8 @@ class AdminGui:
     def manage_volunteers(self):
         self.clear_content()
         # add code here to edit volunteer data
-        self.volunteer_data = pd.read_csv(self.volunteer_filepath)
-        self.users = pd.read_csv(self.login_filepath)
+        self.volunteer_data = pd.read_csv(self.volunteer_file)
+        self.users = pd.read_csv(self.users_file)
         title = tk.Label(self.root, text="Manage Volunteers", font=('Arial', 24))
         title.pack(pady=20)
         camps_ids = ["All Camps"]
