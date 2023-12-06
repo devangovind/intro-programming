@@ -26,9 +26,10 @@ class AdminGui:
         self.root.title("Admin View")
         self.admin = admin
         # self.volunteer_data = self.volunteer.get_volunteer_data()
-        self.volunteer_file = "./files/volunteers.csv"
-        self.users_file = "./files/logindetails.csv"
+        # self.volunteer_file = "./files/volunteers.csv"
+        # self.users_file = "./files/logindetails.csv"
         # self.users_file = 'files\\logindetails.csv'
+        # self.countries_file = "./files/countries.csv"
         # self.volunteer_file = 'files\\volunteers.csv'
         self.create_nav_bar()
         self.welcome_message()
@@ -36,9 +37,15 @@ class AdminGui:
         self.plans = Plans()
         self.requests = Resource_requests()
         self.camps_data = self.camps.get_data()
-
-
-        self.plan_data_ = self.admin.plan_list
+        
+        #for windows:
+        self.volunteer_file = "../files/volunteers.csv"
+        self.volunteer_data = pd.read_csv(self.volunteer_file)
+        self.users_file = "../files/logindetails.csv"
+        self.users = pd.read_csv(self.users_file)
+        self.countries_file = "../files/countries.csv"
+        # countries_df = pd.read_csv(self.countries_file)
+        
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
         # self.root.mainloop()
         
@@ -140,7 +147,7 @@ class AdminGui:
     
     # Function to create a list of countries
     def get_countries_list(self):
-        countries_df = pd.read_csv("./files/countries.csv")
+        countries_df = pd.read_csv(self.countries_file)
         countries_list = countries_df["Location"].tolist()
         return countries_list
     

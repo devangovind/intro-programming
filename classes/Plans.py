@@ -3,15 +3,16 @@ import pandas as pd
 import csv
 class Plans:
     def __init__(self):
-        self.plans_file = './files/plans_file.csv'
-        # self.plans_file = 'files\\plan_file.csv'
-        self.plans_data = pd.read_csv(self.plans_file)
+        # self.plans_data = pd.read_csv('./files/plans_file.csv')
+        #for windows:
+        self.plans_filepath = '../files/plans_file.csv'
+        self.plans_data = pd.read_csv(self.plans_filepath)
     def get_data(self):
         return self.plans_data
     def write_data(self, plan_id, new_row):
         camp_index = self.plans_data.index[self.plans_data['plan_id'] == plan_id]
         self.plans_data.iloc[camp_index, :] = new_row
-        self.plans_data.to_csv(self.plans_file, index=False)
+        self.plans_data.to_csv(self.plans_filepath, index=False)
         return True
 
 

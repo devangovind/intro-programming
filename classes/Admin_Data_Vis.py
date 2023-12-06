@@ -5,6 +5,16 @@ import csv
 import tkinter as tk
 import geopandas
 import pandas as pd
+# camps_filepath = '../files/camps_file.csv'
+# resource_file = '../files/resources.csv'
+# plans_filepath = '../files/plans_file.csv'
+# countries_filepath = "./files/countries.csv"
+
+# for windows:
+camps_filepath = '../files/camps_file.csv'
+resource_file = '../files/resources.csv'
+plans_filepath = '../files/plans_file.csv'
+countries_filepath = "../files/countries.csv"
 
 def create_pie_chart(data, labels, title):
     colors = ['#1f77b466', '#ff7f0e66', '#2ca02c66']  # Blue, Orange, Green
@@ -58,7 +68,7 @@ def create_bar_graph(camps_or_plans, vol_or_ref):
     y_axis_variable = []
     
     try:
-        with open("./files/camps_file.csv") as file:
+        with open(camps_filepath) as file:
             csv_reader = csv.reader(file)
             next(csv_reader) # Skips header row
             for row in csv_reader:
@@ -99,7 +109,7 @@ def create_resources_bar_graph():
     tents = []
     
     try:
-        with open("./files/resources.csv") as file:
+        with open(resource_file) as file:
             csv_reader = csv.reader(file)
             next(csv_reader) # Skips header row
             for row in csv_reader:
@@ -139,9 +149,9 @@ def create_resources_bar_graph():
 
 def create_world_map():
 
-    df_plans = pd.read_csv("./files/plans_file.csv") # Load data
+    df_plans = pd.read_csv(plans_filepath) # Load data
 
-    df_locations = pd.read_csv("./files/countries.csv")
+    df_locations = pd.read_csv(countries_filepath)
     
     df_merged = pd.merge(df_plans, df_locations, on='Location') # Merge data
     worldmap = geopandas.read_file(geopandas.datasets.get_path("naturalearth_lowres")) # Load world map

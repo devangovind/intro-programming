@@ -1,6 +1,8 @@
 # Admin Class File
 
 from Plans import humanitarian_plan
+from Plans import Plans
+
 import datetime
 import csv
 import pandas as pd
@@ -14,17 +16,21 @@ class Admin:
     # add functions here
     # remember for functions added the first parameter has to be a self
     def __init__(self):
-        self.plans_file = './files/plans_file.csv'
-        self.camps_file = './files/camps_file.csv'
-        self.resources_file = './files/resources.csv'
-        self.login_file = './files/logindetails.csv'
-        self.volunteer_file = './files/volunteers.csv'
-        # self.plans_file = "files\\plans_file.csv"
-        # self.camps_file = "files\\camps_file.csv"
-        # self.resources_file = "files\\resources.csv"
-        # self.login_file = 'files\\logindetails.csv'
-        # self.volunteer_file = 'files\\volunteers.csv'
-        self.plans_data = pd.read_csv(self.plans_file)
+        # self.plans_file = 'intro-programming/files/plans.csv'
+        # self.camps_file = 'intro-programming/files/camps_file.csv'
+        # self.resources_file = 'intro-programming/files/resources.csv'
+        # self.login_file = './files/logindetails.csv'
+        # self.volunteer_file = './files/volunteers.csv'
+        # self.camp_id = None
+        # self.users = pd.read_csv(self.login_file)
+
+        # file path for windows
+        self.plans_file = '../files/plans_file.csv'
+        self.camps_file = '../files/camps_file.csv'
+        self.resources_file = '../files/resources.csv'
+        self.login_file = '../files/logindetails.csv'
+        self.volunteer_file = '../files/volunteers.csv'
+        self.camp_id = None
         self.users = pd.read_csv(self.login_file)
         with open(self.plans_file, 'r', encoding='utf-8') as plan_file:
             read = csv.DictReader(plan_file)
@@ -61,7 +67,9 @@ class Admin:
           
  
     def get_data(self):
+        self.plans_data = pd.read_csv(self.plans_file)
         return self.plans_data
+    
 ## Change some functions to fit the admin.gui(for admin feature a-c and adding a new camp)
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):
