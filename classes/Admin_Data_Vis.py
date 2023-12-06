@@ -62,7 +62,7 @@ def create_bar_graph(camps_or_plans, vol_or_ref):
             csv_reader = csv.reader(file)
             next(csv_reader) # Skips header row
             for row in csv_reader:
-                camp, refugee, volunteer, plan, camp_capacity = row
+                camp, refugee, volunteer, camp_capacity, plan = row
                 if camps_or_plans == "camps":
                     x_axis_variable.append(camp)
                 elif camps_or_plans == "plans":
@@ -85,7 +85,7 @@ def create_bar_graph(camps_or_plans, vol_or_ref):
     ax = fig.add_subplot(111)
     ax.bar(x_axis_variable, y_axis_variable, width=0.8)
     ax.set_xlabel(camps_or_plans.capitalize())
-    ax.set_xticklabels(x_axis_variable, rotation=45, ha="right")
+    ax.set_xticklabels(x_axis_variable, rotation=45, ha="center")
     ax.set_ylabel(vol_or_ref.capitalize())
     ax.set_title(f"{vol_or_ref.capitalize()} within each of the {camps_or_plans}")
 
@@ -117,19 +117,19 @@ def create_resources_bar_graph():
     axs[0].set_title("Food Packs")
     axs[0].set_xlabel("Camp ID")
     axs[0].set_ylabel("Number")
-    axs[0].set_xticklabels(camps,rotation=45, ha="right")
+    axs[0].set_xticklabels(camps,rotation=45, ha="center")
 
     axs[1].bar(camps, medical_sups, color="red")
     axs[1].set_title('Medical Supplies')
     axs[1].set_xlabel("Camp ID")
     axs[1].set_ylabel("Number")
-    axs[1].set_xticklabels(camps,rotation=45, ha="right")
+    axs[1].set_xticklabels(camps,rotation=45, ha="center")
     
     axs[2].bar(camps, tents, color="purple")
     axs[2].set_title("Tents")
     axs[2].set_xlabel("Camp ID")
     axs[2].set_ylabel("Number")
-    axs[2].set_xticklabels(camps,rotation=45, ha="right")
+    axs[2].set_xticklabels(camps,rotation=45, ha="center")
     
     plt.tight_layout()
 
