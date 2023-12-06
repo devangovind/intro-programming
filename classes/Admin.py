@@ -5,17 +5,14 @@ import datetime
 import csv
 import pandas as pd
 from Camps import Camps
-from datetime import date
-from datetime import datetime
+# from datetime import date
+# from datetime import datetime
+
 
 class Admin:
 
     # add functions here
     # remember for functions added the first parameter has to be a self
-    def create_humanitarian_plan(self):
-        pass
-  
-
     def __init__(self):
         # self.plans_file = 'intro-programming/files/plans.csv'
         # self.camps_file = 'intro-programming/files/camps_file.csv'
@@ -33,36 +30,101 @@ class Admin:
         self.volunteer_file = '../files/volunteers.csv'
         self.camp_id = None
         self.users = pd.read_csv(self.login_file)
+        with open(self.plans_file, 'r', encoding='utf-8') as plan_file:
+            read = csv.DictReader(plan_file)
+            self.plan_list = []
+            for row in read:
+                self.plan_list.append(row)
 
 
- # FOR (C) DISPLAY PLAN
+ # FOR (A)(B)(C) DISPLAY PLAN AND END A PLAN
 
 
     def check_event_ended(self, plan_id):
         plans = pd.read_csv(self.plans_file)
         plan_details = plans[plans["Plan_ID"]== plan_id]
         plan_end_date_str = plan_details.iloc[0,-1]
-        today = date.today()
+        today = datetime.date.today()
         plan_end_date = datetime.strptime(plan_end_date_str, "%d/%m/%Y").date()
         #returns True if end date has occured and False if end date has not
         return today > plan_end_date 
      
 
-    def display_plan(self, plan_id):
-        camps = pd.read_csv(self.camps_file)
-        plans = pd.read_csv(self.plans_file)
+    # def display_plan(self, plan_id):
+    #     camps = pd.read_csv(self.camps_file)
+    #     plans = pd.read_csv(self.plans_file)
 
-        if self.check_event_ended(plan_id):
-            return "This humanitarian plan has ended."
-        else:
-            plan_details = camps[camps['Plan_ID']== plan_id]
-            if plan_details.empty:
-                return "This humanitarian plan does not exist."
-            else:
-                return plan_details[["Camp_ID","Num_Of_Refugees","Num_Of_Volunteers"]]
+    #     if self.check_event_ended(plan_id):
+    #         return "This humanitarian plan has ended."
+    #     else:
+    #         plan_details = camps[camps['Plan_ID']== plan_id]
+    #         if plan_details.empty:
+    #             return "This humanitarian plan does not exist."
+    #         else:
+    #             return plan_details[["Camp_ID","Num_Of_Refugees","Num_Of_Volunteers"]]
           
  
- # FOR (D) ACCOUNT ACTIVATION
+    def get_data(self):
+        return self.plans_data
+## Change some functions to fit the admin.gui(for admin feature a-c and adding a new camp)
+## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
+    def last_plan_id(self):
+        plan = pd.read_csv(self.plans_file)
+        plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
+        last_plan = plan.loc[plan['Numeric_ID'].idxmax()]
+        last_plan_id = last_plan['Plan_ID']
+        num_ = int(last_plan_id[1:])
+        return num_
+    
+    def last_camp_id(self):
+        camps = pd.read_csv(self.camps_file)
+        camps['Numeric_ID'] = camps['Camp_ID'].str.extract('(\d+)').astype(int)
+        last_plan = camps.loc[camps['Numeric_ID'].idxmax()]
+        last_plan_id = last_plan['Camp_ID']
+        num_ = int(last_plan_id[1:])
+        return num_
+
+## This is to justify the type of the date input
+    def is_date(self, date):
+        return isinstance(date, datetime.date)
+## This is to make sure the start date
+    def check_start_day(self, date):
+
+        today = date.today()
+        plan_start_date = date
+        if today <= plan_start_date:
+            return False
+        else:
+            return True
+## This is to make sure the end date
+    def check_end_date(self,end_date,start_day):
+        if end_date > start_day:
+            return False
+        else:
+            return True
+    # def plan_id_plus_1(self):
+    #     self.plan_id  = self.plan_id + 1
+    #     return str(self.plan_id)
+
+## This is to refresh the plan after creating a plan 
+    def insert_new_plan(self, new_plan):
+        self.plan_list.append(new_plan)
+
+## This is to choose the plan which can be added a new camp 
+    def valid_plan(self):
+        column_to_check = 5  
+        condition_value = 'Ongoing'
+        condition_value_2 = 'Not started'  
+        target_column_index = 0  
+        column_values = []
+        with open(self.plans_file, 'r', newline='') as input_file:
+            csv_reader = csv.reader(input_file)
+            for row in csv_reader:
+                if (row[column_to_check] == condition_value or row[column_to_check] == condition_value_2):
+                    column_values.append(row[target_column_index])
+        return column_values
+
+# FOR (D) ACCOUNT ACTIVATION
 
 
     def save_changes(self):
@@ -146,17 +208,17 @@ class Admin:
             print(f"Error writing file {filepath}: {e}")
 
 
-    def create_humanitarian_plan(self):
-        description = input("Enter the description of the plan: ")
-        geographical_location = input("Enter the geographical location of the plan: ")
-        start_date = input("Enter the start date of the plan (YYYY/MM/DD): ")
+    # def create_humanitarian_plan(self):
+    #     description = input("Enter the description of the plan: ")
+    #     geographical_location = input("Enter the geographical location of the plan: ")
+    #     start_date = input("Enter the start date of the plan (YYYY/MM/DD): ")
         
-        plan = humanitarian_plan(description, geographical_location, start_date)
-        plan_data = plan.display_plan()
+    #     plan = humanitarian_plan(description, geographical_location, start_date)
+    #     plan_data = plan.display_plan()
     
-        plan_dict = {'description': description, 'geographical_location': geographical_location, 'start_date': start_date}
+    #     plan_dict = {'description': description, 'geographical_location': geographical_location, 'start_date': start_date}
 
-        self.write_csv(self.plans_file, plan_data)
+    #     self.write_csv(self.plans_file, plan_data)
 
     
     def display_plans(self):
@@ -166,19 +228,19 @@ class Admin:
             print(row)
 
 
-    def menu(self):
-        while True:
-            print("1. Create a new humanitarian plan")
-            print("2. Display the humanitarian plans")
+    # def menu(self):
+    #     while True:
+    #         print("1. Create a new humanitarian plan")
+    #         print("2. Display the humanitarian plans")
 
-            a = int(input("Please enter your requirement: "))
+    #         a = int(input("Please enter your requirement: "))
 
-            if a == 1:
-                self.create_humanitarian_plan()
-            elif a == 2:
-                self.display_plans()
-            else:
-                print("Please enter the valid number again!")
+    #         if a == 1:
+    #             self.create_humanitarian_plan()
+    #         elif a == 2:
+    #             self.display_plans()
+    #         else:
+    #             print("Please enter the valid number again!")
 
                 
     def set_camp_id(self):
@@ -236,10 +298,16 @@ class Admin:
         # except Exception as e:
         #     print(f"Error in update_resource_allocation: {e}")
         resources_data = pd.read_csv(self.resources_file)
-        camp_index = resources_data.index[resources_data['Camp_ID'] == camp_id]
-        new_row = [camp_id, food, medical, tent]
-        resources_data.iloc[camp_index, :] = new_row
-        resources_data.to_csv(self.resources_file, index=False)
+
+        if camp_id in resources_data['Camp_ID'].values:
+            camp_index = resources_data.index[resources_data['Camp_ID'] == camp_id]
+            new_row = [camp_id, int(food), int(medical), int(tent)]
+            resources_data.iloc[camp_index, :] = new_row
+            resources_data.to_csv(self.resources_file, index=False)
+        else:
+            new_row = {'Camp_ID': camp_id, 'food_pac': food, 'medical_sup': medical, 'tents': tent}
+            resources_data.loc[len(resources_data)] = new_row
+            resources_data.to_csv(self.resources_file, index=False)
         return True
 
     def suggest_resources(self, camp_id,duration_days=7):
@@ -305,8 +373,6 @@ class Admin:
             return True
         else:
             return self.resource_errors
-
-
 
 if __name__ == "__main__":
     admin = Admin()
