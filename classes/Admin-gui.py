@@ -631,6 +631,7 @@ class AdminGui:
     def resource_requests_list(self):
         self.clear_content()
         self.unresolved = self.requests.get_unresolved()
+        # self.unresolved = self.unresolved.sort_values(by='Date', ascending=False) ##Get elicia to store as datetime objects -> pd.to_datetime(date.today())
         request_title = tk.Label(self.root, text="Resource Requests", font=('Arial', 24))
         request_title.pack(pady=20)
         unresolved_title = tk.Label(self.root, text="Unresolved Requests", font=('Arial', 20))
