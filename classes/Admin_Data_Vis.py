@@ -5,16 +5,17 @@ import csv
 import tkinter as tk
 import geopandas
 import pandas as pd
+# for mac
+camps_filepath = './files/camps_file.csv'
+resource_file = './files/resources.csv'
+plans_filepath = './files/plans_file.csv'
+countries_filepath = "./files/countries.csv"
+
+# for windows:
 # camps_filepath = '../files/camps_file.csv'
 # resource_file = '../files/resources.csv'
 # plans_filepath = '../files/plans_file.csv'
-# countries_filepath = "./files/countries.csv"
-
-# for windows:
-camps_filepath = '../files/camps_file.csv'
-resource_file = '../files/resources.csv'
-plans_filepath = '../files/plans_file.csv'
-countries_filepath = "../files/countries.csv"
+# countries_filepath = "../files/countries.csv"
 
 def create_pie_chart(data, labels, title):
     colors = ['#1f77b466', '#ff7f0e66', '#2ca02c66']  # Blue, Orange, Green

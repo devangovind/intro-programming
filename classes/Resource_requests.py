@@ -1,11 +1,14 @@
 import pandas as pd
 class Resource_requests:
     def __init__(self):
-        # self.resource_requests_file = './files/resource_request.csv'
-        #for windows
-        self.resource_requests_file = '../files/resource_request.csv'
+        
+        # for mac
+        self.resource_requests_file = './files/resource_request.csv'
 
+        # for windows
+        # self.resource_requests_file = '../files/resource_request.csv'
         # self.resource_requests_file = 'files\\resource_request.csv'
+        
         self.request_data = pd.read_csv(self.resource_requests_file)
     def get_data(self):
         self.request_data = pd.read_csv(self.resource_requests_file)

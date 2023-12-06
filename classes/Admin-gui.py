@@ -26,24 +26,30 @@ class AdminGui:
         self.root.title("Admin View")
         self.admin = admin
         # self.volunteer_data = self.volunteer.get_volunteer_data()
-        # self.volunteer_file = "./files/volunteers.csv"
-        # self.users_file = "./files/logindetails.csv"
+        
+        # for mac
+        self.volunteer_file = "./files/volunteers.csv"
+        self.users_file = "./files/logindetails.csv"
+        self.countries_file = "./files/countries.csv"
+        
+        # for windows
         # self.users_file = 'files\\logindetails.csv'
-        # self.countries_file = "./files/countries.csv"
         # self.volunteer_file = 'files\\volunteers.csv'
+        
         self.create_nav_bar()
         self.welcome_message()
         self.camps = Camps()
         self.plans = Plans()
         self.requests = Resource_requests()
         self.camps_data = self.camps.get_data()
+        self.plan_data_ = self.admin.plan_list
         
         #for windows:
-        self.volunteer_file = "../files/volunteers.csv"
-        self.volunteer_data = pd.read_csv(self.volunteer_file)
-        self.users_file = "../files/logindetails.csv"
-        self.users = pd.read_csv(self.users_file)
-        self.countries_file = "../files/countries.csv"
+        # self.volunteer_file = "../files/volunteers.csv"
+        # self.volunteer_data = pd.read_csv(self.volunteer_file)
+        # self.users_file = "../files/logindetails.csv"
+        # self.users = pd.read_csv(self.users_file)
+        # self.countries_file = "../files/countries.csv"
         # countries_df = pd.read_csv(self.countries_file)
         
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
@@ -147,7 +153,12 @@ class AdminGui:
     
     # Function to create a list of countries
     def get_countries_list(self):
-        countries_df = pd.read_csv(self.countries_file)
+        
+        # for mac
+        countries_df = pd.read_csv("./files/countries.csv")
+        
+        # for windows
+        # countries_df = pd.read_csv(self.countries_file)
         countries_list = countries_df["Location"].tolist()
         return countries_list
     
@@ -525,7 +536,7 @@ class AdminGui:
         self.camp_id_num = (self.admin.last_camp_id() + 1)
         self.camp_id = "C"+str(self.camp_id_num)
         # The plan_ID can be shown in the window and admin can not edit
-        self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 16))
+        self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 18, "italic"))
         self.camp_id_label.pack()
         # tk.Label(self.root, text='Num_Of_Refugees:', font=('Arial', 12)).place(x=300, y=240)
         # tk.Label(self.root, text='Num_Of_Volunteers:', font=('Arial', 12)).place(x=300, y=300)
