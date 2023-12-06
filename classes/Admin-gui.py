@@ -384,14 +384,15 @@ class AdminGui:
         self.clear_content()
         # add code here:
         # somewhere in here will be the end button for the individual plans which will maybe go to another function
-
-        header = ['plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
+        title = tk.Label(self.root, text="Display Humanitarian Plans", font=('Arial', 24))
+        title.pack(pady=20)
+        header = ['Plan ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
         self.table = ttk.Treeview(self.root)
-
+        column_sizes = [60, 200, 120, 120, 120, 120]
         self.table.configure(columns=header, show='headings')
-        for item in header:
-            self.table.column(item, width=120, anchor=tk.CENTER)
-            self.table.heading(item, text=item)
+        for i in range(len(header)):
+            self.table.column(header[i], width=column_sizes[i], anchor=tk.CENTER)
+            self.table.heading(header[i], text=header[i])
         # this is to show if the end date in the plan has arrived, this End date will show "None"
 
         index = 0
