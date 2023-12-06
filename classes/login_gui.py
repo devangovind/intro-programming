@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-import ttkbootstrap as tb
+# import ttkbootstrap as tb
 import csv
 import re
 from volunteer_gui import VolunteerGui

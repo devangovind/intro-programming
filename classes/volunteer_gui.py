@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import ttkbootstrap as tb
+# import ttkbootstrap as tb
 from tkinter import messagebox
 import tkinter.font as tkFont
 from tkinter import messagebox
