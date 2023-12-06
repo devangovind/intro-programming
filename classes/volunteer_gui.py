@@ -288,7 +288,7 @@ class VolunteerGui:
         capacity_lbl.pack()
         
         capacity_inp = tk.Entry(self.content_frame)
-        capacity_inp.insert(0, 100)
+        capacity_inp.insert(0, current_capacity)
         capacity_inp.pack()
         self.capacity_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 10))
         self.capacity_error.config(fg="red")

@@ -162,16 +162,17 @@ class Volunteer:
 
 
     def edit_camp_details(self, camp_id, capacity):
+        camps = Camps()
+        self.camps_data = camps.get_data()
         if self.validate_camp_details(camp_id, capacity):
            self.volunteer_data['Camp_ID'] = camp_id
            self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
            self.volunteer_file.to_csv(self.volunteer_path, index=False)
-           camps = Camps()
         #    when csv is done maybe change to write_data function definition like this:
         #    write_data(self, Camp_ID, Num_Of_Refugees=None, capacity=None). and then just specify which values are to be changed
         #   call by saying camps.write_data(camp_id, capacity=capacity)
-           camps_data = camps.get_data()
-           camps_row = camps_data[camps_data['Camp_ID'] == camp_id].copy()
+           
+           camps_row = self.camps_data[self.camps_data['Camp_ID'] == camp_id].copy()
            camps_row['Capacity'] = int(capacity)
            camps_row = camps_row.values.tolist()[0]
            camps.write_data(camp_id, camps_row)
@@ -181,6 +182,10 @@ class Volunteer:
 
 
     def validate_camp_details(self, camp_id, capacity):
+        print(self.camps_data[self.camps_data['Camp_ID'] == camp_id])
+        print(self.camps_data[self.camps_data['Camp_ID'] == camp_id]['Num_Of_Refugees'])
+        print(self.camps_data[self.camps_data['Camp_ID'] == camp_id].loc[:,'Num_Of_Refugees'].values[0])
+        curr_num_refugees = self.camps_data[self.camps_data['Camp_ID'] == camp_id].loc[:,'Num_Of_Refugees'].values[0]
         self.camperrors = [""] 
         def capacity_validate():
             if capacity.isdigit():
@@ -188,6 +193,8 @@ class Volunteer:
                     self.camperrors[0] = ("Capacity too high")
                 elif int(capacity) <= 0:
                     self.camperrors[0] = ("Capacity must be positive")
+                elif int(capacity) < int(curr_num_refugees):
+                    self.camperrors[0] = (f'Capacity cannot be less than the current number of refugees ({curr_num_refugees})')
                 else:
                     self.camperrors[0] = ""
             else:
