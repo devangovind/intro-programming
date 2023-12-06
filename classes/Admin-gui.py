@@ -18,6 +18,12 @@ class AdminGui:
         self.plans = Plans()
         self.camps_data = self.camps.get_data()
         
+        #for windows:
+        self.volunteer_filepath = "../files/volunteers.csv"
+        self.volunteer_data = pd.read_csv(self.volunteer_filepath)
+        self.login_filepath = "../files/logindetails.csv"
+        self.users = pd.read_csv(self.login_filepath)
+        
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
     def create_nav_bar(self):
         self.headerarea = tk.Frame(self.root)
@@ -180,8 +186,8 @@ class AdminGui:
     def manage_volunteers(self):
         self.clear_content()
         # add code here to edit volunteer data
-        self.volunteer_data = pd.read_csv("./files/volunteers.csv")
-        self.users = pd.read_csv("./files/logindetails.csv")
+        self.volunteer_data = pd.read_csv(self.volunteer_filepath)
+        self.users = pd.read_csv(self.login_filepath)
         title = tk.Label(self.root, text="Manage Volunteers", font=('Arial', 24))
         title.pack(pady=20)
         camps_ids = ["All Camps"]

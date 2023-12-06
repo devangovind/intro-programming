@@ -17,11 +17,20 @@ class Admin:
   
 
     def __init__(self):
-        self.plans_file = 'intro-programming/files/plans.csv'
-        self.camps_file = 'intro-programming/files/camps_file.csv'
-        self.resources_file = 'intro-programming/files/resources.csv'
-        self.login_file = './files/logindetails.csv'
-        self.volunteer_file = './files/volunteers.csv'
+        # self.plans_file = 'intro-programming/files/plans.csv'
+        # self.camps_file = 'intro-programming/files/camps_file.csv'
+        # self.resources_file = 'intro-programming/files/resources.csv'
+        # self.login_file = './files/logindetails.csv'
+        # self.volunteer_file = './files/volunteers.csv'
+        # self.camp_id = None
+        # self.users = pd.read_csv(self.login_file)
+
+        # file path for windows
+        self.plans_file = '../files/plans.csv'
+        self.camps_file = '../files/camps_file.csv'
+        self.resources_file = '../files/resources.csv'
+        self.login_file = '../files/logindetails.csv'
+        self.volunteer_file = '../files/volunteers.csv'
         self.camp_id = None
         self.users = pd.read_csv(self.login_file)
 
