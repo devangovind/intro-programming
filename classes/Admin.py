@@ -19,7 +19,7 @@ class Admin:
         self.resources_file = './files/resources.csv'
         self.login_file = './files/logindetails.csv'
         self.volunteer_file = './files/volunteers.csv'
-        # self.plans_file = "files\\plan_file.csv"
+        # self.plans_file = "files\\plans_file.csv"
         # self.camps_file = "files\\camps_file.csv"
         # self.resources_file = "files\\resources.csv"
         # self.login_file = 'files\\logindetails.csv'

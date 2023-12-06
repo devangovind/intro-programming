@@ -21,7 +21,8 @@ class AdminGui:
         self.e_date = None
         self.camp_num_id = None
         self.root = tk.Tk()
-        self.root.geometry("800x600")
+
+        self.root.minsize(1000,800)
         self.root.title("Admin View")
         self.admin = admin
         # self.volunteer_data = self.volunteer.get_volunteer_data()
@@ -36,7 +37,7 @@ class AdminGui:
         self.requests = Resource_requests()
         self.camps_data = self.camps.get_data()
 
-        
+
         self.plan_data_ = self.admin.plan_list
         # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
         # self.root.mainloop()
@@ -133,9 +134,17 @@ class AdminGui:
         label.pack(pady=100)
 
     ## Admin feature a-c
-
+    
+    # Function to create a list of countries
+    def get_countries_list(self):
+        countries_df = pd.read_csv("./files/countries.csv")
+        countries_list = countries_df["Location"].tolist()
+        return countries_list
+    
     def create_new_plan(self):
         self.clear_content()
+        # intialise the countries list
+        countries_list = self.get_countries_list()
         # Get the value by admin using entry
         self.Description = tk.StringVar()
         self.Location = tk.StringVar()
@@ -153,8 +162,15 @@ class AdminGui:
         self.des_entry = tk.Entry(self.root, width=30, textvariable=self.Description)
         self.des_entry.pack(pady=10)
         tk.Label(self.root, text='Location:',font = ('Arial',18)).pack()
-        self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
-        self.loc_entry.pack(pady=10)
+        # Location menu dropdown setup - assign selected country to pass into option menu
+        self.selected_country = tk.StringVar(self.root)
+        self.selected_country.set(countries_list[0])
+        
+        # Pass countries list with unpacking (*)
+        self.location_menu = tk.OptionMenu(self.root, self.selected_country, *countries_list)
+        self.location_menu.pack(pady=10)
+        # self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
+        # self.loc_entry.pack(pady=10)
         date_frames = tk.Frame()
         date_frames.columnconfigure(1, weight=1)
         date_frames.columnconfigure(2, weight=1)
@@ -164,8 +180,6 @@ class AdminGui:
         tk.Label(date_frames, text='Start Date:',font = ('Arial',18)).grid(row=1, column=1, sticky="e")
         tk.Label(date_frames, text='End Date:',font = ('Arial',18)).grid(row=2, column=1, sticky="e")
     
-        
-        
         # Build the button
 
         sdate_button = tk.Button(date_frames, text='Choose the start date',command=self.pick_sdate).grid(row=1, column=3, sticky="w")
@@ -248,13 +262,13 @@ class AdminGui:
     def save_data(self):
         Plan_ID_ = self.plan_id
         Description_ = self.Description.get()
-        Location_ = self.Location.get()
+        Location_ = self.selected_country.get()
         Start_date_ = self.s_date
         End_date_ = self.e_date
         var_start_day = self.valid_input_sdate.get()
         var_end_day = self.valid_input_edate.get()
         # ensure all the blank is not empty
-        if len(self.des_entry.get()) == 0 or len(self.loc_entry.get()) == 0 or len(self.start_date.get()) == 0 or len(
+        if len(self.des_entry.get()) == 0 or len(self.selected_country.get()) == 0 or len(self.start_date.get()) == 0 or len(
                 self.end_date.get()) == 0:
             messagebox.showwarning(title='Create a new plan', message='Please fill in all the entry')
         # ensure choosing the date using calendar
@@ -379,8 +393,7 @@ class AdminGui:
             self.table.column(item, width=120, anchor=tk.CENTER)
             self.table.heading(item, text=item)
         # this is to show if the end date in the plan has arrived, this End date will show "None"
-        self.display_world_map_button = tk.Button(self.root, text="Display world map of plans", font=('Arial', 16), command=self.display_world_map)
-        self.display_world_map_button.pack(pady=10)
+
         index = 0
         # with time passes, if start date arrives today, the status change from not starte to ongoing
         # with time passes, if end date arrives today, the status change from ongoing to finished
@@ -412,6 +425,8 @@ class AdminGui:
         self.display_refugees_btn_plans.pack(pady=10)
         self.display_volunteers_btn_plans = tk.Button(self.root, text="Volunteers per Plan", font=('Arial', 16), command=self.display_volunteer_graph_plans) 
         self.display_volunteers_btn_plans.pack(pady=10)
+        self.display_world_map_button = tk.Button(self.root, text="Display world map of plans", font=('Arial', 16), command=self.display_world_map)
+        self.display_world_map_button.pack(pady=10)
 
     def end_plan(self):
         item = self.table.selection()
@@ -595,15 +610,11 @@ class AdminGui:
         request_btn.pack(pady=10)
         self.filter_camps()
         
-        data_vis_label_res = tk.Label(self.root, text="Resources Data Visualisation:", font=('Arial', 18))
+        data_vis_label_res = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 18))
         data_vis_label_res.pack()
         
         self.display_resources_btn_camps = tk.Button(self.root, text="Resources per Camp", font=('Arial', 16), command=self.display_resources_camps)
         self.display_resources_btn_camps.pack(pady=10)
-        
-        
-        data_vis_label_camps = tk.Label(self.root, text="Camp Data Visualisation:", font=('Arial', 18))
-        data_vis_label_camps.pack()
         
         self.display_refugees_btn_camps = tk.Button(self.root, text="Refugees per Camp", font=('Arial', 16), command=self.display_refugee_graph_camps)
         self.display_refugees_btn_camps.pack(pady=10)
