@@ -77,8 +77,8 @@ class VolunteerGui:
         self.view_refugees_btn = ttk.Button(self.headerarea, text="View Refugees", style='Nav.TButton', command=self.view_refugee) 
         self.view_refugees_btn.grid(row=0, column=5, padx=10, pady=10, sticky="nsew")
 
-        self.chat_btn = ttk.Button(self.headerarea, text="Chat", style='Nav.TButton', command=self.chat) 
-        self.chat_btn.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
+        # self.chat_btn = ttk.Button(self.headerarea, text="Chat", style='Nav.TButton', command=self.chat) 
+        # self.chat_btn.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
 
         # self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 11), command=self.logout)
         self.logout_btn = ttk.Button(self.headerarea, text="Logout", style='Nav.TButton', command=self.logout)

@@ -42,7 +42,7 @@ class Admin:
         # self.login_file = '../files/logindetails.csv'
         # self.volunteer_file = '../files/volunteers.csv'
         # self.camp_id = None
-        self.users = pd.read_csv(self.login_file)
+        
         with open(self.plans_file, 'r', encoding='utf-8') as plan_file:
             read = csv.DictReader(plan_file)
             self.plan_list = []
@@ -194,11 +194,20 @@ class Admin:
         try:
             if username in self.users['Username'].values:
                 # self.users = self.users[self.users['Username'] != username]  # Filter out the user to be deleted
-                # self.volunteer_data = self.volunteer_data[self.volunteer_data['Username'] != username]
-                # self.volunteer_data.to_csv(self.volunteer_file, sep=',',index=False, encoding='utf-8')
+                self.volunteer_data = self.volunteer_data[self.volunteer_data['Username'] != username]
+                # this line does not work: # self.volunteer_data.to_csv(self.volunteer_file, sep=',',index=False, encoding='utf-8')
+                self.volunteer_data.to_csv(self.volunteer_file,index=False)
                 # self.save_changes()
 
-                # update camps_file.csv
+
+                # self.login_data = self.users[self.users['Username'] == username].copy()
+                # self.login_index = self.login_data.index
+                # self.login_data['Active'] = False
+                # self.users.iloc[self.login_index, :] = self.login_data
+                # self.users.to_csv(self.login_file, index=False)
+
+
+                # update camps_file.csv to decrement volunteers
                 self.camp_df = pd.read_csv(self.camps_file)
                 self.camp_data = self.camp_df[self.camp_df['Camp_ID'] == camp_id].copy()
                 self.camp_index = self.camp_data.index
