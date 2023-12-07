@@ -7,6 +7,8 @@ import csv
 import re
 from volunteer_gui import VolunteerGui
 from Volunteer import Volunteer
+from Admin_gui import AdminGui
+from Admin import Admin
 from Camps import Camps
 import pandas as pd
 
@@ -18,9 +20,14 @@ import pandas as pd
 # volunteers_filepath = "files\\volunteers.csv" 
 
 # Filepaths for windows
-logindetails_filepath = "../files/logindetails.csv"  
-camps_filepath = "../files/camps_file.csv"  
-volunteers_filepath = "../files/volunteers.csv" 
+# logindetails_filepath = "../files/logindetails.csv"  
+# camps_filepath = "../files/camps_file.csv"  
+# volunteers_filepath = "../files/volunteers.csv" 
+
+logindetails_filepath = "logindetails.csv"  
+camps_filepath = "camps_file.csv"  
+volunteers_filepath = "volunteers.csv" 
+
 
 def user_valid(username, acct_type):
     with open(logindetails_filepath, "r") as file:
@@ -48,8 +55,19 @@ class Login:
     # Login page configuration
     def __init__(self, master):
         self.root = master
-        self.root.geometry("1000x600")
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+
+        #Print the screen size
+        print("Screen width:", screen_width)
+        print("Screen height:", screen_height)
+
+        width_to_use = int(0.8*screen_width)
+        height_to_use = int(0.9*screen_height)
+        self.root.geometry(f"{width_to_use}x{height_to_use}")
         self.root.title("Welcome to the Humanitarian Management System")
+
+
 
         #each tab is in a notebook and each tab is its own frame
         self.notebook = ttk.Notebook(master)
@@ -67,7 +85,7 @@ class Login:
              # Admin - username
         self.admin_username = Label(self.admin_frame, text="Admin Username:")
         self.admin_username.grid(row=2, column=0)
-        self.username_entry = Entry(self.admin_frame, width= 30)
+        self.username_entry = ttk.Entry(self.admin_frame, width= 30)
         self.username_entry.grid(row=3, column=0)
 
              # Admin - password
@@ -75,15 +93,15 @@ class Login:
         # style.configure('show_pw', font='underline', bg='grey')
         self.admin_password = Label(self.admin_frame, text="Admin Password:")
         self.admin_password.grid(row=4, column=0)
-        self.password_entry = Entry(self.admin_frame, width= 30, show="*")
+        self.password_entry = ttk.Entry(self.admin_frame, width= 30, show="*")
         self.password_entry.grid(row=5, column=0)
         # Hide/ show pw
-        self.password_show_admin = Button(self.admin_frame, text="Show Password", command=self.show_pw)
+        self.password_show_admin = ttk.Button(self.admin_frame, text="Show Password", command=self.show_pw)
         self.password_show_admin.grid(row=6, column=0, pady=10)
-        self.password_hide_admin = Button(self.admin_frame, text="Hide Password", command=self.hide_pw)
+        self.password_hide_admin = ttk.Button(self.admin_frame, text="Hide Password", command=self.hide_pw)
         self.password_hide_admin.grid(row=7, column=0, pady=5)
 
-        self.admin_sign_in = Button(self.admin_frame, text="Sign In", command=self.admin_validate)
+        self.admin_sign_in = ttk.Button(self.admin_frame, text="Sign In", command=self.admin_validate)
         self.admin_sign_in.grid(row=8, column=0, pady=10)
 
         # Volunteer Tab
@@ -94,9 +112,9 @@ class Login:
         self.volunteer_caption.grid(row=0, column=0)
         self.volunteer_caption2 = Label(self.volunteer_frame, text="Sign in as a Volunteer, or register your details if you do not have an account yet.")
         self.volunteer_caption2.grid(row=1, column=0, pady=20)
-        self.volunteer_sign_in = Button(self.volunteer_frame, text="Sign In", command=self.volunteer_login_page, width=20)
+        self.volunteer_sign_in = ttk.Button(self.volunteer_frame, text="Sign In", command=self.volunteer_login_page, width=20)
         self.volunteer_sign_in.grid(row=2, column=0, pady=10)
-        self.volunteer_register = Button(self.volunteer_frame, text="Register as Volunteer", command=self.volunteer_register_page, width=20)
+        self.volunteer_register = ttk.Button(self.volunteer_frame, text="Register as Volunteer", command=self.volunteer_register_page, width=20)
         self.volunteer_register.grid(row=3, column=0, pady=10)
 
     def show_pw(self):
@@ -114,7 +132,9 @@ class Login:
             if user_valid(entered_username, user_type) != "":
                 correct_credentials = user_valid(entered_username, user_type) 
                 if password_valid(entered_password, correct_credentials): # shows admin menu if login is valid
-                    Admin_Menu()
+                    # Admin_Menu()
+                    create_admin = Admin(entered_username)
+                    AdminGui(create_admin, self.root)
                 else:
                     messagebox.showerror("Error", "Password is incorrect!")
             else:
@@ -125,26 +145,27 @@ class Login:
     # display volunteer log in window
     def volunteer_login_page(self):
         self.log_in_window = Toplevel()
-        self.log_in_window.geometry("500x275+300+300")
-        self.log_in_window.resizable(False, False)
+        self.log_in_window.geometry("500x300+300+300")
+        self.log_in_window.minsize(500,300)
+        # self.log_in_window.resizable(False, False)
         self.log_in_window.title("Login to your Volunteer account")
         self.caption = Label(self.log_in_window, text="Login as Volunteer. Please enter your username and password.")
         self.caption.pack(pady=10)
         self.username = Label(self.log_in_window, text="Volunteer Username:")
         self.username.pack()
-        self.username_entry = Entry(self.log_in_window, width= 30)
+        self.username_entry = ttk.Entry(self.log_in_window, width= 30)
         self.username_entry.pack()
         self.password = Label(self.log_in_window, text="Volunteer Password:")
         self.password.pack()
-        self.password_entry = Entry(self.log_in_window, width= 30, show='*')
+        self.password_entry = ttk.Entry(self.log_in_window, width= 30, show='*')
         self.password_entry.pack()
 
-        self.password_show_volunteer = Button(self.log_in_window, text="Show Password", command=self.show_pw)
+        self.password_show_volunteer = ttk.Button(self.log_in_window, text="Show Password", command=self.show_pw)
         self.password_show_volunteer.pack(pady=10)
-        self.password_hide_volunteer = Button(self.log_in_window, text="Hide Password", command=self.hide_pw)
+        self.password_hide_volunteer = ttk.Button(self.log_in_window, text="Hide Password", command=self.hide_pw)
         self.password_hide_volunteer.pack(pady=5)
 
-        sign_in = Button(self.log_in_window, text="Sign In", command= self.volunteer_validate)
+        sign_in = ttk.Button(self.log_in_window, text="Sign In", command= self.volunteer_validate)
         sign_in.pack(pady=20)
 
     # Validate if volunteer username and pw is correct
@@ -202,7 +223,8 @@ class Volunteer_Register:
 
         # configure the canvas
         my_canvas.configure(yscrollcommand=my_scrollbar.set)
-        my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=(0,0,900,900)))
+        # my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=(0,0,900,900)))
+        my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
         
         # create another frame inside the canvas
         second_frame = Frame(my_canvas)
@@ -211,23 +233,23 @@ class Volunteer_Register:
         my_canvas.create_window((100,50),window=second_frame, anchor="nw")
 
         self.username_label = tk.Label(second_frame, text = "Username:\nYour username should be between 8 and 16 characters long and only consist of letters a-z and numbers 0-9")
-        self.username_entry = tk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_username_entry), "%P"))
+        self.username_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_username_entry), "%P"))
         self.username_status = tk.Label(second_frame, text="")
 
         self.first_name_label = tk.Label(second_frame, text = "First Name:\nYour first name should be between 0 and 20 letters long and the first letter should be capitalized ")
-        self.first_name_entry = tk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_first_name_entry), "%P"))
+        self.first_name_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_first_name_entry), "%P"))
         self.first_name_status = tk.Label(second_frame, text="")
 
         self.last_name_label = tk.Label(second_frame, text = "Last Name:\nYour last name should be between 0 and 20 letters long and the first letter should be capitalized")
-        self.last_name_entry = tk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_last_name_entry), "%P"))
+        self.last_name_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_last_name_entry), "%P"))
         self.last_name_status = tk.Label(second_frame, text="")
 
         self.phone_label = tk.Label(second_frame, text = "Phone Number:\nYour phone should be between 6 and 15 numbers long")
-        self.phone_entry = tk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_phone_entry), "%P"))
+        self.phone_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_phone_entry), "%P"))
         self.phone_status = tk.Label(second_frame, text="")
 
         self.age_label = tk.Label(second_frame, text = "Age:\nYour age should be numbers between 0 and 140")
-        self.age_entry = tk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_age_entry), "%P"))
+        self.age_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_age_entry), "%P"))
         self.age_status = tk.Label(second_frame, text="")
 
         self.camp_id_label = tk.Label(second_frame, text = "Camp_ID:\nChoose your Camp ID")
@@ -256,14 +278,14 @@ class Volunteer_Register:
             mon_box, tue_box, wed_box, thu_box, fri_box, sat_box, sun_box ]
     
         self.password_label = tk.Label(second_frame, text = "\nPassword:\nYour password should contain at least one capital letter, at least one of '?' or '!', letters a-z and numbers 0-9 and be between 8 and 16 characters long")
-        self.password_entry = tk.Entry(second_frame, show = "*",validate="key", validatecommand=(self.register_window.register(self.validate_password_entry), "%P"))
+        self.password_entry = ttk.Entry(second_frame, show = "*",validate="key", validatecommand=(self.register_window.register(self.validate_password_entry), "%P"))
         self.password_status = tk.Label(second_frame, text="")
 
         self.confirm_password_label = tk.Label(second_frame, text="Confirm your password:")
-        self.confirm_password_entry = tk.Entry(second_frame, show="*", validate="key", validatecommand=(self.register_window.register(self.validate_confirm_password_entry), "%P"))
+        self.confirm_password_entry = ttk.Entry(second_frame, show="*", validate="key", validatecommand=(self.register_window.register(self.validate_confirm_password_entry), "%P"))
         self.confirm_password_status = tk.Label(second_frame, text="")
 
-        self.register_button = tk.Button(second_frame, text = "Register", command=self.register)
+        self.register_button = ttk.Button(second_frame, text = "Register", command=self.register)
 
         self.username_label.pack()
         self.username_entry.pack()
@@ -302,7 +324,7 @@ class Volunteer_Register:
         self.confirm_password_entry.pack()
         self.confirm_password_status.pack()
 
-        self.register_button.pack()
+        self.register_button.pack(pady=15)
         
         self.register_window.mainloop()
 
@@ -522,3 +544,10 @@ if __name__ == '__main__':
     root = Tk()
     login_menu = Login(root)
     root.mainloop()
+
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    #Print the screen size
+    print("Screen width:", screen_width)
+    print("Screen height:", screen_height)

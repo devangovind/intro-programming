@@ -7,9 +7,13 @@ class Refugee:
         # self.refugee_path = "files\\refugee.csv"
 
         # Filepaths for windows
-        self.refugee_path = "../files/refugee.csv"  
-        self.camps_path = "../files/camps_file.csv"
-        self.volunteers_path = "../files/volunteers.csv"
+        # self.refugee_path = "../files/refugee.csv"  
+        # self.camps_path = "../files/camps_file.csv"
+        # self.volunteers_path = "../files/volunteers.csv"
+
+        self.refugee_path = "refugee.csv"  
+        self.camps_path = "camps_file.csv"
+        self.volunteers_path = "volunteers.csv"
     
     def generate_refugee_id(self):
         refugee_data = pd.read_csv(self.refugee_path)

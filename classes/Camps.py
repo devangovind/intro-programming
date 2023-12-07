@@ -8,8 +8,11 @@ class Camps:
         # self.resource_filepath = "files\\resources.csv"
 
         # Filepaths for windows
-        self.camps_filepath = "../files/camps_file.csv"  # Update to the path where camps.csv is located
-        self.resource_filepath = "../files/resources.csv"
+        # self.camps_filepath = "../files/camps_file.csv"  # Update to the path where camps.csv is located
+        # self.resource_filepath = "../files/resources.csv"
+
+        self.camps_filepath = "camps_file.csv"  # Update to the path where camps.csv is located
+        self.resource_filepath = "resources.csv"
 
     def get_data(self):
         self.camps_data = pd.read_csv(self.camps_filepath)
@@ -64,6 +67,22 @@ class Camps:
         except Exception as e:
             print(f"An error occurred while trying to display all camp resources: {e}")
             return pd.DataFrame()  # Return an empty DataFrame in case of error
+        
+    def get_resource_data(self, camp_id):
+        resource_array = ["0", "0", "0"]
+        
+        # for mac
+        resource_data = pd.read_csv(self.resource_filepath)
+        
+        # for windows
+        # resource_data = pd.read_csv(self.resource_filepath)
+        try:
+            resource_array[0] = (resource_data['food_pac'][resource_data['Camp_ID'] == camp_id].iloc[0])
+            resource_array[1] = (resource_data['medical_sup'][resource_data['Camp_ID'] == camp_id].iloc[0])
+            resource_array[2] = (resource_data['tents'][resource_data['Camp_ID'] == camp_id].iloc[0])
+        except:
+            pass
+        return resource_array
 
 
 # Testing the Camps class

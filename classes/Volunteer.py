@@ -22,10 +22,16 @@ class Volunteer:
         # self.volunteer_file = None
 
         # Filepaths for windows
-        self.camp_path = "../files/camps_file.csv"  
-        self.resource_path = "../files/resources.csv"  
-        self.volunteer_path = "../files/volunteers.csv" 
-        self.resource_req_path = "../files/resource_request.csv"
+        # self.camp_path = "../files/camps_file.csv"  
+        # self.resource_path = "../files/resources.csv"  
+        # self.volunteer_path = "../files/volunteers.csv" 
+        # self.resource_req_path = "../files/resource_request.csv"
+        # self.volunteer_file = None
+
+        self.camp_path = "camps_file.csv"  
+        self.resource_path = "resources.csv"  
+        self.volunteer_path = "volunteers.csv" 
+        self.resource_req_path = "resource_request.csv"
         self.volunteer_file = None
 
     
@@ -218,16 +224,22 @@ class Volunteer:
             errors = ["", "", ""]
             if food.isdigit():
                 errors[0] = ""
+            elif food == "":
+                errors[0] = ("Please enter a valid input.")
             else:
                 errors[0] = ("Resource must be a number")
 
             if medical_supplies.isdigit():
                 errors[1] = ""
+            elif medical_supplies == "":
+                errors[1] = ("Please enter a valid input.")
             else:
                 errors[1] = ("Resource must be a number")
 
             if tents.isdigit():
                 errors[2] = ""
+            elif tents == "":
+                errors[2] = ("Please enter a valid input.")
             else:
                 errors[2] = ("Resource must be a number")
             return errors
