@@ -218,6 +218,7 @@ class AdminGui:
         sCMD = self.root.register(stest)
         self.start_date = ttk.Entry(date_frames, textvariable=self.valid_input_sdate, validate='focusin',
                                    validatecommand=(sCMD, '%P', '%V', '%W'))
+
         self.start_date.grid(row=1, column=2)
 
         def etest(content, reason, name):
@@ -228,6 +229,7 @@ class AdminGui:
         eCMD = self.root.register(etest)
         self.end_date = ttk.Entry(date_frames, textvariable=self.valid_input_edate, validate='focusin',
                                  validatecommand=(eCMD, '%P', '%V', '%W'))
+
         self.end_date.grid(row=2, column=2)
 
     #  This method is to get the date using calendar and judge whether it is valid or not
@@ -458,64 +460,62 @@ class AdminGui:
     def end_plan(self):
         item = self.table.selection()
         if item:
-            def valid_item_():
-                item = self.table.selection()
-                selected = self.table.focus()
-                temp = self.table.item(selected, 'values')
-                self.plan_sdate = temp[-3]
-                self.plan_edate = temp[-2]
-                self.status = temp[-1]
-                self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate, '%d/%m/%Y').date()
+            # def valid_item_():
+            item = self.table.selection()
+            selected = self.table.focus()
+            temp = self.table.item(selected, 'values')
+            self.plan_sdate = temp[-3]
+            self.plan_edate = temp[-2]
+            self.status = temp[-1]
+            self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate, '%d/%m/%Y').date()
                 # self.plan_edate_date = datetime.datetime.strptime(self.plan_edate,'%d/%m/%Y').date()
-            self.table.bind('<ButtonRelease-1>', valid_item_())
+            # self.table.bind('<ButtonRelease-1>', valid_item_())
             if self.plan_sdate_date > date.today():
                 messagebox.showinfo(title='Info', message='This plan has not started! It cannot be ended')
             elif self.status == 'Ongoing':
                 isok = messagebox.askyesno(title='infor', message='Do you want to end this plan？')
                 # if isok:
                 if isok:
-                    def update_item():
-                        item = self.table.selection()
-                        selected = self.table.focus()
-                        temp = self.table.item(selected, 'values')
-                        plan_edate = temp[-2]
-                        end_up = 'Finished'
-                        end_date_today = time.strftime("%d/%m/%Y",time.localtime(time.time()))
-                        number_id = int(temp[0][1:])
-                         # add the new one (which has been edite based on the old one)
-                        self.table.item(selected, values=(temp[0], temp[1], temp[2], temp[3], end_date_today,end_up))
-                        plan_end_dic = {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2],
-                                        'Start Date': temp[3], 'End Date': end_date_today,'Status':end_up, 'Numeric_ID':number_id}
-                        plan_end_list = [
-                            {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2], 'Start Date': temp[3],
-                             'End Date': end_date_today,'Status':end_up,'Numeric_ID':number_id}]
-                        header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
-                        with open(self.admin.plans_file, 'a',
-                                  newline='', encoding='utf-8') as f:
-                            writer = csv.DictWriter(f, fieldnames=header)
-                            writer.writerows(plan_end_list)
-                        self.admin.insert_new_plan(plan_end_dic)
-                        # delect the old one 
-                        header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
-                        for x in self.plan_data_:
-                            if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
-                                    temp[4] == x['End Date'] and temp[5] == 'Ongoing':
-                                yy = self.plan_data_.remove(x)
-                        with open(self.admin.plans_file, 'w', newline='') as csvfile:
-                            fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status','Numeric_ID']
-                            writer = csv.DictWriter(csvfile, fieldnames=fields)
-                            writer.writeheader()
-                            for row in self.plan_data_:
-                                writer.writerow(row)
-                        plan = pd.read_csv(self.admin.plans_file)  
-                        plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
-                        sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                        sorted_plan.to_csv(self.admin.plans_file, index=False)
-                    self.table.bind('<ButtonRelease-1>', update_item())
+                    # def update_item():
+                    end_up = 'Finished'
+                    end_date_today = time.strftime("%d/%m/%Y",time.localtime(time.time()))
+                    number_id = int(temp[0][1:])
+                        # add the new one (which has been edite based on the old one)
+                    self.table.item(selected, values=(temp[0], temp[1], temp[2], temp[3], end_date_today,end_up))
+                    plan_end_dic = {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2],
+                                    'Start Date': temp[3], 'End Date': end_date_today,'Status':end_up, 'Numeric_ID':number_id}
+                    plan_end_list = [
+                        {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2], 'Start Date': temp[3],
+                            'End Date': end_date_today,'Status':end_up,'Numeric_ID':number_id}]
+                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
+                    with open(self.admin.plans_file, 'a',
+                                newline='', encoding='utf-8') as f:
+                        writer = csv.DictWriter(f, fieldnames=header)
+                        writer.writerows(plan_end_list)
+                    self.admin.insert_new_plan(plan_end_dic)
+                    # delect the old one 
+                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
+                    for x in self.plan_data_:
+                        if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
+                                temp[4] == x['End Date'] and temp[5] == 'Ongoing':
+                            yy = self.plan_data_.remove(x)
+                    with open(self.admin.plans_file, 'w', newline='') as csvfile:
+                        fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status','Numeric_ID']
+                        writer = csv.DictWriter(csvfile, fieldnames=fields)
+                        writer.writeheader()
+                        for row in self.plan_data_:
+                            writer.writerow(row)
+                    plan = pd.read_csv(self.admin.plans_file)  
+                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
+                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
+                    sorted_plan.to_csv(self.admin.plans_file, index=False)
+                    # self.table.bind('<ButtonRelease-1>', update_item())
             elif self.status == 'Finished':
                 messagebox.showinfo(title='Info', message='This plan has aready ended')
+                self.display_plans()
         elif not item:
             messagebox.showinfo(title='Info', message='Please choose a plan')
+            self.display_plans()
 
     def add_camp(self):
         self.clear_content()
