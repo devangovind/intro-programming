@@ -119,7 +119,7 @@ class Admin:
     def valid_plan(self):
         column_to_check = 5  
         condition_value = 'Ongoing'
-        condition_value_2 = 'Not started'  
+        condition_value_2 = 'Not Started'  
         target_column_index = 0  
         column_values = []
         with open(self.plans_file, 'r', newline='') as input_file:
