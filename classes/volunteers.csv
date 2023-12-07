@@ -2,8 +2,4 @@ Username,First Name,Last Name,Phone,Age,CampID,Availability
 volunteer1,Devn,Govan,133114,12,C1,1001001
 volunteer2,Test,Test,44758920,16,C2,101
 volunteer3,Saratest,Saratest,845928922,23,C4,111
-THISTIME,Thistime,Thistime,123456,12,C4,0
-Testagain,Testagain,Testagain,123455,123,C5,0
-pleasework,Pleasework,Pleasework,124677,21,C6,1000011
-Pleasework,Pleasework,Pleasework,4678990,56,C7,1100
-Pleaseworkr,Pleasework,Pleasework,456778,34,C8,100000
+volunteer4,Test,Test,123456778,12,C5,1111000

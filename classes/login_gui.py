@@ -133,6 +133,8 @@ class Login:
                 correct_credentials = user_valid(entered_username, user_type) 
                 if password_valid(entered_password, correct_credentials): # shows admin menu if login is valid
                     # Admin_Menu()
+                    # self.root.iconify() #minimises general login GUI when sign in successful
+                    self.root.withdraw()
                     create_admin = Admin(entered_username)
                     AdminGui(create_admin, self.root)
                 else:

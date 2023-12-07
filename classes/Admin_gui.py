@@ -113,7 +113,7 @@ class AdminGui:
         #                                        command=self.manage_volunteers)
         self.manage_volunteers_btn.grid(row=0, column=5)
 
-        self.logout_btn = ttk.Button(self.headerarea, text="Logout") #, command=self.create_new_plan)
+        self.logout_btn = ttk.Button(self.headerarea, text="Logout", command=self.logout)
         # self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 16))
         self.logout_btn.grid(row=0, column=6)
 
@@ -151,8 +151,8 @@ class AdminGui:
         # intialise the countries list
         countries_list = self.get_countries_list()
         # Get the value by admin using entry
-        self.Description = tk.StringVar()
-        self.Location = tk.StringVar()
+        self.Description = tk.StringVar(self.root)
+        self.Location = tk.StringVar(self.root)
         # Build the label
         title = tk.Label(self.root, text='Add a New Plan',font = ('Arial',24))
         title.config(fg="medium slate blue")
@@ -183,7 +183,7 @@ class AdminGui:
         self.location_menu.pack(pady=10)
         # self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
         # self.loc_entry.pack(pady=10)
-        date_frames = tk.Frame()
+        date_frames = tk.Frame(self.root)
         date_frames.columnconfigure(1, weight=1)
         date_frames.columnconfigure(2, weight=1)
         date_frames.columnconfigure(3,weight=1)
@@ -212,7 +212,7 @@ class AdminGui:
                 messagebox.showwarning(title='Create a new plan - start date',
                                        message='Please use the button to choose the start date')
                 # return False
-        self.valid_input_sdate = tk.StringVar()
+        self.valid_input_sdate = tk.StringVar(self.root)
         sCMD = self.root.register(stest)
         self.start_date = ttk.Entry(date_frames, textvariable=self.valid_input_sdate, validate='focusin',
                                    validatecommand=(sCMD, '%P', '%V', '%W'))
@@ -223,7 +223,7 @@ class AdminGui:
             if self.end_date.get() is not None:
                 messagebox.showwarning(title='Create a new plan - end date',
                                        message='Please use the button to choose the end date')
-        self.valid_input_edate = tk.StringVar()
+        self.valid_input_edate = tk.StringVar(self.root)
         eCMD = self.root.register(etest)
         self.end_date = ttk.Entry(date_frames, textvariable=self.valid_input_edate, validate='focusin',
                                  validatecommand=(eCMD, '%P', '%V', '%W'))
@@ -232,25 +232,33 @@ class AdminGui:
 
     #  This method is to get the date using calendar and judge whether it is valid or not
     def pick_sdate(self):
-        self.date_window = tk.Toplevel()
+        today = datetime.datetime.today()
+        yr = today.year
+        mth = today.month
+        day = today.day
+        self.date_window = tk.Toplevel(self.root)
         self.date_window.grab_set()
         self.date_window.geometry('230x230+590+370')
-        self.cal = Calendar(self.date_window, selectmode='day', year=2023, month=11, day=16, background='white', foreground='black', selectforeground='red', normalbackground = 'gray')
+        self.cal = Calendar(self.date_window, selectmode='day', year=yr, month=mth, day=day, background='white', foreground='black', selectforeground='red', normalbackground = 'gray')
         self.date_window.resizable(False, False)
         self.cal.place(x=0, y=0)
         submit_btn = tk.Button(self.date_window, text='Submit', command=self.grab_sdate, font=('Arial', 16))
         submit_btn.place(x=80, y=190)
 
     def pick_edate(self):
+        today = datetime.datetime.today()
+        yr = today.year
+        mth = today.month
+        day = today.day + 1
         if len(self.start_date.get()) == 0 or self.s_date is None:
             messagebox.showwarning(title='Choose start date',
                                    message='Please choose a start date using calendar')
         else:
-            self.date_window = tk.Toplevel()
+            self.date_window = tk.Toplevel(self.root)
             self.date_window.grab_set()
             self.date_window.geometry('230x230+590+370')
             self.date_window.resizable(False, False)
-            self.cal = Calendar(self.date_window, selectmode='day', year=2023, month=11, day=16, background='white', foreground='black', selectforeground='red', normalbackground = 'gray')
+            self.cal = Calendar(self.date_window, selectmode='day', year=yr, month=mth, day=day, background='white', foreground='black', selectforeground='red', normalbackground = 'gray')
             self.cal.place(x=0, y=0)
             submit_btn = tk.Button(self.date_window, text='Submit', command=self.grab_edate)
             submit_btn.place(x=80, y=190)
@@ -334,15 +342,15 @@ class AdminGui:
                     self.plan_id = "P" + str(self.plan_id_num_1)
                     self.plan_id_label.destroy()
                     self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
-                    self.plan_id_label.place(x=300, y=140)
+                    self.create_new_plan()
                 elif self.s_date > date.today():
                     Start_date_ = self.s_date.strftime('%d/%m/%Y')
                     End_date_ = self.e_date.strftime('%d/%m/%Y')
                     plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
-                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Not started'}
+                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Not Started'}
                     plan_list = [
                         {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
-                         'End Date': End_date_,'Status':'Not started'}]  # 空字典
+                         'End Date': End_date_,'Status':'Not Started'}]  # 空字典
                     header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
              
                     with open(self.admin.plans_file, 'a', newline='', encoding='utf-8') as f:
@@ -532,7 +540,6 @@ class AdminGui:
         self.clear_content()
         # Get the value by admin using entry
         self.capacity = tk.StringVar()
-        # self.camp_num_id = tk.StringVar()
         # Build the label
         title = tk.Label(self.root, text='Add a New Camp', font=('Arial', 24))
         title.config(fg="medium slate blue")
@@ -541,43 +548,25 @@ class AdminGui:
         tk.Label(self.root, text='Plan_ID:', font=('Arial', 18)).pack()
 
         if len(self.admin.valid_plan()) == 0 :
-            tk.Label(self.root, text='No plan can be added camps', font=('Arial', 24)).pack(pady=30)
+            plan_lbl = tk.Label(self.root, text='No plan can be added camps', font=('Arial', 24))
+            plan_lbl.pack(pady=30)
         else:
             self.OPTIONS = self.admin.valid_plan()
             self.first_option = self.OPTIONS[0]
 
             self.plan_id_camp = tk.StringVar()
-            # if self.OPTIONS == []:
-            #     self.plan_id_camp.set("")
-            #     w = tk.OptionMenu(self.root, self.plan_id_camp, "There are no available plans.")
-            #     w.pack()
             self.plan_id_camp.set(self.first_option)
 
             w = tk.OptionMenu(self.root, self.plan_id_camp, *self.OPTIONS)
             w.pack()
-            tk.Label(self.root, text='Camp_ID:', font=('Arial', 18)).pack(pady=10)
+            tk.Label(self.root, text='Camp_ID:', font=('Arial', 18)).pack(pady=25)
             self.camp_id_num = (self.admin.last_camp_id() + 1)
             self.camp_id = "C"+str(self.camp_id_num)
-            # The plan_ID can be shown in the window and admin can not edit
+            # The camp_ID can be shown in the window and admin can not edit
             self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 18))
             self.camp_id_label.pack()
-            # tk.Label(self.root, text='Num_Of_Refugees:', font=('Arial', 12)).place(x=300, y=240)
-            # tk.Label(self.root, text='Num_Of_Volunteers:', font=('Arial', 12)).place(x=300, y=300)
-            tk.Label(self.root, text='Capacity (between 100-1000):', font=('Arial', 18)).pack(pady=10)
 
-            
-            # Build the entry
-        
-            # Get the valid plan_ID automatically
-            # self.num_r_entry = tk.Entry(self.root, width=30)
-            # self.num_r_entry.insert(END, '0')
-            # self.num_r_entry.place(x=300,y=270)
-            # self.num_r_entry.config(state='readonly')
-            # self.num_v_entry = tk.Entry(self.root, width=30)
-            # self.num_v_entry.insert(END, '0')
-            # self.num_v_entry.place(x=300,y=330)
-            # self.num_v_entry.config(state='readonly')
-            # self.des_entry.place(x=300, y=210)
+            tk.Label(self.root, text='Capacity (between 100-10000):', font=('Arial', 18)).pack(pady=25)
             self.capacity_entry = ttk.Entry(self.root, width=30, textvariable=self.capacity)
             self.capacity_entry.pack()
             self.capacity_entry.config(
@@ -586,25 +575,28 @@ class AdminGui:
             )
             # tk.Button(self.root, text='Save this camp',font=('Arial', 12),command=self.save_camp).place(x=300, y=430)
 
-            tk.Button(self.root, text='Save this camp', font=('Arial', 16), command=self.save_camp).pack(pady=10)
+            s = ttk.Style()
+            s.configure('AddCamp.TButton', font=('Arial',16))
+            save_camp = ttk.Button(self.root, text='Save this camp', style='AddCamp.TButton', command=self.save_camp)
+            save_camp.pack(pady=30)
 
     def save_camp(self):
         #Choose the plan 
         Plan_ID_C = self.plan_id_camp.get()
         Camp_ID  = self.camp_id
-        Capacity_ = self.capacity.get()
+        Capacity_ = self.capacity_entry.get()
         Capacity_ = Capacity_.replace(' ', '') # delect all the " " make sure there is no " "
         Num_v = 0
         Num_r = 0
-        if int(Capacity_) < 100 or int(Capacity_)>1000:
-            messagebox.showwarning(title='Create a new camp', message='Please choose a capacity between 100 and 1000')
-        elif int(Capacity_) >= 100 and int(Capacity_) <=1000:
+        if int(Capacity_) < 100 or int(Capacity_)>10000:
+            messagebox.showwarning(title='Create a new camp', message='Please choose a capacity between 100 and 10000')
+        elif int(Capacity_) >= 100 and int(Capacity_) <=10000:
             camp_plan_dic = {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
-                        'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_,' Plan_ID':Plan_ID_C}
+                        'Num_Of_Volunteers': Num_v, 'Plan_ID':Plan_ID_C, 'Capacity': Capacity_}
             camp_plan_list = [
                 {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
-                 'Num_Of_Volunteers': Num_v, 'Capacity': Capacity_, 'Plan_ID': Plan_ID_C}]  
-            header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Capacity', 'Plan_ID']
+                 'Num_Of_Volunteers': Num_v, 'Plan_ID': Plan_ID_C, 'Capacity': Capacity_}]  
+            header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'Capacity']
             with open(self.admin.camps_file, 'a', newline='', encoding='utf-8') as f:
                 writer = csv.DictWriter(f, fieldnames=header)
                 writer.writerows(camp_plan_list)
@@ -617,6 +609,7 @@ class AdminGui:
             self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 12))
 
             self.add_camp()
+
     def manage_camps(self):
         # when data visualisation is ready. we can have each camp name be clickable to bring up a new screen with the data visualised
         self.clear_content()
@@ -937,12 +930,17 @@ class AdminGui:
         camps_menu = tk.OptionMenu(self.root, self.selected_camp, *camps_ids, command=self.filter_volunteers)
         camps_menu_lbl.pack()
         camps_menu.pack()
-        all_buttons = tk.Frame(self.root)
+
+        s = ttk.Style()
+        s.configure('ManageVolunteer.TButton', font=('Arial',17))
+        all_buttons = tk.Frame(self.root, pady=20)
         all_buttons.columnconfigure(1, weight=1)
         all_buttons.columnconfigure(2, weight=1)
-        activate_all_btn = tk.Button(all_buttons, text="Activate All", font=('Arial', 16), command=self.activate_all)
-        deactivate_all_btn = tk.Button(all_buttons, text="Deactivate All", font=('Arial', 16), command=self.deactivate_all)
-        activate_all_btn.grid(row=0, column=0)
+        # activate_all_btn = tk.Button(all_buttons, text="Activate All", font=('Arial', 16), command=self.activate_all)
+        # deactivate_all_btn = tk.Button(all_buttons, text="Deactivate All", font=('Arial', 16), command=self.deactivate_all)
+        activate_all_btn = ttk.Button(all_buttons, text="Activate All", style='ManageVolunteer.TButton', command=self.activate_all)
+        deactivate_all_btn = ttk.Button(all_buttons, text="Deactivate All", style='ManageVolunteer.TButton', command=self.deactivate_all)
+        activate_all_btn.grid(row=0, column=0,padx=10)
         deactivate_all_btn.grid(row=0, column=1)
         all_buttons.pack()
         info_lbl  = tk.Label(self.root, text="Click on a State or Delete column to edit an individual volunteer", font=('Arial', 16))
@@ -972,10 +970,11 @@ class AdminGui:
     def filter_volunteers(self, event=None):
         for item in self.volun_tree.get_children():
             self.volun_tree.delete(item)
+        print(self.selected_camp.get())
         selected_camp = self.selected_camp.get()
         if selected_camp == "All Camps": filtered_data = self.volunteer_data
         else:
-            filtered_data = self.volunteer_data[self.volunteer_data["Camp_ID"] == selected_camp]
+            filtered_data = self.volunteer_data[self.volunteer_data["CampID"] == selected_camp]
         if not filtered_data.empty:
             for index, row in (filtered_data.iterrows()):
                 days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"]
@@ -996,7 +995,7 @@ class AdminGui:
                 state = self.users[self.users["Username"] == row["Username"]]["Active"].values[0]
                 if state: state = "Active"
                 else: state = "Deactive"
-                values=[row['Camp_ID'], row['Username'], row['First Name'], row['Last Name'],row['Phone'], row['Age'], availability_string, state, "Delete?"]
+                values=[row['CampID'], row['Username'], row['First Name'], row['Last Name'],row['Phone'], row['Age'], availability_string, state, "Delete?"]
                 self.volun_tree.insert("", "end", values=values)
 
     def individual_volunteer(self, event):
@@ -1007,7 +1006,7 @@ class AdminGui:
             self.activate_deactivate(row)
         elif item_id and column == "#9":
             row = (self.volun_tree.item(item_id, "values"))
-            self.delete_volunteer(row[1])
+            self.delete_volunteer(row[1],row[0])
 
     def activate_deactivate(self, row):
         username = row[1]
@@ -1024,10 +1023,10 @@ class AdminGui:
                 self.root.update_idletasks()
                 self.manage_volunteers()
             
-    def delete_volunteer(self, username):
+    def delete_volunteer(self, username,camp_id):
         volunteer_choice = messagebox.askyesno(title="Manage Volunteer", message=f"Delete {username}'s Account:\n" )
         if volunteer_choice == True:
-            self.admin.delete_account(username)
+            self.admin.delete_account(username,camp_id)
             self.root.update_idletasks()
             self.manage_volunteers()
 
@@ -1076,6 +1075,11 @@ class AdminGui:
         for widget in self.root.winfo_children():
             if widget not in self.nav_bar:
                 widget.destroy()
+
+    def logout(self):
+        self.root.destroy()
+        self.loginwindow.deiconify() 
+
     def run(self):
     
         self.root.mainloop()

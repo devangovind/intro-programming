@@ -135,8 +135,8 @@ class Admin:
             csv_reader = csv.reader(input_file)
             for row in csv_reader:
                 print("row is", row)
-                print("status is", row[column_to_check] )
-                if (row[column_to_check] == condition_value) or (row[column_to_check] == condition_value_2):
+                # print("status is", row[column_to_check] )
+                if (row[column_to_check] == condition_value or row[column_to_check] == condition_value_2):
                     print("status is: " , row[target_column_index])
                     column_values.append(row[target_column_index])
         print("column vals is",column_values)
@@ -187,14 +187,29 @@ class Admin:
         return "All accounts have been deactivated"
 
 
-    def delete_account(self, username):
+    def delete_account(self, username, camp_id):
         self.volunteer_data = pd.read_csv(self.volunteer_file)
+        # self.camp_data = pd.read_csv(self.camps_file)
+
         try:
             if username in self.users['Username'].values:
-                self.users = self.users[self.users['Username'] != username]  # Filter out the user to be deleted
-                self.volunteer_data = self.volunteer_data[self.volunteer_data['Username'] != username]
-                self.volunteer_data.to_csv(self.volunteer_file, sep=',',index=False, encoding='utf-8' )
-                self.save_changes()
+                # self.users = self.users[self.users['Username'] != username]  # Filter out the user to be deleted
+                # self.volunteer_data = self.volunteer_data[self.volunteer_data['Username'] != username]
+                # self.volunteer_data.to_csv(self.volunteer_file, sep=',',index=False, encoding='utf-8')
+                # self.save_changes()
+
+                # update camps_file.csv
+                self.camp_df = pd.read_csv(self.camps_file)
+                self.camp_data = self.camp_df[self.camp_df['Camp_ID'] == camp_id].copy()
+                self.camp_index = self.camp_data.index
+                self.camp_data['Num_Of_Volunteers'] -= 1
+                self.camp_df.iloc[self.camp_index, :] = self.camp_data
+                self.camp_df.to_csv(self.camps_file, index=False)
+
+                print(username, camp_id)
+                print("account can be deleted")
+
+                
                 return f"Account {username} deleted"
             else:
                 return "Account doesn't exist"

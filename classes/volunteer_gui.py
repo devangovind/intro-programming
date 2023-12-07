@@ -557,6 +557,7 @@ class VolunteerGui:
 
 
     def show_pie_chart_of_resources(self,volunteer_camp_id):
+        print("Create Pie Chart")
         # Retrieve values for food_pac, medical_sup, tents from the Treeview
         # Assume the Treeview has one row with these values at indices 4, 5, 6
         item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
