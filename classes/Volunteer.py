@@ -34,7 +34,10 @@ class Volunteer:
         self.resource_req_path = "resource_request.csv"
         self.volunteer_file = None
 
-    
+    def get_other_volunteers(self):
+        self.volunteer_file =  pd.read_csv(self.volunteer_path)
+        other_volunteers_data = self.volunteer_file[self.volunteer_file['Username'] != self.username].copy()
+        return other_volunteers_data
     def get_volunteer_data(self):
         self.volunteer_file = pd.read_csv(self.volunteer_path)
         self.volunteer_data = self.volunteer_file[self.volunteer_file['Username'] == self.username].copy()

@@ -18,9 +18,19 @@ class Messages:
     def get_sent_messages(self, volunteer):
         self.messages_data = pd.read_csv(self.messages_file)
         return self.messages_data[self.messages_data['volunteer_sender'] == volunteer]
-    def send_message(self, sender, reciever, message):
+    def get_all(self, volunteer):
+        self.messages_data = pd.read_csv(self.messages_file)
+        condition_1 = (self.messages_data['volunteer_sender'] == volunteer) | (self.messages_data['volunteer_receiver'] == volunteer)
+        return self.messages_data[condition_1]
+    def get_all_sender_receiver(self, volunteer1, volunteer2):
+        self.messages_data = pd.read_csv(self.messages_file)
+        condition_1 = (self.messages_data['volunteer_sender'] == volunteer1) & (self.messages_data['volunteer_receiver'] == volunteer2)
+        condition_2 = (self.messages_data['volunteer_sender'] == volunteer2) & (self.messages_data['volunteer_receiver'] == volunteer1)
+        filtered_data = self.messages_data[condition_1 | condition_2]
+        return filtered_data
+    def send_message(self, sender, receiver, message):
         curr_time = pd.to_datetime(datetime.datetime.now())
-        new_row = {'volunteer_sender': sender, 'volunteer_receiver': reciever, 'timestamp': curr_time, 'message': message}
+        new_row = {'volunteer_sender': sender, 'volunteer_receiver': receiver, 'timestamp': curr_time, 'message': message}
         self.messages_data = self.messages_data.append(new_row, ignore_index=True)
         self.messages_data.to_csv(self.messages_file, index=False)
     def write_data(self, plan_id, new_row):

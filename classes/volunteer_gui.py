@@ -7,6 +7,7 @@ from tkinter import messagebox
 from Volunteer import Volunteer
 from Camps import Camps
 from Refugee import Refugee
+from Messages import Messages
 # from main_gui import run
 from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
@@ -35,6 +36,7 @@ class VolunteerGui:
         # self.volunteer = Volunteer(volunteer)
         self.camps = Camps()
         self.refugee = Refugee()
+        self.messages = Messages()
         self.volunteer_data = self.volunteer.get_volunteer_data()
         self.create_nav_bar() # Creates the navigation bar at the top
         self.create_content_frame()  # Creates the content frame below the navigation bar
@@ -52,6 +54,7 @@ class VolunteerGui:
         self.headerarea.columnconfigure(3, weight=1)
         self.headerarea.columnconfigure(4, weight=1)
         self.headerarea.columnconfigure(5, weight=1)
+        self.headerarea.columnconfigure(6, weight=1)
         s = ttk.Style()
         s.configure('Nav.TButton', font=('Arial',11))
 
@@ -79,8 +82,8 @@ class VolunteerGui:
         self.view_refugees_btn = ttk.Button(self.headerarea, text="View Refugees", style='Nav.TButton', command=self.view_refugee) 
         self.view_refugees_btn.grid(row=0, column=5, padx=10, pady=10, sticky="nsew")
 
-        # self.chat_btn = ttk.Button(self.headerarea, text="Chat", style='Nav.TButton', command=self.chat) 
-        # self.chat_btn.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
+        self.chat_btn = ttk.Button(self.headerarea, text="Chat", style='Nav.TButton', command=self.chat) 
+        self.chat_btn.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
 
         # self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 11), command=self.logout)
         self.logout_btn = ttk.Button(self.headerarea, text="Logout", style='Nav.TButton', command=self.logout)
@@ -769,7 +772,23 @@ class VolunteerGui:
 
 
     def chat(self):
+        self.clear_content()
+        title = tk.Label(self.root, text="Volunteer Chat", font=('Arial', 24))
+        title.config(fg="medium slate blue")
+        title.pack(pady=20)
+        # self.all_messages = self.messages.get_all()
+        self.all_users = self.volunteer.get_other_volunteers()
+        volunteers_array = []
+        for volun in volunteers_array['Username']:
+            volunteers_array.append(volun)
+        self.selected_volunteer = tk.StringVar(self.root)
+        self.selected_volunteer.set(volunteers_array[0])
+        receipiant_drop_down = tk.OptionMenu(self.root, self.selected_volunteer, *volunteers_array, command=self.filter_chats)
+
+    def filter_chats(self):
         pass
+    def send_message(self):
+        self.clear_content()
 
 
     # When click logout button, destory volunteer menu
