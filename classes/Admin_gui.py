@@ -170,7 +170,7 @@ class AdminGui:
 
         plan_desc = tk.Label(self.root, text='Description:',font = ('Arial',18))
         plan_desc.pack()
-        self.des_entry = ttk.Entry(self.root, width=30, textvariable=self.Description)
+        self.des_entry = ttk.Entry(self.root, width=100, textvariable=self.Description)
         self.des_entry.pack(pady=25)
 
         plan_loc = tk.Label(self.root, text='Location:',font = ('Arial',18))

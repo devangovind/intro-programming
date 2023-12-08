@@ -84,7 +84,7 @@ class Admin:
 ## This is to find the last plan_id, in ortder to achive planid plus one when admin create a new plan 
     def last_plan_id(self):
         plan = pd.read_csv(self.plans_file)
-        plan['Numeric_ID'] = plan['Plan_ID'].str.extract('(\d+)').astype(int)
+        plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
         last_plan = plan.loc[plan['Numeric_ID'].idxmax()]
         last_plan_id = last_plan['Plan_ID']
         num_ = int(last_plan_id[1:])
@@ -92,7 +92,7 @@ class Admin:
     
     def last_camp_id(self):
         camps = pd.read_csv(self.camps_file)
-        camps['Numeric_ID'] = camps['Camp_ID'].str.extract('(\d+)').astype(int)
+        camps['Numeric_ID'] = camps['Camp_ID'].str.extract(r'(\d+)').astype(int)
         last_plan = camps.loc[camps['Numeric_ID'].idxmax()]
         last_plan_id = last_plan['Camp_ID']
         num_ = int(last_plan_id[1:])
