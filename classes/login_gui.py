@@ -60,16 +60,16 @@ class Login:
         self.root = master
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
-
+        self.root.minsize(1000,600)
         #Print the screen size
         print("Screen width:", screen_width)
         print("Screen height:", screen_height)
 
-        width_to_use = int(0.8*screen_width)
-        height_to_use = int(0.9*screen_height)
+        width_to_use = int(0.6*screen_width)
+        height_to_use = int(0.7*screen_height)
         self.root.geometry(f"{width_to_use}x{height_to_use}")
         self.root.title("Welcome to the Humanitarian Management System")
-
+        
 
 
         #each tab is in a notebook and each tab is its own frame
@@ -80,63 +80,66 @@ class Login:
         self.admin_frame = Frame(self.notebook, pady=150, padx=200)
         self.admin_frame.pack(fill="both", expand=1)
         self.notebook.add(self.admin_frame, text="Admin")
-        self.admin_caption = Label(self.admin_frame, text="Welcome to the Humanitarian Management System Portal", font=20)
-        self.admin_caption.grid(row=0, column=0)
+        self.admin_caption = Label(self.admin_frame, text="Welcome to the Humanitarian Management System Portal", font=("Arial",20))
+        self.admin_caption.config(fg="medium slate blue")
+        self.admin_caption.pack()
         self.admin_caption2 = Label(self.admin_frame, text="Login as Admin. Please enter your username and password.")
-        self.admin_caption2.grid(row=1, column=0, pady=20)
+        self.admin_caption2.pack(pady=20)
 
              # Admin - username
         self.admin_username = Label(self.admin_frame, text="Admin Username:")
-        self.admin_username.grid(row=2, column=0)
+        self.admin_username.pack()
         self.username_entry = ttk.Entry(self.admin_frame, width= 30)
-        self.username_entry.grid(row=3, column=0)
+        self.username_entry.pack()
 
              # Admin - password
         # style = ttk.Style()
         # style.configure('show_pw', font='underline', bg='grey')
         self.admin_password = Label(self.admin_frame, text="Admin Password:")
-        self.admin_password.grid(row=4, column=0)
+        self.admin_password.pack()
         self.password_entry = ttk.Entry(self.admin_frame, width= 30, show="*")
-        self.password_entry.grid(row=5, column=0)
+        self.password_entry.pack()
         # Hide/ show pw
         self.password_show_admin = ttk.Button(self.admin_frame, text="Show Password", command=self.show_pw)
-        self.password_show_admin.grid(row=6, column=0, pady=10)
+        self.password_show_admin.pack(pady=10)
         self.password_hide_admin = ttk.Button(self.admin_frame, text="Hide Password", command=self.hide_pw)
-        self.password_hide_admin.grid(row=7, column=0, pady=5)
+        self.password_hide_admin.pack(pady=5)
 
         self.admin_sign_in = ttk.Button(self.admin_frame, text="Sign In", command=self.admin_validate)
-        self.admin_sign_in.grid(row=8, column=0, pady=10)
+        self.admin_sign_in.pack(pady=10)
 
         # Volunteer Tab
         self.volunteer_frame = Frame(self.notebook, pady=150, padx=200)
         self.volunteer_frame.pack(fill="both", expand=1)
         self.notebook.add(self.volunteer_frame, text="Volunteer")
-        self.volunteer_caption = Label(self.volunteer_frame, text="Welcome to the Humanitarian Management System Portal", font=20)
-        self.volunteer_caption.grid(row=0, column=0)
+        self.volunteer_caption = Label(self.volunteer_frame, text="Welcome to the Humanitarian Management System Portal", font=("Arial",20))
+        self.volunteer_caption.config(fg="medium slate blue")
+        self.volunteer_caption.pack()
         self.volunteer_caption2 = Label(self.volunteer_frame, text="Sign in as a Volunteer, or register your details if you do not have an account yet.")
-        self.volunteer_caption2.grid(row=1, column=0, pady=20)
+        self.volunteer_caption2.pack(pady=20)
 
         self.vol_username = Label(self.volunteer_frame, text="Volunteer Username:")
-        self.vol_username.grid(row=2, column=0, pady=5)
+        self.vol_username.pack(pady=5)
         self.vol_username_entry = ttk.Entry(self.volunteer_frame, width= 30)
-        self.vol_username_entry.grid(row=3, column=0)
+        self.vol_username_entry.pack()
         self.vol_password = Label(self.volunteer_frame, text="Volunteer Password:")
-        self.vol_password.grid(row=4, column=0)
+        self.vol_password.pack()
         self.vol_password_entry = ttk.Entry(self.volunteer_frame, width= 30, show='*')
-        self.vol_password_entry.grid(row=5, column=0, pady=5)
+        self.vol_password_entry.pack(pady=5)
 
         self.password_show_volunteer = ttk.Button(self.volunteer_frame, text="Show Password", command=self.show_pw)
-        self.password_show_volunteer.grid(row=6, column=0, pady=5)
+        self.password_show_volunteer.pack(pady=5)
         self.password_hide_volunteer = ttk.Button(self.volunteer_frame, text="Hide Password", command=self.hide_pw)
-        self.password_hide_volunteer.grid(row=7, column=0, pady=5)
+        self.password_hide_volunteer.pack(pady=5)
 
         vol_sign_in = ttk.Button(self.volunteer_frame, text="Sign In", command= self.volunteer_validate)
-        vol_sign_in.grid(row=8, column=0, pady=5)
+        vol_sign_in.pack(pady=5)
 
         # self.volunteer_sign_in = ttk.Button(self.volunteer_frame, text="Sign In", command=self.volunteer_login_page, width=20)
-        # self.volunteer_sign_in.grid(row=2, column=0, pady=10)
+        # self.volunteer_sign_in.pack(pady=10)
         self.volunteer_register = ttk.Button(self.volunteer_frame, text="Register as Volunteer", command=self.volunteer_register_page, width=20)
-        self.volunteer_register.grid(row=9, column=0, pady=10)
+        self.volunteer_register.pack(pady=10)
+
 
     def show_pw(self):
         self.password_entry.configure(show='')
@@ -409,7 +412,7 @@ class Volunteer_Register:
             raise ValueError("Please ensure that your username contains only numbers and letters.")
     
     def validate_first_name(self, first_name):
-        alphabet = "^[a-zA-Z\s]+$"
+        alphabet = r"^[a-zA-Z\s]+$"
         if not bool(re.match(alphabet,first_name)):
                 raise ValueError ("Name can only be letters")
         elif " " in first_name:
@@ -427,7 +430,7 @@ class Volunteer_Register:
                 
 
     def validate_last_name(self, last_name):
-        alphabet = "^[a-zA-Z\s]+$"
+        alphabet = r"^[a-zA-Z\s]+$"
         if not bool(re.match(alphabet, last_name)):
             raise ValueError ("Name can only be letters")
         elif " " in last_name:
