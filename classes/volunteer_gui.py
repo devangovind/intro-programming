@@ -778,15 +778,36 @@ class VolunteerGui:
         title.pack(pady=20)
         # self.all_messages = self.messages.get_all()
         self.all_users = self.volunteer.get_other_volunteers()
+        self.chat_frame = tk.Frame(self.root)
+        self.chat_frame.pack()
+
         volunteers_array = []
-        for volun in volunteers_array['Username']:
+        for volun in self.all_users['Username']:
             volunteers_array.append(volun)
         self.selected_volunteer = tk.StringVar(self.root)
         self.selected_volunteer.set(volunteers_array[0])
-        receipiant_drop_down = tk.OptionMenu(self.root, self.selected_volunteer, *volunteers_array, command=self.filter_chats)
+        receipiant_drop_down = tk.OptionMenu(self.chat_frame, self.selected_volunteer, *volunteers_array, command=self.filter_chats)
+        receipiant_drop_down.grid(row=0,column=0)
+        self.message_box = tk.Text(self.chat_frame, wrap=tk.WORD)
+        self.message_box.grid(row=1, column=1, columnspan=2, padx=10, pady=10)
+        self.message_box.config(state=tk.DISABLED)
+        self.message_entry = ttk.Entry(self.chat_frame, width=30)
+        self.message_entry.grid(row=1, column=0, padx=10, pady=10)
+        send_button = ttk.Button(self.chat_frame, text="Send")
+        send_button.grid(row=1, column=1, padx=10, pady=10)
 
     def filter_chats(self):
-        pass
+        self.message_box.config(state=tk.NORMAL)
+        self.message_box.delete('1.0', tk.END)
+        self.receipiant = self.selected_volunteer.get()
+        all_messages = self.messages.get_all_sender_receiver(self.volunteer.username, self.receipiant)
+        for index, row in all_messages.iterrows():
+            if row[0] == self.volunteer.username:
+                self.message_box.insert(tk.END, f"You {row[2]}: {row[3]}\n")
+            else:
+                self.message_box.insert(tk.END, f"{self.receipiant} {row[2]}: {row[3]}\n")
+        self.message_box.config(state=tk.DISABLED)
+
     def send_message(self):
         self.clear_content()
 
