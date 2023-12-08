@@ -18,6 +18,7 @@ class VolunteerGui:
         # self.root = tk()
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
+        self.root.minsize(1200,600)
 
         #Print the screen size
         print("Screen width:", screen_width)
@@ -111,6 +112,10 @@ class VolunteerGui:
         label = tk.Label(self.content_frame, text=welcome_back, font=('Arial', 24))
         label.config(fg="medium slate blue")
         label.pack(pady=120)
+        option_label_text = 'Please choose an option in the navigation bar above to begin'
+        label_option = tk.Label(self.content_frame, text=option_label_text, font=('Arial', 18))
+        label_option.config(fg="medium slate blue")
+        label_option.pack(pady=50)
 
         # option_label_text = 'Please choose an option in the navigation bar above to begin'
         # label_option = tk.Label(self.root, text=option_label_text, font=('Arial', 18))
