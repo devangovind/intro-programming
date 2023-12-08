@@ -506,14 +506,14 @@ class VolunteerGui:
                 self.tree_view.heading(col, text=col, anchor='center')
                 self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
 
-            style = ttk.Style(self.content_frame)
-            style.theme_use("default")
-            style.configure("Treeview",
-                            background="#D3D3D3",
-                            foreground="black",
-                            rowheight=25,
-                            fieldbackground="#D3D3D3")
-            style.map('Treeview', background=[('selected', '#347083')])
+            # style = ttk.Style(self.content_frame)
+            # style.theme_use("default")
+            # style.configure("Treeview",
+            #                 background="#D3D3D3",
+            #                 foreground="black",
+            #                 rowheight=25,
+            #                 fieldbackground="#D3D3D3")
+            # style.map('Treeview', background=[('selected', '#347083')])
             
 
         for item in self.tree_view.get_children():
@@ -755,10 +755,10 @@ class VolunteerGui:
                 self.tree_view.heading(col, text=col, anchor='center')
                 self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
 
-            style = ttk.Style(self.content_frame)
-            style.theme_use("default")
-            style.configure("Treeview", background="#D3D3D3", foreground="black", rowheight=25, fieldbackground="#D3D3D3")
-            style.map('Treeview', background=[('selected', '#347083')])
+            # style = ttk.Style(self.content_frame)
+            # style.theme_use("default")
+            # style.configure("Treeview", background="#D3D3D3", foreground="black", rowheight=25, fieldbackground="#D3D3D3")
+            # style.map('Treeview', background=[('selected', '#347083')])
 
         for item in self.tree_view.get_children():
             self.tree_view.delete(item)
