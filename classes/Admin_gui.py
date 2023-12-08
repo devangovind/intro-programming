@@ -613,6 +613,7 @@ class AdminGui:
     def manage_camps(self):
         # when data visualisation is ready. we can have each camp name be clickable to bring up a new screen with the data visualised
         self.clear_content()
+        self.camps_data = self.camps.get_data()
         title = tk.Label(self.root, text="Manage Camps", font=('Arial', 24))
         title.config(fg="medium slate blue")
         title.pack(pady=20)
@@ -764,27 +765,41 @@ class AdminGui:
             self.resolved_tree.insert("", "end", values=values)
         
     def grant_all_requests(self):
-        self.requests.write_all()
-        for index, row in (self.unresolved.iterrows()):
-            self.admin.manual_resource_allocation(row['Camp_ID'], str(row['food_pac']), str(row['medical_sup']), str(row['tents']))
-        messagebox.showinfo("Success", "All Requested Resources Successfully Allocated!")
+        # self.requests.write_all()
+        curr_unresolved = self.unresolved.copy()
+        self.unresolved = self.requests.get_unresolved()
+        temporary_unresolved = pd.merge(self.unresolved,curr_unresolved, how="inner")
+        
+        if temporary_unresolved.shape[0] == 0:
+            messagebox.showinfo("Error", "Requests out of date. Refresh to see up-to-date requests")
+        else:
+            for index, row in (temporary_unresolved.iterrows()):
+                self.admin.manual_resource_allocation(row['Camp_ID'], str(row['food_pac']), str(row['medical_sup']), str(row['tents']))
+                self.requests.write_data(row['Camp_ID'])
+            messagebox.showinfo("Success", "All Requested Resources Successfully Allocated!")
         self.resource_requests_list()
     
     def grant_specific_request(self, event):
         item_id = self.requests_tree.selection()
         if item_id:
             row = (self.requests_tree.item(item_id, "values"))
+            self.unresolved = self.requests.get_unresolved()
             requested_resources = [row[2], row[3], row[4]]
             camp_id = row[0]
-            can_allocate, suggest_resources_dict = self.admin.suggest_resources(row[0])
-            if can_allocate == False:
-                messagebox.showinfo("Error", "Chosen camp has 0 population and thus no resources can be allocated")
-                self.manage_camps()
+            if self.unresolved.loc[(self.unresolved["Camp_ID"] == row[0]) & (self.unresolved["Volunteer"] == row[2]) & (self.unresolved["Resolved"] == False)].any().all():
+                can_allocate, suggest_resources_dict = self.admin.suggest_resources(row[0])
+                if can_allocate == False:
+                    messagebox.showinfo("Error", "Chosen camp now has 0 population and thus no resources can be allocated. Refresh requests to see up-to-date requests")
+                    self.resource_requests_list()
+                else:
+                    resources = self.camps.get_resource_data(camp_id)
+                    if resources == []:
+                        resources = [0, 0, 0]
+                    self.allocate_resources(camp_id, resources, suggest_resources_dict, requested_resources)
             else:
-                resources = self.camps.get_resource_data(camp_id)
-                if resources == []:
-                    resources = [0, 0, 0]
-                self.allocate_resources(camp_id, resources, suggest_resources_dict, requested_resources)
+                messagebox.showinfo("Error", "Request is outdated. Refresh requests to see up-to-date requests")
+                self.resource_requests_list()
+                
 
     def can_allocate(self, event):
         item_id = self.camps_tree.selection()

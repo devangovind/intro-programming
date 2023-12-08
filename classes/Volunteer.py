@@ -158,6 +158,13 @@ class Volunteer:
             # Write the changes back to the CSV file
             camps_data.to_csv(camps.camps_filepath, index=False)
 
+            # remove any ongoing requests from them
+            req_df = pd.read_csv(self.resource_req_path)
+
+            old_requests = (req_df['Volunteer'] == self.username) & (req_df['Resolved'] == False)
+            req_df = req_df[~old_requests]
+            req_df.to_csv(self.resource_req_path, index=False)
+
         # Update the volunteer's camp ID
         self.volunteer_file.loc[self.volunteer_file['Username'] == self.username, 'CampID'] = new_camp_id
 
@@ -257,9 +264,12 @@ class Volunteer:
             req_df = pd.read_csv(self.resource_req_path)
 
             if volunteer_camp in req_df.iloc[:,1].values:
-                req_df = req_df[req_df['Camp_ID'] != str(volunteer_camp)]
-                # print(req_df)
-                req_df.to_csv(self.resource_req_path, index=False)
+                camp_requests = req_df[req_df['Camp_ID'] == str(volunteer_camp)]
+                print('here', camp_requests)
+                if (camp_requests['Resolved'] == False).any():
+                    req_df = req_df[(req_df['Camp_ID'] != str(volunteer_camp)) | (req_df['Resolved'] == True)]
+                    req_df.to_csv(self.resource_req_path, index=False)
+               
 
             with open(self.resource_req_path, "a") as file:
                 file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{today},{responded}\n")
