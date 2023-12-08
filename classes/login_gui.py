@@ -33,15 +33,18 @@ def user_valid(username, acct_type):
     with open(logindetails_filepath, "r") as file:
         file_reader = csv.reader(file)
         for row in file_reader:
+            print(row)
             if username == row[0]:
                 # check if account is active first and is of correct account type
-                if row[2] == 'TRUE' and row[3] == acct_type:
+                if row[2] == 'False':
+                    return "Account inactive"
+                elif row[2] == 'True' and row[3] == acct_type:
                     return row
                 else:
                     return ""
             else:
                 continue
-        return ""
+        return "Account does not exist"
     
 def password_valid(password, credentials):
     if credentials[1] == password:
@@ -114,10 +117,29 @@ class Login:
         self.volunteer_caption.pack()
         self.volunteer_caption2 = Label(self.volunteer_frame, text="Sign in as a Volunteer, or register your details if you do not have an account yet.")
         self.volunteer_caption2.pack(pady=20)
-        self.volunteer_sign_in = ttk.Button(self.volunteer_frame, text="Sign In", command=self.volunteer_login_page, width=20)
-        self.volunteer_sign_in.pack(pady=10)
+
+        self.vol_username = Label(self.volunteer_frame, text="Volunteer Username:")
+        self.vol_username.pack(pady=5)
+        self.vol_username_entry = ttk.Entry(self.volunteer_frame, width= 30)
+        self.vol_username_entry.pack()
+        self.vol_password = Label(self.volunteer_frame, text="Volunteer Password:")
+        self.vol_password.pack()
+        self.vol_password_entry = ttk.Entry(self.volunteer_frame, width= 30, show='*')
+        self.vol_password_entry.pack(pady=5)
+
+        self.password_show_volunteer = ttk.Button(self.volunteer_frame, text="Show Password", command=self.show_pw)
+        self.password_show_volunteer.pack(pady=5)
+        self.password_hide_volunteer = ttk.Button(self.volunteer_frame, text="Hide Password", command=self.hide_pw)
+        self.password_hide_volunteer.pack(pady=5)
+
+        vol_sign_in = ttk.Button(self.volunteer_frame, text="Sign In", command= self.volunteer_validate)
+        vol_sign_in.pack(pady=5)
+
+        # self.volunteer_sign_in = ttk.Button(self.volunteer_frame, text="Sign In", command=self.volunteer_login_page, width=20)
+        # self.volunteer_sign_in.pack(pady=10)
         self.volunteer_register = ttk.Button(self.volunteer_frame, text="Register as Volunteer", command=self.volunteer_register_page, width=20)
         self.volunteer_register.pack(pady=10)
+
 
     def show_pw(self):
         self.password_entry.configure(show='')
@@ -130,67 +152,57 @@ class Login:
         user_type = 'Admin'
         entered_username = self.username_entry.get()
         entered_password = self.password_entry.get()
+        print(entered_username)
+        print(entered_password)
         if entered_username != "" and entered_password != "":
-            if user_valid(entered_username, user_type) != "":
+            print(user_valid(entered_username, user_type))
+            if user_valid(entered_username, user_type) == "Account inactive":
+                messagebox.showerror("Error", "User is inactive! Your account has been deactivated, contact the administrator!")
+            elif user_valid(entered_username, user_type) == "Account does not exist":
+                messagebox.showerror("Error", "Account doesn't exist!")
+            elif user_valid(entered_username, user_type) != "":
                 correct_credentials = user_valid(entered_username, user_type) 
                 if password_valid(entered_password, correct_credentials): # shows admin menu if login is valid
                     # Admin_Menu()
                     # self.root.iconify() #minimises general login GUI when sign in successful
+                    self.root.iconify()
                     create_admin = Admin(entered_username)
                     AdminGui(create_admin, self.root)
-                    self.root.withdraw()
+                    # self.root.withdraw()
                 else:
                     messagebox.showerror("Error", "Password is incorrect!")
             else:
-                messagebox.showerror("Error", "Username is invalid or User is inactive!")
+                messagebox.showerror("Error", "Username is invalid!")
         else:
             messagebox.showerror("Error", "You have not entered a username or password!")
 
-    # display volunteer log in window
-    def volunteer_login_page(self):
-        self.log_in_window = Toplevel()
-        self.log_in_window.geometry("500x300+300+300")
-        self.log_in_window.minsize(500,300)
-        # self.log_in_window.resizable(False, False)
-        self.log_in_window.title("Login to your Volunteer account")
-        self.caption = Label(self.log_in_window, text="Login as Volunteer. Please enter your username and password.")
-        self.caption.pack(pady=10)
-        self.username = Label(self.log_in_window, text="Volunteer Username:")
-        self.username.pack()
-        self.username_entry = ttk.Entry(self.log_in_window, width= 30)
-        self.username_entry.pack()
-        self.password = Label(self.log_in_window, text="Volunteer Password:")
-        self.password.pack()
-        self.password_entry = ttk.Entry(self.log_in_window, width= 30, show='*')
-        self.password_entry.pack()
-
-        self.password_show_volunteer = ttk.Button(self.log_in_window, text="Show Password", command=self.show_pw)
-        self.password_show_volunteer.pack(pady=10)
-        self.password_hide_volunteer = ttk.Button(self.log_in_window, text="Hide Password", command=self.hide_pw)
-        self.password_hide_volunteer.pack(pady=5)
-
-        sign_in = ttk.Button(self.log_in_window, text="Sign In", command= self.volunteer_validate)
-        sign_in.pack(pady=20)
 
     # Validate if volunteer username and pw is correct
     def volunteer_validate(self): 
         user_type = "Volunteer"
-        entered_username = self.username_entry.get()
-        entered_password = self.password_entry.get()
+
+        entered_username = self.vol_username_entry.get()
+        entered_password = self.vol_password_entry.get()
         if entered_username != "" and entered_password != "":
-            if user_valid(entered_username, user_type) != "":
+
+            if user_valid(entered_username, user_type) == "Account inactive":
+                messagebox.showerror("Error", "User is inactive! Your account has been deactivated, contact the administrator!")
+            elif user_valid(entered_username, user_type) == "Account does not exist":
+                messagebox.showerror("Error", "Account doesn't exist!")
+            elif user_valid(entered_username, user_type) != "":
                 correct_credentials = user_valid(entered_username, user_type) 
                 if password_valid(entered_password, correct_credentials): 
                     #if login is valid, display volunteer menu
-                    self.log_in_window.destroy() #destroys volunteer login pop up
+                    # self.log_in_window.destroy() #destroys volunteer login pop up
                     self.root.iconify() #minimises general login GUI when sign in successful
+
                     create_volunteer = Volunteer(entered_username)
                     VolunteerGui(create_volunteer, self.root)
                 else:
                     messagebox.showerror("Error", "Password is incorrect!")
                     self.log_in_window.lift()
             else:
-                messagebox.showerror("Error", "Username is invalid or User is inactive!")
+                messagebox.showerror("Error", "Username is invalid!")
                 self.log_in_window.lift()
         else:
             messagebox.showerror("Error", "You have not entered a username or password!")

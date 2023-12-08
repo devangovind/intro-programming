@@ -12,6 +12,7 @@ from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
 import pandas as pd
 
+
 class VolunteerGui:
     def __init__(self, volunteer, loginwindow):
         self.root = tk.Tk()
@@ -511,16 +512,7 @@ class VolunteerGui:
                 self.tree_view.heading(col, text=col, anchor='center')
                 self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
 
-            # style = ttk.Style(self.content_frame)
-            # style.theme_use("default")
-            # style.configure("Treeview",
-            #                 background="#D3D3D3",
-            #                 foreground="black",
-            #                 rowheight=25,
-            #                 fieldbackground="#D3D3D3")
-            # style.map('Treeview', background=[('selected', '#347083')])
             
-
         for item in self.tree_view.get_children():
             self.tree_view.delete(item)
 
@@ -760,10 +752,6 @@ class VolunteerGui:
                 self.tree_view.heading(col, text=col, anchor='center')
                 self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
 
-            # style = ttk.Style(self.content_frame)
-            # style.theme_use("default")
-            # style.configure("Treeview", background="#D3D3D3", foreground="black", rowheight=25, fieldbackground="#D3D3D3")
-            # style.map('Treeview', background=[('selected', '#347083')])
 
         for item in self.tree_view.get_children():
             self.tree_view.delete(item)
@@ -779,11 +767,6 @@ class VolunteerGui:
             error_label = tk.Label(self.content_frame, text="Error displaying refugee data.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
 
-    # def view_refugee(self):
-    #     self.clear_content()
-    #     title = tk.Label(self.content_frame, text="View Refugee Details", font=('Arial', 18))
-    #     title.config(fg="medium slate blue")
-    #     title.pack(pady=(20, 10))
 
     def chat(self):
         pass
