@@ -554,7 +554,7 @@ class AdminGui:
             self.OPTIONS = self.admin.valid_plan()
             self.first_option = self.OPTIONS[0]
 
-            self.plan_id_camp = tk.StringVar()
+            self.plan_id_camp = tk.StringVar(self.root)
             self.plan_id_camp.set(self.first_option)
 
             w = tk.OptionMenu(self.root, self.plan_id_camp, *self.OPTIONS)
