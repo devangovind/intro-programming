@@ -27,7 +27,9 @@ class VolunteerGui:
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.95*screen_height)
-        self.root.geometry(f"{width_to_use}x{height_to_use}")
+        positioning_width = int(0.1*screen_width)
+        positioning_height = int(0.01*screen_width)
+        self.root.geometry(f"{width_to_use}x{height_to_use}+{positioning_width}+{positioning_height}")
 
         # self.root.geometry("990x660")
         self.root.title("Volunteer View")
@@ -125,7 +127,7 @@ class VolunteerGui:
 
     def edit_details(self):
         self.clear_content()
-        title = tk.Label(self.content_frame, text="Edit Personal Details", font=('Arial', 16))
+        title = tk.Label(self.content_frame, text="Edit Personal Details", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=9)        
         first_name_lbl = tk.Label(self.content_frame, text="Edit First Name:", font=('Arial', 14))
@@ -260,7 +262,7 @@ class VolunteerGui:
 
     def edit_camp(self):
         self.clear_content()
-        title = tk.Label(self.content_frame, text="Edit Camp Details", font=('Arial', 16))
+        title = tk.Label(self.content_frame, text="Edit Camp Details", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=9)
         s = ttk.Style()
@@ -483,7 +485,7 @@ class VolunteerGui:
         title.pack(pady=(20, 10))
         # Add the explanation label here, right below the title
         explanation_label = tk.Label(self.content_frame, text="Your camp is highlighted. Select it and use 'Show Pie Chart' to view its resources in pie chart.",
-                                     font=('Arial', 10), fg='grey')
+                                     font=('Arial', 14))
         explanation_label.pack(pady=(5, 10))
 
         curr_volunteer = self.volunteer.username
@@ -568,7 +570,7 @@ class VolunteerGui:
 
     def add_refugee(self):
         self.clear_content()
-        title = tk.Label(self.content_frame, text="Create Refugee Profile", font=('Arial', 16))
+        title = tk.Label(self.content_frame, text="Create Refugee Profile", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=15)
         

@@ -67,7 +67,9 @@ class Login:
 
         width_to_use = int(0.6*screen_width)
         height_to_use = int(0.7*screen_height)
-        self.root.geometry(f"{width_to_use}x{height_to_use}")
+        positioning_width = int(0.05*screen_width)
+        positioning_height = int(0.01*screen_width)
+        self.root.geometry(f"{width_to_use}x{height_to_use}+{positioning_width}+{positioning_height}")
         self.root.title("Welcome to the Humanitarian Management System")
         
 
@@ -222,49 +224,49 @@ class Admin_Menu:
 class Volunteer_Register: 
     def __init__(self):
         self.register_window = tk.Tk()
-        self.register_window.geometry("1000x500")
+        self.register_window.geometry("800x700")
         self.register_window.title("Volunteer Registration")
+        self.register_window.minsize(800, 700)
 
         # Create a Main Frame
         main_frame = Frame(self.register_window)
         main_frame.pack(fill="both", expand=1)
 
-        # Create a Canvas
+        # Create a canvas
         my_canvas = Canvas(main_frame)
-        my_canvas.pack(side=LEFT, fill="both", expand=1)
+        my_canvas.pack(side="left", fill="both", expand=1)
 
         # Add scrollbar to canvas
-        my_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=my_canvas.yview)
-        my_scrollbar.pack(side=RIGHT, fill=Y)
-
-        # configure the canvas
-        my_canvas.configure(yscrollcommand=my_scrollbar.set)
-        # my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=(0,0,900,900)))
-        my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+        my_scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=my_canvas.yview)
+        my_scrollbar.pack(side="right", fill=Y)
         
-        # create another frame inside the canvas
+        # create another frame inside the canvas with scrollbar
         second_frame = Frame(my_canvas)
-
+        second_frame.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+        my_canvas.configure(yscrollcommand=my_scrollbar.set)
+ 
         # add that new frame to a window in the canvas
-        my_canvas.create_window((100,50),window=second_frame, anchor="nw")
-
-        self.username_label = tk.Label(second_frame, text = "Username:\nYour username should be between 8 and 16 characters long and only consist of letters a-z and numbers 0-9")
+        my_canvas.create_window((0,0),window=second_frame, anchor="nw")
+        
+        self.register_label= tk.Label(second_frame, text = "Register as a Volunteer", fg="medium slate blue", font=('Arial', 18))
+        
+        self.username_label = tk.Label(second_frame, text = "Username:\nYour username should be between 8 and 16 characters long\nand only consist of letters a-z and numbers 0-9")
         self.username_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_username_entry), "%P"))
         self.username_status = tk.Label(second_frame, text="")
 
-        self.first_name_label = tk.Label(second_frame, text = "First Name:\nYour first name should be between 0 and 20 letters long and the first letter should be capitalized ")
+        self.first_name_label = tk.Label(second_frame, text = "First Name:\nYour first name should be between 0 and 20 letters long\nand the first letter should be capitalized ")
         self.first_name_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_first_name_entry), "%P"))
         self.first_name_status = tk.Label(second_frame, text="")
 
-        self.last_name_label = tk.Label(second_frame, text = "Last Name:\nYour last name should be between 0 and 20 letters long and the first letter should be capitalized")
+        self.last_name_label = tk.Label(second_frame, text = "Last Name:\nYour last name should be between 0 and 20 letters long\nand the first letter should be capitalized")
         self.last_name_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_last_name_entry), "%P"))
         self.last_name_status = tk.Label(second_frame, text="")
 
-        self.phone_label = tk.Label(second_frame, text = "Phone Number:\nYour phone should be between 6 and 15 numbers long")
+        self.phone_label = tk.Label(second_frame, text = "Phone Number:\nYour phone number should be between 6 and 15 numbers long")
         self.phone_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_phone_entry), "%P"))
         self.phone_status = tk.Label(second_frame, text="")
 
-        self.age_label = tk.Label(second_frame, text = "Age:\nYour age should be numbers between 0 and 140")
+        self.age_label = tk.Label(second_frame, text = "Age:\nYour age should be a number between 0 and 140")
         self.age_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_age_entry), "%P"))
         self.age_status = tk.Label(second_frame, text="")
 
@@ -293,7 +295,7 @@ class Volunteer_Register:
         self.availability_checkboxes = [
             mon_box, tue_box, wed_box, thu_box, fri_box, sat_box, sun_box ]
     
-        self.password_label = tk.Label(second_frame, text = "\nPassword:\nYour password should contain at least one capital letter, at least one of '?' or '!', letters a-z and numbers 0-9 and be between 8 and 16 characters long")
+        self.password_label = tk.Label(second_frame, text = "Password:\nYour password should contain at least one capital letter,\nat least one of '?' or '!', letters a-z and numbers 0-9\nand be between 8 and 16 characters long", anchor="w")
         self.password_entry = ttk.Entry(second_frame, show = "*",validate="key", validatecommand=(self.register_window.register(self.validate_password_entry), "%P"))
         self.password_status = tk.Label(second_frame, text="")
 
@@ -303,44 +305,48 @@ class Volunteer_Register:
 
         self.register_button = ttk.Button(second_frame, text = "Register", command=self.register)
 
-        self.username_label.pack()
-        self.username_entry.pack()
-        self.username_status.pack()
+        self.register_label.grid(row=0, column=0, columnspan=2)
+        self.username_label.grid(row=1, column=0)
+        self.username_entry.grid(row=2, column=0)
+        self.username_status.grid(row=3, column=0)
+        
+        self.first_name_label.grid(row=4, column=0)
+        self.first_name_entry.grid(row=5, column=0)
+        self.first_name_status.grid(row=6, column=0)
 
-        self.first_name_label.pack()
-        self.first_name_entry.pack()
-        self.first_name_status.pack()
+        self.last_name_label.grid(row=7, column=0)
+        self.last_name_entry.grid(row=8, column=0)
+        self.last_name_status.grid(row=9, column=0)
 
-        self.last_name_label.pack()
-        self.last_name_entry.pack()
-        self.last_name_status.pack()
+        self.phone_label.grid(row=10, column=0, padx=10)
+        self.phone_entry.grid(row=11, column=0)
+        self.phone_status.grid(row=12, column=0)
 
-        self.phone_label.pack()
-        self.phone_entry.pack()
-        self.phone_status.pack()
+        self.age_label.grid(row=7, column=1)
+        self.age_entry.grid(row=8, column=1)
+        self.age_status.grid(row=9, column=1)
 
-        self.age_label.pack()
-        self.age_entry.pack()
-        self.age_status.pack() 
-
-        self.camp_id_label.pack()
-        self.camp_id_dropdown.pack()
+        self.camp_id_label.grid(row=10, column=1)
+        self.camp_id_dropdown.grid(row=11, column=1)
 
 
-        self.availability_label.pack()
-        for checkbox in self.availability_checkboxes:
-            checkbox.pack()
+        self.availability_label.grid(row=13, column=0, columnspan=2)
+        for i, checkbox in enumerate(self.availability_checkboxes):
+   #         if i <= 3:
+            checkbox.grid(row = 14 + i, column = 0, columnspan=2)
+  #         elif i > 3:
+   #             checkbox.grid(row = 14 + i - 4, column = 1, pady=5)
         # self.avail_status.pack()
 
-        self.password_label.pack()
-        self.password_entry.pack()
-        self.password_status.pack()
+        self.password_label.grid(row=1, column=1)
+        self.password_entry.grid(row=2, column=1)
+        self.password_status.grid(row=3, column=1)
 
-        self.confirm_password_label.pack()
-        self.confirm_password_entry.pack()
-        self.confirm_password_status.pack()
+        self.confirm_password_label.grid(row=4, column=1)
+        self.confirm_password_entry.grid(row=5, column=1)
+        self.confirm_password_status.grid(row=6, column=1)
 
-        self.register_button.pack(pady=15)
+        self.register_button.grid(row=22, column=0, columnspan=2, pady=10)
         
         self.register_window.mainloop()
 
