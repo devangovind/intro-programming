@@ -153,8 +153,8 @@ class Admin:
     def activate_account(self, username):
         try:
             if username in self.users['Username'].values:
-                if self.users.loc[self.users['Username'] == username, 'Active'].iloc[0] != True: # iloc[0] ensures that 'Active' column is selected 
-                    self.users.loc[self.users['Username'] == username, 'Active'] = True
+                if self.users.loc[self.users['Username'] == username, 'Active'].iloc[0] != 'True': # iloc[0] ensures that 'Active' column is selected 
+                    self.users.loc[self.users['Username'] == username, 'Active'] = 'True'
                     self.save_changes()
                     return 'Your account has been activated'
                 else:
@@ -164,7 +164,7 @@ class Admin:
 
 
     def activate_all(self):
-        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = True
+        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = 'True'
         self.save_changes()
         return "All accounts have been activated"
 
@@ -172,8 +172,8 @@ class Admin:
     def deactivate_account(self, username):
         try:
             if username in self.users['Username'].values:
-                if self.users.loc[self.users['Username'] == username, 'Active'].iloc[0] == True:
-                    self.users.loc[self.users['Username'] == username, 'Active'] = False
+                if self.users.loc[self.users['Username'] == username, 'Active'].iloc[0] == 'True':
+                    self.users.loc[self.users['Username'] == username, 'Active'] = 'False'
                     self.save_changes()
                     return "Your account has been deactivated, contact the administrator."
                 else:
@@ -182,7 +182,7 @@ class Admin:
             return "Account doesn't exist"
 
     def deactivate_all(self):
-        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = False
+        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = 'False'
         self.save_changes()
         return "All accounts have been deactivated"
 
@@ -193,11 +193,12 @@ class Admin:
 
         try:
             if username in self.users['Username'].values:
-                # self.users = self.users[self.users['Username'] != username]  # Filter out the user to be deleted
+                
                 self.volunteer_data = self.volunteer_data[self.volunteer_data['Username'] != username]
                 # this line does not work: # self.volunteer_data.to_csv(self.volunteer_file, sep=',',index=False, encoding='utf-8')
                 self.volunteer_data.to_csv(self.volunteer_file,index=False)
-                # self.save_changes()
+                self.users = self.users[self.users['Username'] != username]  # Filter out the user to be deleted
+                self.save_changes()
 
 
                 # self.login_data = self.users[self.users['Username'] == username].copy()
