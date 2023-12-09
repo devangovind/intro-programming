@@ -300,7 +300,7 @@ class Admin:
                 if not camp.empty:
                     no_ref = int(camp.iloc[0]['Num_Of_Refugees'])
                     no_volunteer = int(camp.iloc[0]['Num_Of_Volunteers'])
-                    return no_ref
+                    return no_ref + no_volunteer
                 else:
                     print(f"Camp ID: {self.camp_id} not found.")
                     return 0
@@ -402,14 +402,15 @@ class Admin:
             return False
         def numerical_validate(resource_type, quantity):
             if quantity.isdigit():
-                if int(quantity)>(suggest_dict[resource_type]*5):
-                    self.resource_errors[resource_type] = f"{resource_type.title()} resource allocation cannot exceed {suggest_dict[resource_type]*5}"
-                else:
-                    self.resource_errors[resource_type] = ""
+                # if int(quantity)>(suggest_dict[resource_type]*5):
+                #     self.resource_errors[resource_type] = f"{resource_type.title()} resource allocation cannot exceed {suggest_dict[resource_type]*5}"
+                # else:
+                self.resource_errors[resource_type] = ""
             else:
                 self.resource_errors[resource_type] = f"{resource_type.title()} resource allocation must be numerical"
         for key, val in inputted_resources.items():
             numerical_validate(key, val)
+        
         if list(self.resource_errors.values()) == ["", "", ""]:
             self.update_resource_allocation(camp_id, food, medical,tent)
             

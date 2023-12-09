@@ -32,9 +32,15 @@ class Volunteer:
         self.resource_path = "resources.csv"  
         self.volunteer_path = "volunteers.csv" 
         self.resource_req_path = "resource_request.csv"
+        self.login_details = "logindetails.csv"
         self.volunteer_file = None
 
-    
+    def get_other_volunteers(self):
+        login_dataframe = pd.read_csv(self.login_details)
+        self.volunteer_file =  pd.read_csv(self.volunteer_path)
+        active_volunteers = login_dataframe[(login_dataframe['Active'] == True) & (login_dataframe['Account Type'] == 'Volunteer')]
+        other_active_volunteers_data = self.volunteer_file[(self.volunteer_file['Username'] != self.username) & (self.volunteer_file['Username'].isin(active_volunteers['Username']))]
+        return other_active_volunteers_data
     def get_volunteer_data(self):
         self.volunteer_file = pd.read_csv(self.volunteer_path)
         self.volunteer_data = self.volunteer_file[self.volunteer_file['Username'] == self.username].copy()
@@ -61,7 +67,7 @@ class Volunteer:
 
 
     def validate_personal_details(self, fname, sname, phone, age, availability):
-        alphabet = "^[a-zA-Z\s]+$"
+        alphabet = r"^[a-zA-Z\s]+$"
         self.errors = ["", "", "", "", ""]
         
         
@@ -157,6 +163,13 @@ class Volunteer:
 
             # Write the changes back to the CSV file
             camps_data.to_csv(camps.camps_filepath, index=False)
+
+            # remove any ongoing requests from them
+            req_df = pd.read_csv(self.resource_req_path)
+
+            old_requests = (req_df['Volunteer'] == self.username) & (req_df['Resolved'] == False)
+            req_df = req_df[~old_requests]
+            req_df.to_csv(self.resource_req_path, index=False)
 
         # Update the volunteer's camp ID
         self.volunteer_file.loc[self.volunteer_file['Username'] == self.username, 'CampID'] = new_camp_id
@@ -257,9 +270,12 @@ class Volunteer:
             req_df = pd.read_csv(self.resource_req_path)
 
             if volunteer_camp in req_df.iloc[:,1].values:
-                req_df = req_df[req_df['Camp_ID'] != str(volunteer_camp)]
-                # print(req_df)
-                req_df.to_csv(self.resource_req_path, index=False)
+                camp_requests = req_df[req_df['Camp_ID'] == str(volunteer_camp)]
+                print('here', camp_requests)
+                if (camp_requests['Resolved'] == False).any():
+                    req_df = req_df[(req_df['Camp_ID'] != str(volunteer_camp)) | (req_df['Resolved'] == True)]
+                    req_df.to_csv(self.resource_req_path, index=False)
+               
 
             with open(self.resource_req_path, "a") as file:
                 file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{today},{responded}\n")

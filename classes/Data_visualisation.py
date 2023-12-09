@@ -97,7 +97,7 @@ def create_bar_graph(camps_or_plans, vol_or_ref):
             csv_reader = csv.reader(file)
             next(csv_reader) # Skips header row
             for row in csv_reader:
-                camp, refugee, volunteer, camp_capacity, plan = row
+                camp, refugee, volunteer, plan, camp_capacity = row
                 if camps_or_plans == "camps":
                     x_axis_variable.append(camp)
                 elif camps_or_plans == "plans":
