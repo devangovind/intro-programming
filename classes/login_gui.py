@@ -165,6 +165,9 @@ class Login:
                 if password_valid(entered_password, correct_credentials): # shows admin menu if login is valid
                     # Admin_Menu()
                     # self.root.iconify() #minimises general login GUI when sign in successful
+                    self.username_entry.delete(0, tk.END)
+                    self.password_entry.delete(0, tk.END)
+                    
                     self.root.iconify()
                     create_admin = Admin(entered_username)
                     AdminGui(create_admin, self.root)
@@ -194,6 +197,8 @@ class Login:
                 if password_valid(entered_password, correct_credentials): 
                     #if login is valid, display volunteer menu
                     # self.log_in_window.destroy() #destroys volunteer login pop up
+                    self.vol_username_entry.delete(0, tk.END)
+                    self.vol_password_entry.delete(0, tk.END)
                     self.root.iconify() #minimises general login GUI when sign in successful
 
                     create_volunteer = Volunteer(entered_username)
