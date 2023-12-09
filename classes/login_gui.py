@@ -65,8 +65,8 @@ class Login:
         print("Screen width:", screen_width)
         print("Screen height:", screen_height)
 
-        width_to_use = int(0.6*screen_width)
-        height_to_use = int(0.7*screen_height)
+        width_to_use = int(0.85*screen_width)
+        height_to_use = int(0.9*screen_height)
         positioning_width = int(0.05*screen_width)
         positioning_height = int(0.01*screen_width)
         self.root.geometry(f"{width_to_use}x{height_to_use}+{positioning_width}+{positioning_height}")
@@ -82,14 +82,14 @@ class Login:
         self.admin_frame = Frame(self.notebook, pady=150, padx=200)
         self.admin_frame.pack(fill="both", expand=1)
         self.notebook.add(self.admin_frame, text="Admin")
-        self.admin_caption = Label(self.admin_frame, text="Welcome to the Humanitarian Management System Portal", font=("Arial",20))
+        self.admin_caption = Label(self.admin_frame, text="Welcome to the Humanitarian Management System Portal", font=("Arial",16))
         self.admin_caption.config(fg="medium slate blue")
         self.admin_caption.pack()
-        self.admin_caption2 = Label(self.admin_frame, text="Login as Admin. Please enter your username and password.")
-        self.admin_caption2.pack(pady=20)
+        self.admin_caption2 = Label(self.admin_frame, text="Sign in as Admin. Please enter your username and password.", font=("Arial",14))
+        self.admin_caption2.pack(pady=5)
 
              # Admin - username
-        self.admin_username = Label(self.admin_frame, text="Admin Username:")
+        self.admin_username = Label(self.admin_frame, text="Admin Username:", font=("Arial",14))
         self.admin_username.pack()
         self.username_entry = ttk.Entry(self.admin_frame, width= 30)
         self.username_entry.pack()
@@ -97,37 +97,37 @@ class Login:
              # Admin - password
         # style = ttk.Style()
         # style.configure('show_pw', font='underline', bg='grey')
-        self.admin_password = Label(self.admin_frame, text="Admin Password:")
+        self.admin_password = Label(self.admin_frame, text="Admin Password:", font=("Arial",14))
         self.admin_password.pack()
         self.password_entry = ttk.Entry(self.admin_frame, width= 30, show="*")
         self.password_entry.pack()
         # Hide/ show pw
         self.password_show_admin = ttk.Button(self.admin_frame, text="Show Password", command=self.show_pw)
-        self.password_show_admin.pack(pady=10)
+        self.password_show_admin.pack(pady=5)
         self.password_hide_admin = ttk.Button(self.admin_frame, text="Hide Password", command=self.hide_pw)
         self.password_hide_admin.pack(pady=5)
 
         self.admin_sign_in = ttk.Button(self.admin_frame, text="Sign In", command=self.admin_validate)
-        self.admin_sign_in.pack(pady=10)
+        self.admin_sign_in.pack(pady=5)
 
         # Volunteer Tab
         self.volunteer_frame = Frame(self.notebook, pady=150, padx=200)
         self.volunteer_frame.pack(fill="both", expand=1)
         self.notebook.add(self.volunteer_frame, text="Volunteer")
-        self.volunteer_caption = Label(self.volunteer_frame, text="Welcome to the Humanitarian Management System Portal", font=("Arial",20))
+        self.volunteer_caption = Label(self.volunteer_frame, text="Welcome to the Humanitarian Management System Portal", font=("Arial",16))
         self.volunteer_caption.config(fg="medium slate blue")
         self.volunteer_caption.pack()
-        self.volunteer_caption2 = Label(self.volunteer_frame, text="Sign in as a Volunteer, or register your details if you do not have an account yet.")
-        self.volunteer_caption2.pack(pady=20)
+        self.volunteer_caption2 = Label(self.volunteer_frame, text="Sign in as a Volunteer, or register your details if you do not have an account yet.", font=("Arial",14))
+        self.volunteer_caption2.pack(pady=5)
 
-        self.vol_username = Label(self.volunteer_frame, text="Volunteer Username:")
-        self.vol_username.pack(pady=5)
+        self.vol_username = Label(self.volunteer_frame, text="Volunteer Username:", font=("Arial",14))
+        self.vol_username.pack()
         self.vol_username_entry = ttk.Entry(self.volunteer_frame, width= 30)
         self.vol_username_entry.pack()
-        self.vol_password = Label(self.volunteer_frame, text="Volunteer Password:")
+        self.vol_password = Label(self.volunteer_frame, text="Volunteer Password:", font=("Arial",14))
         self.vol_password.pack()
         self.vol_password_entry = ttk.Entry(self.volunteer_frame, width= 30, show='*')
-        self.vol_password_entry.pack(pady=5)
+        self.vol_password_entry.pack()
 
         self.password_show_volunteer = ttk.Button(self.volunteer_frame, text="Show Password", command=self.show_pw)
         self.password_show_volunteer.pack(pady=5)
@@ -140,7 +140,7 @@ class Login:
         # self.volunteer_sign_in = ttk.Button(self.volunteer_frame, text="Sign In", command=self.volunteer_login_page, width=20)
         # self.volunteer_sign_in.pack(pady=10)
         self.volunteer_register = ttk.Button(self.volunteer_frame, text="Register as Volunteer", command=self.volunteer_register_page, width=20)
-        self.volunteer_register.pack(pady=10)
+        self.volunteer_register.pack(pady=5)
 
 
     def show_pw(self):
@@ -567,9 +567,9 @@ if __name__ == '__main__':
     login_menu = Login(root)
     root.mainloop()
 
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
+    # screen_width = root.winfo_screenwidth()
+    # screen_height = root.winfo_screenheight()
 
-    #Print the screen size
-    print("Screen width:", screen_width)
-    print("Screen height:", screen_height)
+    # #Print the screen size
+    # print("Screen width:", screen_width)
+    # print("Screen height:", screen_height)
