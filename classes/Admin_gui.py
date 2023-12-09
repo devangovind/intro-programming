@@ -21,7 +21,7 @@ class AdminGui:
         self.e_date = None
         self.camp_num_id = None
         self.root = tk.Tk()
-        self.root.minsize(1000,600)
+        self.root.minsize(1200,600)
 
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -32,7 +32,9 @@ class AdminGui:
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.9*screen_height)
-        self.root.geometry(f"{width_to_use}x{height_to_use}")
+        positioning_width = int(0.05*screen_width)
+        positioning_height = int(0.01*screen_width)
+        self.root.geometry(f"{width_to_use}x{height_to_use}+{positioning_width}+{positioning_height}")
         # self.root.minsize(1000,800)
         self.root.title("Admin View")
         self.admin = admin
@@ -155,25 +157,25 @@ class AdminGui:
         self.Description = tk.StringVar(self.root)
         self.Location = tk.StringVar(self.root)
         # Build the label
-        title = tk.Label(self.root, text='Add a New Plan',font = ('Arial',24))
+        title = tk.Label(self.root, text='Add a New Plan',font = ('Arial',18))
         title.config(fg="medium slate blue")
         title.pack(pady=30)
 
-        plan_ID = tk.Label(self.root, text='Plan_ID:',font = ('Arial',18))
+        plan_ID = tk.Label(self.root, text='Plan_ID:',font = ('Arial',14))
         plan_ID.pack(pady=10)
         # Get the plan_ID automatically
         self.plan_id_num = (self.admin.last_plan_id() + 1)
         self.plan_id = "P"+str(self.plan_id_num)
         # The plan_ID can be shown in the window and admin can not edit
-        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',18))
+        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',14))
         self.plan_id_label.pack(pady=25)
 
-        plan_desc = tk.Label(self.root, text='Description:',font = ('Arial',18))
+        plan_desc = tk.Label(self.root, text='Description:',font = ('Arial',14))
         plan_desc.pack()
-        self.des_entry = ttk.Entry(self.root, width=30, textvariable=self.Description)
+        self.des_entry = ttk.Entry(self.root, width=100, textvariable=self.Description)
         self.des_entry.pack(pady=25)
 
-        plan_loc = tk.Label(self.root, text='Location:',font = ('Arial',18))
+        plan_loc = tk.Label(self.root, text='Location:',font = ('Arial',14))
         plan_loc.pack()
         # Location menu dropdown setup - assign selected country to pass into option menu
         self.selected_country = tk.StringVar(self.root)
@@ -190,9 +192,9 @@ class AdminGui:
         date_frames.columnconfigure(3,weight=1)
         date_frames.rowconfigure(1, weight=1)
         date_frames.rowconfigure(2, weight=1)
-        plan_start = tk.Label(date_frames, text='Start Date:',font = ('Arial',17))
+        plan_start = tk.Label(date_frames, text='Start Date:',font = ('Arial',14))
         plan_start.grid(row=1, column=1, sticky="e")
-        plan_end = tk.Label(date_frames, text='End Date:',font = ('Arial',17))
+        plan_end = tk.Label(date_frames, text='End Date:',font = ('Arial',14))
         plan_end.grid(row=2, column=1, sticky="e")
     
         # Build the button
@@ -414,7 +416,7 @@ class AdminGui:
         self.clear_content()
         # add code here:
         # somewhere in here will be the end button for the individual plans which will maybe go to another function
-        title = tk.Label(self.root, text="Display Humanitarian Plans", font=('Arial', 24))
+        title = tk.Label(self.root, text="Display Humanitarian Plans", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=20)
         header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
@@ -456,13 +458,13 @@ class AdminGui:
         s = ttk.Style()
         s.configure('DisplayPlan.TButton', font=('Arial',14))
 
-        self.data_vis_title = tk.Label(self.root, text="To end a plan, select the plan above and click 'End a Plan'", font=('Arial', 13))
+        self.data_vis_title = tk.Label(self.root, text="To end a plan, select the plan above and click 'End a Plan'", font=('Arial', 14))
         self.data_vis_title.pack(pady=10)
         # self.end_a_plan_btn = tk.Button(self.root, text='End a plan', font=('Arial',16), command=self.end_plan)
         self.end_a_plan_btn = ttk.Button(self.root, text='End a Plan', style='DisplayPlan.TButton', command=self.end_plan)
         self.end_a_plan_btn.pack()
 
-        self.data_vis_title = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 18))
+        self.data_vis_title = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 14))
         self.data_vis_title.pack(pady=10)
         # self.display_refugees_btn_plans = tk.Button(self.root, text="Refugees per plan", font=('Arial', 16), command=self.display_refugee_graph_plans)
         self.display_refugees_btn_plans = ttk.Button(self.root, text="Refugees per plan", style='DisplayPlan.TButton', command=self.display_refugee_graph_plans)
@@ -542,11 +544,11 @@ class AdminGui:
         # Get the value by admin using entry
         self.capacity = tk.StringVar()
         # Build the label
-        title = tk.Label(self.root, text='Add a New Camp', font=('Arial', 24))
+        title = tk.Label(self.root, text='Add a New Camp', font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=30)
         
-        tk.Label(self.root, text='Plan_ID:', font=('Arial', 18)).pack(pady=10)
+        tk.Label(self.root, text='Plan_ID:', font=('Arial', 14)).pack(pady=10)
 
         if len(self.admin.valid_plan()) == 0 :
             plan_lbl = tk.Label(self.root, text='No plan can be added camps', font=('Arial', 24))
@@ -560,14 +562,14 @@ class AdminGui:
 
             w = tk.OptionMenu(self.root, self.plan_id_camp, *self.OPTIONS)
             w.pack(pady=25)
-            tk.Label(self.root, text='Camp_ID:', font=('Arial', 18)).pack(pady=20)
+            tk.Label(self.root, text='Camp_ID:', font=('Arial', 14)).pack(pady=20)
             self.camp_id_num = (self.admin.last_camp_id() + 1)
             self.camp_id = "C"+str(self.camp_id_num)
             # The camp_ID can be shown in the window and admin can not edit
-            self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 18))
+            self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 14))
             self.camp_id_label.pack()
 
-            tk.Label(self.root, text='Capacity (between 100-10000):', font=('Arial', 18)).pack(pady=25)
+            tk.Label(self.root, text='Capacity (between 100-10000):', font=('Arial', 14)).pack(pady=25)
             self.capacity_entry = ttk.Entry(self.root, width=30, textvariable=self.capacity)
             self.capacity_entry.pack()
             self.capacity_entry.config(
@@ -614,8 +616,9 @@ class AdminGui:
     def manage_camps(self):
         # when data visualisation is ready. we can have each camp name be clickable to bring up a new screen with the data visualised
         self.clear_content()
+
+        title = tk.Label(self.root, text="Manage Camps", font=('Arial', 18))
         self.camps_data = self.camps.get_data()
-        title = tk.Label(self.root, text="Manage Camps", font=('Arial', 24))
         title.config(fg="medium slate blue")
         title.pack(pady=20)
         plans_data = self.admin.get_data()
@@ -626,11 +629,11 @@ class AdminGui:
             plans_ids.append(val)
         self.selected_plan = tk.StringVar(self.root)
         self.selected_plan.set(plans_ids[0])
-        plans_menu_lbl = tk.Label(self.root, text="Filter By Plan:", font=('Arial', 18))
+        plans_menu_lbl = tk.Label(self.root, text="Filter By Plan:", font=('Arial', 14))
         plans_menu = tk.OptionMenu(self.root, self.selected_plan, *plans_ids, command=self.filter_camps)
         plans_menu_lbl.pack()
         plans_menu.pack()
-        info_lbl = tk.Label(self.root, text="Click on Allocate Resources to allocate to a specific camp", font=('Arial', 16))
+        info_lbl = tk.Label(self.root, text="Click on Allocate Resources to allocate to a specific camp", font=('Arial', 14))
         info_lbl.pack()
         camp_columns = ["Camp ID", "Plan ID", "No. of Volunteers", "No. of Refugees", "Capacity", "Food Packages", "Medical Supplies", "Tents", "Action (Click) ⬇"]
         column_widths = [60, 60, 100, 100, 60, 150, 150, 70, 150]
@@ -648,7 +651,7 @@ class AdminGui:
         
         # label.grid(row=0,column=1)
         scrollbar.pack(side="right", fill="y")
-        self.data_vis_title = tk.Label(self.root, text="Resource Actions:", font=('Arial', 18))
+        self.data_vis_title = tk.Label(self.root, text="Resource Actions:", font=('Arial', 14))
         self.data_vis_title.pack(pady=10)
         self.unresolved = self.requests.get_unresolved()
 
@@ -660,7 +663,7 @@ class AdminGui:
         request_btn.pack()
         self.filter_camps()
         
-        data_vis_label_res = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 18))
+        data_vis_label_res = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 14))
         data_vis_label_res.pack(pady=10)
         
         # self.display_resources_btn_camps = tk.Button(self.root, text="Resources per camp", font=('Arial', 16), command=self.display_resources_camps)
@@ -937,7 +940,7 @@ class AdminGui:
         # add code here to edit volunteer data
         self.volunteer_data = pd.read_csv(self.volunteer_file)
         self.users = pd.read_csv(self.users_file)
-        title = tk.Label(self.root, text="Manage Volunteers", font=('Arial', 24))
+        title = tk.Label(self.root, text="Manage Volunteers", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=20)
         camps_ids = ["All Camps"]
@@ -947,7 +950,7 @@ class AdminGui:
             camps_ids.append(val)
         self.selected_camp = tk.StringVar(self.root)
         self.selected_camp.set(camps_ids[0])
-        camps_menu_lbl = tk.Label(self.root, text="Filter By Camp:", font=('Arial', 18))
+        camps_menu_lbl = tk.Label(self.root, text="Filter By Camp:", font=('Arial', 14))
         camps_menu = tk.OptionMenu(self.root, self.selected_camp, *camps_ids, command=self.filter_volunteers)
         camps_menu_lbl.pack()
         camps_menu.pack()
@@ -964,7 +967,7 @@ class AdminGui:
         activate_all_btn.grid(row=0, column=0,padx=10)
         deactivate_all_btn.grid(row=0, column=1)
         all_buttons.pack()
-        info_lbl  = tk.Label(self.root, text="Click on a State or Delete column to edit an individual volunteer", font=('Arial', 16))
+        info_lbl  = tk.Label(self.root, text="Click on a State or Delete column to edit an individual volunteer", font=('Arial', 14))
         info_lbl.pack()
         camp_columns = ["Camp ID", "Username", "First Name", "Surname", "Phone", "Age", "Availability", "State", "Delete"]
         column_widths = [70, 80, 80, 80, 80, 40, 220, 70, 70]
