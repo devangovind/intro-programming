@@ -21,7 +21,7 @@ class AdminGui:
         self.e_date = None
         self.camp_num_id = None
         self.root = tk.Tk()
-        self.root.minsize(1200, 600)
+        self.root.minsize(1000,600)
 
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -87,36 +87,36 @@ class AdminGui:
         # self.home_btn = ttk.Button(self.headerarea, text="Home", style='Nav.TButton', command=self.welcome_message)
         self.home_btn = ttk.Button(self.headerarea, text="Home", command=self.welcome_message)
 
-        self.home_btn.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.home_btn.grid(row=0, column=0, padx=10, pady=10,sticky="nsew")
 
         self.create_plan_btn = ttk.Button(self.headerarea, text="Create New Plan", command=self.create_new_plan)
         # self.create_plan_btn = tk.Button(self.headerarea, text="Create New Plan", font=('Arial', 16),
         #                                  command=self.create_new_plan)
-        self.create_plan_btn.grid(row=0, column=1)
+        self.create_plan_btn.grid(row=0, column=1, padx=10, pady=10,sticky="nsew")
 
         self.display_plans_btn = ttk.Button(self.headerarea, text="Display Existing Plans", command=self.display_plans)
         # self.display_plans_btn = tk.Button(self.headerarea, text="Display Existing Plans", font=('Arial', 16),
         #                                    command=self.display_plans)
-        self.display_plans_btn.grid(row=0, column=2)
+        self.display_plans_btn.grid(row=0, column=2, padx=10, pady=10,sticky="nsew")
 
         self.create_camp_btn = ttk.Button(self.headerarea, text="Create New Camp", command=self.add_camp)
         # self.create_camp_btn = tk.Button(self.headerarea, text="Create New Camp", font=('Arial', 16),
         #                             command=self.add_camp)
-        self.create_camp_btn.grid(row=0, column=3)
+        self.create_camp_btn.grid(row=0, column=3, padx=10, pady=10,sticky="nsew")
 
         self.manage_camps_btn = ttk.Button(self.headerarea, text="Manage Camps", command=self.manage_camps)
         # self.manage_camps_btn = tk.Button(self.headerarea, text="Manage Camps", font=('Arial', 16),
         #                                   command=self.manage_camps)
-        self.manage_camps_btn.grid(row=0, column=4)
+        self.manage_camps_btn.grid(row=0, column=4, padx=10, pady=10,sticky="nsew")
 
         self.manage_volunteers_btn = ttk.Button(self.headerarea, text="Manage Volunteers", command=self.manage_volunteers)
         # self.manage_volunteers_btn = tk.Button(self.headerarea, text="Manage Volunteers", font=('Arial', 16),
         #                                        command=self.manage_volunteers)
-        self.manage_volunteers_btn.grid(row=0, column=5)
+        self.manage_volunteers_btn.grid(row=0, column=5, padx=10, pady=10,sticky="nsew")
 
         self.logout_btn = ttk.Button(self.headerarea, text="Logout", command=self.logout)
         # self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 16))
-        self.logout_btn.grid(row=0, column=6)
+        self.logout_btn.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
 
         self.headerarea.pack(fill ="both", padx=20)
         self.nav_bar = [self.headerarea, self.home_btn, self.display_plans_btn, self.create_plan_btn, self.create_camp_btn,
@@ -159,21 +159,21 @@ class AdminGui:
         title.config(fg="medium slate blue")
         title.pack(pady=30)
 
-        plan_ID = tk.Label(self.root, text='Plan_ID:',font = ('Arial',17))
+        plan_ID = tk.Label(self.root, text='Plan_ID:',font = ('Arial',18))
         plan_ID.pack(pady=10)
         # Get the plan_ID automatically
         self.plan_id_num = (self.admin.last_plan_id() + 1)
         self.plan_id = "P"+str(self.plan_id_num)
         # The plan_ID can be shown in the window and admin can not edit
-        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',16))
-        self.plan_id_label.pack(pady=15)
+        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',18))
+        self.plan_id_label.pack(pady=25)
 
-        plan_desc = tk.Label(self.root, text='Description:',font = ('Arial',17))
+        plan_desc = tk.Label(self.root, text='Description:',font = ('Arial',18))
         plan_desc.pack()
         self.des_entry = ttk.Entry(self.root, width=30, textvariable=self.Description)
-        self.des_entry.pack(pady=10)
+        self.des_entry.pack(pady=25)
 
-        plan_loc = tk.Label(self.root, text='Location:',font = ('Arial',17))
+        plan_loc = tk.Label(self.root, text='Location:',font = ('Arial',18))
         plan_loc.pack()
         # Location menu dropdown setup - assign selected country to pass into option menu
         self.selected_country = tk.StringVar(self.root)
@@ -198,9 +198,9 @@ class AdminGui:
         # Build the button
         s = ttk.Style()
         s.configure('CreatePlan.TButton', font=('Arial',14))
-        sdate_button = ttk.Button(date_frames, text='Choose the start date', style='CreatePlan.TButton', command=self.pick_sdate)
+        sdate_button = ttk.Button(date_frames, text='Choose the start date', style='CreatePlan.TButton', command=self.pick_sdate, width=15)
         sdate_button.grid(row=1, column=3, sticky="w")
-        edate_button = ttk.Button(date_frames, text='Choose the end date',style='CreatePlan.TButton', command=self.pick_edate)
+        edate_button = ttk.Button(date_frames, text='Choose the end date',style='CreatePlan.TButton', command=self.pick_edate, width=15)
         edate_button.grid(row=2, column=3, sticky="w")
         date_frames.pack(pady=20)
 
@@ -544,9 +544,9 @@ class AdminGui:
         # Build the label
         title = tk.Label(self.root, text='Add a New Camp', font=('Arial', 24))
         title.config(fg="medium slate blue")
-        title.pack(pady=20)
+        title.pack(pady=30)
         
-        tk.Label(self.root, text='Plan_ID:', font=('Arial', 18)).pack()
+        tk.Label(self.root, text='Plan_ID:', font=('Arial', 18)).pack(pady=10)
 
         if len(self.admin.valid_plan()) == 0 :
             plan_lbl = tk.Label(self.root, text='No plan can be added camps', font=('Arial', 24))
@@ -559,8 +559,8 @@ class AdminGui:
             self.plan_id_camp.set(self.first_option)
 
             w = tk.OptionMenu(self.root, self.plan_id_camp, *self.OPTIONS)
-            w.pack()
-            tk.Label(self.root, text='Camp_ID:', font=('Arial', 18)).pack(pady=25)
+            w.pack(pady=25)
+            tk.Label(self.root, text='Camp_ID:', font=('Arial', 18)).pack(pady=20)
             self.camp_id_num = (self.admin.last_camp_id() + 1)
             self.camp_id = "C"+str(self.camp_id_num)
             # The camp_ID can be shown in the window and admin can not edit
