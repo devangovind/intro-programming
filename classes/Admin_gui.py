@@ -27,8 +27,8 @@ class AdminGui:
         screen_height = self.root.winfo_screenheight()
 
         #Print the screen size
-        print("Screen width:", screen_width)
-        print("Screen height:", screen_height)
+        # print("Screen width:", screen_width)
+        # print("Screen height:", screen_height)
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.9*screen_height)
@@ -165,14 +165,20 @@ class AdminGui:
         plan_ID.pack(pady=10)
         # Get the plan_ID automatically
         self.plan_id_num = (self.admin.last_plan_id() + 1)
-        self.plan_id = "P"+str(self.plan_id_num)
-        # The plan_ID can be shown in the window and admin can not edit
-        self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',14))
-        self.plan_id_label.pack(pady=25)
+        self.plan_id = "P" + str(self.plan_id_num)
+
+        # Displaying the plan_ID in a read-only Entry widget
+        self.plan_id_inp = ttk.Entry(self.root)
+
+        # Insert the plan ID and make the entry read-only
+        self.plan_id_inp.insert(0, self.plan_id)
+        self.plan_id_inp.configure(state='readonly')
+
+        self.plan_id_inp.pack(pady=15)  
 
         plan_desc = tk.Label(self.root, text='Description:',font = ('Arial',14))
         plan_desc.pack()
-        self.des_entry = ttk.Entry(self.root, width=100, textvariable=self.Description)
+        self.des_entry = ttk.Entry(self.root, width=40, textvariable=self.Description)
         self.des_entry.pack(pady=25)
 
         plan_loc = tk.Label(self.root, text='Location:',font = ('Arial',14))
@@ -561,16 +567,24 @@ class AdminGui:
             self.plan_id_camp.set(self.first_option)
 
             w = tk.OptionMenu(self.root, self.plan_id_camp, *self.OPTIONS)
+            w.config(width=20)
             w.pack(pady=25)
-            tk.Label(self.root, text='Camp_ID:', font=('Arial', 14)).pack(pady=20)
+            
+            # Label for "Camp ID"
+            tk.Label(self.root, text='Camp ID:', font=('Arial', 14)).pack(pady=20)
+
+            # Calculate the camp ID
             self.camp_id_num = (self.admin.last_camp_id() + 1)
-            self.camp_id = "C"+str(self.camp_id_num)
-            # The camp_ID can be shown in the window and admin can not edit
-            self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 14))
-            self.camp_id_label.pack()
+            self.camp_id = "C" + str(self.camp_id_num)
+
+            # Entry widget for displaying the camp ID in a read-only mode
+            self.camp_id_inp = ttk.Entry(self.root, width=25)
+            self.camp_id_inp.insert(0, self.camp_id)
+            self.camp_id_inp.configure(state='readonly')
+            self.camp_id_inp.pack(pady=10)
 
             tk.Label(self.root, text='Capacity (between 100-10000):', font=('Arial', 14)).pack(pady=25)
-            self.capacity_entry = ttk.Entry(self.root, width=30, textvariable=self.capacity)
+            self.capacity_entry = ttk.Entry(self.root, width=25, textvariable=self.capacity)
             self.capacity_entry.pack()
             self.capacity_entry.config(
                 validate="key",
@@ -994,7 +1008,7 @@ class AdminGui:
     def filter_volunteers(self, event=None):
         for item in self.volun_tree.get_children():
             self.volun_tree.delete(item)
-        print(self.selected_camp.get())
+        # print(self.selected_camp.get())
         selected_camp = self.selected_camp.get()
         if selected_camp == "All Camps": filtered_data = self.volunteer_data
         else:

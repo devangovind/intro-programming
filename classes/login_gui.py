@@ -33,7 +33,7 @@ def user_valid(username, acct_type):
     with open(logindetails_filepath, "r") as file:
         file_reader = csv.reader(file)
         for row in file_reader:
-            print(row)
+            # print(row)
             if username == row[0]:
                 # check if account is active first and is of correct account type
                 if row[2] == 'False':
@@ -62,8 +62,8 @@ class Login:
         screen_height = self.root.winfo_screenheight()
         self.root.minsize(1000,600)
         #Print the screen size
-        print("Screen width:", screen_width)
-        print("Screen height:", screen_height)
+        # print("Screen width:", screen_width)
+        # print("Screen height:", screen_height)
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.9*screen_height)
@@ -363,7 +363,7 @@ class Volunteer_Register:
         age = self.age_entry.get()
         camp_id = str(self.camp_id_dropdown.get())
         availability_var = self.availability_variables
-        print(availability_var)
+        # print(availability_var)
         availability_bin = ""
         for var in availability_var:
             print(var.get())
@@ -371,7 +371,7 @@ class Volunteer_Register:
                 availability_bin += "1"
             else:
                 availability_bin += "0"
-        print(availability_bin)
+        # print(availability_bin)
         password = self.password_entry.get()
         account_type = "Volunteer"
 
@@ -571,10 +571,3 @@ if __name__ == '__main__':
     root = Tk()
     login_menu = Login(root)
     root.mainloop()
-
-    # screen_width = root.winfo_screenwidth()
-    # screen_height = root.winfo_screenheight()
-
-    # #Print the screen size
-    # print("Screen width:", screen_width)
-    # print("Screen height:", screen_height)

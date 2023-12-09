@@ -41,6 +41,7 @@ class Volunteer:
         active_volunteers = login_dataframe[(login_dataframe['Active'] == True) & (login_dataframe['Account Type'] == 'Volunteer')]
         other_active_volunteers_data = self.volunteer_file[(self.volunteer_file['Username'] != self.username) & (self.volunteer_file['Username'].isin(active_volunteers['Username']))]
         return other_active_volunteers_data
+    
     def get_volunteer_data(self):
         self.volunteer_file = pd.read_csv(self.volunteer_path)
         self.volunteer_data = self.volunteer_file[self.volunteer_file['Username'] == self.username].copy()
@@ -201,9 +202,9 @@ class Volunteer:
 
 
     def validate_camp_details(self, camp_id, capacity):
-        print(self.camps_data[self.camps_data['Camp_ID'] == camp_id])
-        print(self.camps_data[self.camps_data['Camp_ID'] == camp_id]['Num_Of_Refugees'])
-        print(self.camps_data[self.camps_data['Camp_ID'] == camp_id].loc[:,'Num_Of_Refugees'].values[0])
+        # print(self.camps_data[self.camps_data['Camp_ID'] == camp_id])
+        # print(self.camps_data[self.camps_data['Camp_ID'] == camp_id]['Num_Of_Refugees'])
+        # print(self.camps_data[self.camps_data['Camp_ID'] == camp_id].loc[:,'Num_Of_Refugees'].values[0])
         curr_num_refugees = self.camps_data[self.camps_data['Camp_ID'] == camp_id].loc[:,'Num_Of_Refugees'].values[0]
         self.camperrors = [""] 
         def capacity_validate():
@@ -271,7 +272,7 @@ class Volunteer:
 
             if volunteer_camp in req_df.iloc[:,1].values:
                 camp_requests = req_df[req_df['Camp_ID'] == str(volunteer_camp)]
-                print('here', camp_requests)
+                # print('here', camp_requests)
                 if (camp_requests['Resolved'] == False).any():
                     req_df = req_df[(req_df['Camp_ID'] != str(volunteer_camp)) | (req_df['Resolved'] == True)]
                     req_df.to_csv(self.resource_req_path, index=False)
@@ -282,26 +283,7 @@ class Volunteer:
 
             return True
         else:
-            print("inputs were not integers")
+            # print("inputs were not integers")
             return self.errors
 
 
-# def main():
-#     # Example setup for testing
-#     volunteer_username = "volunteer3"  # Replace with a valid username
-#     new_camp_id = "C67890"      # Replace with a valid new camp ID
-
-#     # Create a Volunteer instance
-#     volunteer = Volunteer(username=volunteer_username)
-    
-#     # Call the method to switch the volunteer's camp
-#     success = volunteer.switch_volunteer_camp(new_camp_id)
-
-#     # Print the result
-#     if success:
-#         print(f"Successfully switched to camp {new_camp_id}.")
-#     else:
-#         print("Failed to switch camps.")
-
-# if __name__ == "__main__":
-#     main()

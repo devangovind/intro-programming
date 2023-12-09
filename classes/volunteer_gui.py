@@ -24,8 +24,8 @@ class VolunteerGui:
         self.root.minsize(1200,600)
 
         #Print the screen size
-        print("Screen width:", screen_width)
-        print("Screen height:", screen_height)
+        # print("Screen width:", screen_width)
+        # print("Screen height:", screen_height)
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.95*screen_height)
@@ -172,15 +172,14 @@ class VolunteerGui:
         availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 14))
         availability_lbl.pack(pady=10)
         volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
-        print(volunteer_availability)
-        print(type(volunteer_availability))
+        # print(volunteer_availability)
+        # print(type(volunteer_availability))
         availability_array = []
         for c in volunteer_availability:
             if c == "1":
                 availability_array.append(True) #True
             else:
                 availability_array.append(False) #False
-        print(availability_array)
 
         self.mon_var = tk.IntVar(value=availability_array[0])
         self.tue_var = tk.IntVar(value=availability_array[1])
@@ -245,7 +244,7 @@ class VolunteerGui:
                 availability += "1"
             else:
                 availability += "0"
-        print(availability)
+        # print(availability)
         res = self.volunteer.edit_volunteer_details(fname,lname,phone,age,availability)
         if res == True:
             self.first_name_error.config(text="First Name Saved", fg="green")
@@ -470,14 +469,14 @@ class VolunteerGui:
     def submit_resource_request(self, username, camp_id, food, medical_supplies, tents):
         res = self.volunteer.edit_resources_req_details(username, camp_id, food, medical_supplies, tents)
         if res == True:
-            print("request was success")
+            # print("request was success")
             self.food_error.config(text="Food request Saved", fg="green")
             self.medical_sup_error.config(text="Medical Supplies request Saved", fg="green")
             self.tents_error.config(text="Tents request Saved", fg="green")
             messagebox.showinfo("Success", "Request successfully submitted!")
             self.welcome_message()
         else:
-            print("request failed")
+            # print("request failed")
             self.food_error.config(text=res[0])
             self.medical_sup_error.config(text=res[1])
             self.tents_error.config(text=res[2])
@@ -554,13 +553,13 @@ class VolunteerGui:
             # self.content_frame.bind('<Configure>', resize)
 
         except Exception as e:
-            print("Failed to display camp resources:", e)
+            # print("Failed to display camp resources:", e)
             error_label = tk.Label(self.content_frame, text="Error displaying camp resources.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
 
 
     def show_pie_chart_of_resources(self,volunteer_camp_id):
-        print("Create Pie Chart")
+        # print("Create Pie Chart")
         # Retrieve values for food_pac, medical_sup, tents from the Treeview
         # Assume the Treeview has one row with these values at indices 4, 5, 6
         item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
@@ -599,7 +598,7 @@ class VolunteerGui:
         Camp_ID_var = tk.StringVar(self.content_frame)
         Camp_ID_var.set(avail_Camp_IDs[0])  # Set default value
         Camp_ID_dropdown = tk.OptionMenu(self.content_frame, Camp_ID_var, *avail_Camp_IDs)
-        Camp_ID_dropdown.config(width=10)
+        Camp_ID_dropdown.config(width=17)
         
 
         self.Camp_ID_error = tk.Label(self.content_frame, text="", fg="red", font=('Arial', 10))
@@ -609,9 +608,10 @@ class VolunteerGui:
         self.Camp_ID_error.pack()
 
         # Create input fields for Refugee ID, Medical Condition, and Number of Relatives
-        refugee_id_lbl = tk.Label(self.content_frame, text="[Do not change] Refugee ID:*", font=('Arial', 14))
+        refugee_id_lbl = tk.Label(self.content_frame, text="Refugee ID:*", font=('Arial', 14))
         refugee_id_inp = ttk.Entry(self.content_frame)
         refugee_id_inp.insert(0, suggested_refugee_id)
+        refugee_id_inp. configure(state='readonly')
 
         # Dropdown for Medical Status
         medical_status_lbl = tk.Label(self.content_frame, 
@@ -643,13 +643,14 @@ class VolunteerGui:
         medical_condition_dropdown = tk.OptionMenu(self.content_frame, 
                                                 medical_conditions_var, 
                                                 *medical_conditions)
+        medical_condition_dropdown.config(width=17)
     
 
         # Input field for Medical Description
         medical_description_lbl = tk.Label(self.content_frame, 
                                            text="Medical Description (Provide more details on Medical Condition):",
                                            font=('Arial', 14))
-        medical_description_inp = ttk.Entry(self.content_frame, width=100)
+        medical_description_inp = ttk.Entry(self.content_frame, width=20)
 
         # Input field for Number of Relatives
         num_relatives_lbl = tk.Label(self.content_frame, 
@@ -769,7 +770,7 @@ class VolunteerGui:
                 self.tree_view.insert("", 'end', values=list(row))
 
         except Exception as e:
-            print("Failed to display refugee data:", e)
+            # print("Failed to display refugee data:", e)
             error_label = tk.Label(self.content_frame, text="Error displaying refugee data.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
 

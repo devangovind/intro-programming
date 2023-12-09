@@ -134,7 +134,7 @@ class Admin:
         with open(self.plans_file, 'r', newline='') as input_file:
             csv_reader = csv.reader(input_file)
             for row in csv_reader:
-                print("row is", row)
+                # print("row is", row)
                 # print("status is", row[column_to_check] )
                 if (row[column_to_check] == condition_value or row[column_to_check] == condition_value_2):
                     print("status is: " , row[target_column_index])
@@ -216,8 +216,8 @@ class Admin:
                 self.camp_df.iloc[self.camp_index, :] = self.camp_data
                 self.camp_df.to_csv(self.camps_file, index=False)
 
-                print(username, camp_id)
-                print("account can be deleted")
+                # print(username, camp_id)
+                # print("account can be deleted")
 
                 
                 return f"Account {username} deleted"
