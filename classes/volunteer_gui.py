@@ -8,6 +8,7 @@ from Volunteer import Volunteer
 from Camps import Camps
 from Refugee import Refugee
 from Messages import Messages
+import datetime
 # from main_gui import run
 from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
@@ -773,43 +774,69 @@ class VolunteerGui:
 
     def chat(self):
         self.clear_content()
-        title = tk.Label(self.root, text="Volunteer Chat", font=('Arial', 24))
+        title = tk.Label(self.content_frame, text="Volunteer Chat", font=('Arial', 18))
         title.config(fg="medium slate blue")
-        title.pack(pady=20)
+        title.pack(pady=(20, 10))
+        tk.Label(self.content_frame, text="Select another volunteer to chat to", font=('Arial', 14)).pack()
         # self.all_messages = self.messages.get_all()
         self.all_users = self.volunteer.get_other_volunteers()
-        self.chat_frame = tk.Frame(self.root)
-        self.chat_frame.pack()
+        
 
         volunteers_array = []
         for volun in self.all_users['Username']:
             volunteers_array.append(volun)
-        self.selected_volunteer = tk.StringVar(self.root)
+        self.selected_volunteer = tk.StringVar(self.content_frame)
         self.selected_volunteer.set(volunteers_array[0])
-        receipiant_drop_down = tk.OptionMenu(self.chat_frame, self.selected_volunteer, *volunteers_array, command=self.filter_chats)
-        receipiant_drop_down.grid(row=0,column=0)
-        self.message_box = tk.Text(self.chat_frame, wrap=tk.WORD)
-        self.message_box.grid(row=1, column=1, columnspan=2, padx=10, pady=10)
+        receipiant_drop_down = tk.OptionMenu(self.content_frame, self.selected_volunteer, *volunteers_array, command=self.filter_chats)
+        receipiant_drop_down.pack()
+        ttk.Button(self.content_frame, text="Refresh", command=self.filter_chats).pack()
+        self.chat_frame = tk.Frame(self.content_frame)
+        
+        
+        self.message_box = tk.Text(self.content_frame, wrap=tk.WORD, font=('Courier New', 16))
+        self.message_box.tag_config('sent', foreground="green")
+        self.message_box.pack(fill=tk.BOTH, expand=True, padx=200, pady=20)
         self.message_box.config(state=tk.DISABLED)
-        self.message_entry = ttk.Entry(self.chat_frame, width=30)
-        self.message_entry.grid(row=1, column=0, padx=10, pady=10)
-        send_button = ttk.Button(self.chat_frame, text="Send")
-        send_button.grid(row=1, column=1, padx=10, pady=10)
+        scroll_message_box = ttk.Scrollbar(self.message_box, orient="vertical", command=self.message_box.yview)
+        self.message_box.configure(yscrollcommand=scroll_message_box.set)
+        scroll_message_box.pack(side="right", fill="y")
+        self.chat_frame.pack()
+        self.message_entry = ttk.Entry(self.chat_frame, width=50)
+        self.message_entry.grid(row=1, column=0)
+        self.message_entry.bind('<Return>', self.send_message)
+        send_button = ttk.Button(self.chat_frame, text="Send", command=self.send_message)
+        send_button.grid(row=1, column=1)
+        tk.Label(self.content_frame, text="").pack(pady=40) ##stops table going all the way to bottom
+        self.filter_chats()
 
-    def filter_chats(self):
+
+    def filter_chats(self, event=None):
         self.message_box.config(state=tk.NORMAL)
         self.message_box.delete('1.0', tk.END)
         self.receipiant = self.selected_volunteer.get()
         all_messages = self.messages.get_all_sender_receiver(self.volunteer.username, self.receipiant)
         for index, row in all_messages.iterrows():
-            if row[0] == self.volunteer.username:
-                self.message_box.insert(tk.END, f"You {row[2]}: {row[3]}\n")
+            timestamp = row['timestamp']
+            if row['volunteer_sender'] == self.volunteer.username:
+                self.message_box.insert(tk.END, f"You ({timestamp}): {row['message']}\n", "sent")
             else:
-                self.message_box.insert(tk.END, f"{self.receipiant} {row[2]}: {row[3]}\n")
+                self.message_box.insert(tk.END, f"{self.receipiant} ({timestamp}): {row['message']}\n")
+            self.message_box.insert(tk.END, "\n")
         self.message_box.config(state=tk.DISABLED)
+        self.message_box.see("end")
 
-    def send_message(self):
-        self.clear_content()
+    def send_message(self, event=None):
+        self.message_box.config(state=tk.NORMAL)
+        curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+        message = self.message_entry.get()
+        if message:
+            self.message_box.insert(tk.END, f"You ({curr_time}): {message} \n", "sent")
+            self.message_box.insert(tk.END, "\n")
+            self.message_entry.delete(0, tk.END)
+            self.messages.send_message(self.volunteer.username, self.receipiant, curr_time, message)
+        self.message_box.config(state=tk.DISABLED)
+        self.message_box.see("end")
+
 
 
     # When click logout button, destory volunteer menu

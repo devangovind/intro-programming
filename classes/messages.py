@@ -12,6 +12,7 @@ class Messages:
         # self.plans_file = 'files\\plan_file.csv'
         # self.plans_filepath = '../files/plans_file.csv'
         # self.plans_data = pd.read_csv(self.plans_filepath)
+   
     def get_recieved_messages(self, volunteer):
         self.messages_data = pd.read_csv(self.messages_file)
         return self.messages_data[self.messages_data['volunteer_reciever'] == volunteer]
@@ -28,11 +29,9 @@ class Messages:
         condition_2 = (self.messages_data['volunteer_sender'] == volunteer2) & (self.messages_data['volunteer_receiver'] == volunteer1)
         filtered_data = self.messages_data[condition_1 | condition_2]
         return filtered_data
-    def send_message(self, sender, receiver, message):
-        curr_time = pd.to_datetime(datetime.datetime.now())
-        new_row = {'volunteer_sender': sender, 'volunteer_receiver': receiver, 'timestamp': curr_time, 'message': message}
-        self.messages_data = self.messages_data.append(new_row, ignore_index=True)
-        self.messages_data.to_csv(self.messages_file, index=False)
+    def send_message(self, sender, receiver, time, message):
+        new_row = pd.DataFrame({'volunteer_sender': [sender], 'volunteer_receiver': [receiver], 'timestamp': [time], 'message': [message]})
+        new_row.to_csv(self.messages_file, mode="a", header=False, index=False)
     def write_data(self, plan_id, new_row):
         camp_index = self.plans_data.index[self.plans_data['plan_id'] == plan_id]
         self.plans_data.iloc[camp_index, :] = new_row
