@@ -633,7 +633,7 @@ class AdminGui:
         plans_menu = tk.OptionMenu(self.root, self.selected_plan, *plans_ids, command=self.filter_camps)
         plans_menu_lbl.pack()
         plans_menu.pack()
-        info_lbl = tk.Label(self.root, text="Click on Allocate Resources to allocate to a specific camp", font=('Arial', 14))
+        info_lbl = tk.Label(self.root, text="Click on Allocate Resources to allocate to a specific camp", font=('Arial', 14), fg="gray")
         info_lbl.pack()
         camp_columns = ["Camp ID", "Plan ID", "No. of Volunteers", "No. of Refugees", "Capacity", "Food Packages", "Medical Supplies", "Tents", "Action (Click) ⬇"]
         column_widths = [60, 60, 100, 100, 60, 150, 150, 70, 150]
@@ -967,7 +967,7 @@ class AdminGui:
         activate_all_btn.grid(row=0, column=0,padx=10)
         deactivate_all_btn.grid(row=0, column=1)
         all_buttons.pack()
-        info_lbl  = tk.Label(self.root, text="Click on a State or Delete column to edit an individual volunteer", font=('Arial', 14))
+        info_lbl  = tk.Label(self.root, text="Click on items within a State or Delete column to activate / deactivate / delete an individual volunteer", font=('Arial', 14), fg="gray")
         info_lbl.pack()
         camp_columns = ["Camp ID", "Username", "First Name", "Surname", "Phone", "Age", "Availability", "State", "Delete"]
         column_widths = [70, 80, 80, 80, 80, 40, 220, 70, 70]
@@ -1018,7 +1018,7 @@ class AdminGui:
                         availability_string = ", ".join(availability_array)
                 state = self.users[self.users["Username"] == row["Username"]]["Active"].values[0]
                 if state: state = "Active"
-                else: state = "Deactive"
+                else: state = "Inactive"
                 values=[row['CampID'], row['Username'], row['First Name'], row['Last Name'],row['Phone'], row['Age'], availability_string, state, "Delete?"]
                 self.volun_tree.insert("", "end", values=values)
 

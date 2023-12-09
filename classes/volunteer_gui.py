@@ -489,7 +489,7 @@ class VolunteerGui:
         title.pack(pady=(20, 10))
         # Add the explanation label here, right below the title
         explanation_label = tk.Label(self.content_frame, text="Your camp is highlighted. Select it and use 'Show Pie Chart' to view its resources in pie chart.",
-                                     font=('Arial', 14))
+                                     font=('Arial', 14), fg="gray")
         explanation_label.pack(pady=(5, 10))
 
         curr_volunteer = self.volunteer.username
