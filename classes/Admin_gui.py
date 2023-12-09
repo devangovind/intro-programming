@@ -21,6 +21,7 @@ class AdminGui:
         self.e_date = None
         self.camp_num_id = None
         self.root = tk.Tk()
+        self.root.minsize(1200, 600)
 
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()

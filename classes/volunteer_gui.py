@@ -16,6 +16,7 @@ import pandas as pd
 class VolunteerGui:
     def __init__(self, volunteer, loginwindow):
         self.root = tk.Tk()
+        self.root.minsize(1000, 600)
         # self.root = tk()
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()

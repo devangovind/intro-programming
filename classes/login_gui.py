@@ -58,6 +58,7 @@ class Login:
     # Login page configuration
     def __init__(self, master):
         self.root = master
+        self.root.minsize(1000, 600)
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
@@ -162,7 +163,8 @@ class Login:
                 if password_valid(entered_password, correct_credentials): # shows admin menu if login is valid
                     # Admin_Menu()
                     # self.root.iconify() #minimises general login GUI when sign in successful
-                    self.root.iconify()
+                    self.root.withdraw()
+                    # self.root.iconify()
                     create_admin = Admin(entered_username)
                     AdminGui(create_admin, self.root)
                     # self.root.withdraw()
@@ -191,8 +193,8 @@ class Login:
                 if password_valid(entered_password, correct_credentials): 
                     #if login is valid, display volunteer menu
                     # self.log_in_window.destroy() #destroys volunteer login pop up
-                    self.root.iconify() #minimises general login GUI when sign in successful
-
+                    # self.root.iconify() #minimises general login GUI when sign in successful
+                    self.root.withdraw()
                     create_volunteer = Volunteer(entered_username)
                     VolunteerGui(create_volunteer, self.root)
                 else:
@@ -234,11 +236,17 @@ class Volunteer_Register:
         my_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=my_canvas.yview)
         my_scrollbar.pack(side=RIGHT, fill=Y)
 
+        def on_mousewheel(self, event):
+            my_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
         # configure the canvas
         my_canvas.configure(yscrollcommand=my_scrollbar.set)
         # my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=(0,0,900,900)))
         my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+        my_canvas.bind_all("<MouseWheel>", on_mousewheel)
+
         
+
         # create another frame inside the canvas
         second_frame = Frame(my_canvas)
 
@@ -409,7 +417,7 @@ class Volunteer_Register:
             raise ValueError("Please ensure that your username contains only numbers and letters.")
     
     def validate_first_name(self, first_name):
-        alphabet = "^[a-zA-Z\s]+$"
+        alphabet = r"^[a-zA-Z\s]+$"
         if not bool(re.match(alphabet,first_name)):
                 raise ValueError ("Name can only be letters")
         elif " " in first_name:
@@ -427,7 +435,7 @@ class Volunteer_Register:
                 
 
     def validate_last_name(self, last_name):
-        alphabet = "^[a-zA-Z\s]+$"
+        alphabet = r"^[a-zA-Z\s]+$"
         if not bool(re.match(alphabet, last_name)):
             raise ValueError ("Name can only be letters")
         elif " " in last_name:
