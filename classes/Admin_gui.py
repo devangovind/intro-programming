@@ -787,7 +787,12 @@ class AdminGui:
             self.unresolved = self.requests.get_unresolved()
             requested_resources = [row[2], row[3], row[4]]
             camp_id = row[0]
-            if self.unresolved.loc[(self.unresolved["Camp_ID"] == row[0]) & (self.unresolved["Volunteer"] == row[2]) & (self.unresolved["Resolved"] == False)].any().all():
+
+            # row_df = pd.DataFrame([row], columns=self.unresolved.columns)
+            matching_rows = self.unresolved.loc[(self.unresolved["Camp_ID"] == row[0]) & (self.unresolved["Volunteer"] == row[1]) & (int(self.unresolved["food_pac"]) == int(row[2])) & (int(self.unresolved["medical_sup"]) == int(row[3])) & (int(self.unresolved["tents"]) == int(row[4])) & (self.unresolved["Resolved"] == False)]
+
+            if not matching_rows.empty:
+
                 can_allocate, suggest_resources_dict = self.admin.suggest_resources(row[0])
                 if can_allocate == False:
                     messagebox.showinfo("Error", "Chosen camp now has 0 population and thus no resources can be allocated. Refresh requests to see up-to-date requests")
