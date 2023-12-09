@@ -777,7 +777,7 @@ class VolunteerGui:
         title = tk.Label(self.content_frame, text="Volunteer Chat", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=(20, 10))
-        tk.Label(self.content_frame, text="Select another volunteer to chat to", font=('Arial', 14)).pack()
+        tk.Label(self.content_frame, text="Select another active volunteer to chat to", font=('Arial', 14)).pack()
         # self.all_messages = self.messages.get_all()
         self.all_users = self.volunteer.get_other_volunteers()
         
