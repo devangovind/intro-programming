@@ -30,21 +30,36 @@ volunteers_filepath = "volunteers.csv"
 
 
 def user_valid(username, acct_type):
-    with open(logindetails_filepath, "r") as file:
-        file_reader = csv.reader(file)
-        for row in file_reader:
-            # print(row)
-            if username == row[0]:
-                # check if account is active first and is of correct account type
-                if row[2] == 'False':
-                    return "Account inactive"
-                elif row[2] == 'True' and row[3] == acct_type:
-                    return row
-                else:
-                    return ""
-            else:
-                continue
+    login_details = pd.read_csv(logindetails_filepath)
+    matching_row = login_details.loc[(login_details['Username'] == username)]
+    print(matching_row)
+    if not matching_row.empty:
+        if matching_row["Active"].iloc[0] == False:
+            return "Account Inactive"
+        elif matching_row["Active"].iloc[0] == True and matching_row["Account Type"].iloc[0] == acct_type:
+
+            return matching_row.values.tolist()[0]
+        else:
+            return ""
+    else:
         return "Account does not exist"
+
+    # with open(logindetails_filepath, "r") as file:
+    #     file_reader = csv.reader(file)
+    #     for row in file_reader:
+    #         # print(row)
+    #         if username == row[0]:
+    #             # check if account is active first and is of correct account type
+    #             if row[2] == 'False':
+    #                 return "Account inactive"
+    #             elif row[2] == 'True' and row[3] == acct_type:
+    #                 print(row)
+    #                 return row
+    #             else:
+    #                 return ""
+    #         else:
+    #             continue
+    #     return "Account does not exist"
     
 def password_valid(password, credentials):
     if credentials[1] == password:
@@ -145,9 +160,11 @@ class Login:
 
     def show_pw(self):
         self.password_entry.configure(show='')
+        self.vol_password_entry.configure(show='')
         
     def hide_pw(self):
         self.password_entry.configure(show='*')
+        self.vol_password_entry.configure(show='*')
          
     # Validate if admin username and pw is correct
     def admin_validate(self):
@@ -158,7 +175,7 @@ class Login:
         print(entered_password)
         if entered_username != "" and entered_password != "":
             print(user_valid(entered_username, user_type))
-            if user_valid(entered_username, user_type) == "Account inactive":
+            if user_valid(entered_username, user_type) == "Account Inactive":
                 messagebox.showerror("Error", "User is inactive! Your account has been deactivated, contact the administrator!")
             elif user_valid(entered_username, user_type) == "Account does not exist":
                 messagebox.showerror("Error", "Account doesn't exist!")
@@ -190,7 +207,7 @@ class Login:
         entered_password = self.vol_password_entry.get()
         if entered_username != "" and entered_password != "":
 
-            if user_valid(entered_username, user_type) == "Account inactive":
+            if user_valid(entered_username, user_type) == "Account Inactive":
                 messagebox.showerror("Error", "User is inactive! Your account has been deactivated, contact the administrator!")
             elif user_valid(entered_username, user_type) == "Account does not exist":
                 messagebox.showerror("Error", "Account doesn't exist!")
@@ -207,13 +224,13 @@ class Login:
                     VolunteerGui(create_volunteer, self.root)
                 else:
                     messagebox.showerror("Error", "Password is incorrect!")
-                    self.log_in_window.lift()
+                    
             else:
                 messagebox.showerror("Error", "Username is invalid!")
-                self.log_in_window.lift()
+                
         else:
             messagebox.showerror("Error", "You have not entered a username or password!")
-            self.log_in_window.lift()
+            
 
     # display volunteer registration window
     def volunteer_register_page(self):

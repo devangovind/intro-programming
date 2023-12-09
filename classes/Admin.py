@@ -151,38 +151,32 @@ class Admin:
 
 
     def activate_account(self, username):
-        try:
-            if username in self.users['Username'].values:
-                if self.users.loc[self.users['Username'] == username, 'Active'].iloc[0] != 'True': # iloc[0] ensures that 'Active' column is selected 
-                    self.users.loc[self.users['Username'] == username, 'Active'] = 'True'
-                    self.save_changes()
-                    return 'Your account has been activated'
-                else:
-                    return 'Your account has already been activated'
-        except KeyError:
-            return "Account doesn't exist"
+        
+        if username in self.users['Username'].values:
+
+            self.users.loc[self.users['Username'] == username, 'Active'] = True
+            self.save_changes()
+              
+        
 
 
     def activate_all(self):
-        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = 'True'
+        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = True
         self.save_changes()
         return "All accounts have been activated"
 
 
     def deactivate_account(self, username):
-        try:
-            if username in self.users['Username'].values:
-                if self.users.loc[self.users['Username'] == username, 'Active'].iloc[0] == 'True':
-                    self.users.loc[self.users['Username'] == username, 'Active'] = 'False'
-                    self.save_changes()
-                    return "Your account has been deactivated, contact the administrator."
-                else:
-                    return "Your account has already been deactivated"
-        except KeyError:
-            return "Account doesn't exist"
+
+        if username in self.users['Username'].values:
+        
+            self.users.loc[self.users['Username'] == username, 'Active'] = False
+            self.save_changes()
+               
+
 
     def deactivate_all(self):
-        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = 'False'
+        self.users.loc[self.users['Account Type'] == "Volunteer", 'Active'] = False
         self.save_changes()
         return "All accounts have been deactivated"
 
