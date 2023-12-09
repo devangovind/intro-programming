@@ -336,10 +336,10 @@ class Volunteer_Register:
         self.camp_id_dropdown.grid(row=11, column=1)
 
 
-        self.availability_label.grid(row=13, column=0, columnspan=2)
+        self.availability_label.grid(row=12, column=0, columnspan=2)
         for i, checkbox in enumerate(self.availability_checkboxes):
    #         if i <= 3:
-            checkbox.grid(row = 14 + i, column = 0, columnspan=2)
+            checkbox.grid(row = 13 + i, column = 0, columnspan=2)
   #         elif i > 3:
    #             checkbox.grid(row = 14 + i - 4, column = 1, pady=5)
         # self.avail_status.pack()
