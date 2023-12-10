@@ -188,9 +188,7 @@ class Volunteer:
            self.volunteer_data['Camp_ID'] = camp_id
            self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
            self.volunteer_file.to_csv(self.volunteer_path, index=False)
-        #    when csv is done maybe change to write_data function definition like this:
-        #    write_data(self, Camp_ID, Num_Of_Refugees=None, capacity=None). and then just specify which values are to be changed
-        #   call by saying camps.write_data(camp_id, capacity=capacity)
+
            
            camps_row = self.camps_data[self.camps_data['Camp_ID'] == camp_id].copy()
            camps_row['Capacity'] = int(capacity)
@@ -275,7 +273,7 @@ class Volunteer:
                     req_df.to_csv(self.resource_req_path, index=False)
                
             new_req_row = pd.DataFrame({'Volunteer': [volunteer_username], 'Camp_ID': [volunteer_camp], 'food_pac': [input_food], 'medical_sup': [input_medical_supplies], 'tents': [input_tents], 'date': [today], 'Resolved': [False]})
-            new_req_row.to_csv(self.resource_req_path, mode="a", header=False,)
+            new_req_row.to_csv(self.resource_req_path, mode="a", header=False, index=False)
             return True
         else:
 

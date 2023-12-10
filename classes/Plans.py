@@ -24,8 +24,7 @@ class Plans:
         # for mac
         self.plans_data.to_csv(self.plans_file, index=False)
         
-        # for windows
-        # self.plans_data.to_csv(self.plans_filepath, index=False)
+
         return True
     def write_entire_dataframe(self, df):
         df.to_csv(self.plans_file, index=False)

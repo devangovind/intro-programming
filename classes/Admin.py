@@ -44,12 +44,7 @@ class Admin:
         # self.login_file = '../files/logindetails.csv'
         # self.volunteer_file = '../files/volunteers.csv'
         # self.camp_id = None
-        
-        # with open(self.plans_file, 'r', encoding='utf-8') as plan_file:
-        #     read = csv.DictReader(plan_file)
-        #     self.plan_list = []
-        #     for row in read:
-        #         self.plan_list.append(row)
+
         self.plan_list = self.Plans.get_plan_ids()
 
 

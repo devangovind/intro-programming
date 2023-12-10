@@ -395,13 +395,10 @@ class Volunteer_Register:
             self.validate_availability(availability_bin) 
             self.validate_password(password)
 
-            # with open (logindetails_filepath, "a") as file:
-            #     file.write(f"{username},{password},{True},{account_type}\n")
+   
             new_row_login = pd.DataFrame({'Username': [username], 'Password': [password], 'Active': [True], 'Account Type': [account_type]})
             new_row_login.to_csv(logindetails_filepath, mode="a", header=False, index=False)
 
-            # with open (volunteers_filepath, "a") as file:
-            #     file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability_bin}\n")
             new_row_volun = pd.DataFrame({"Username": [username], "First Name": [first_name], "Last Name": [last_name], "Phone": [phone], "Age": [age], "CampID": [camp_id], "Availability": [availability_bin]})
             new_row_volun.to_csv(volunteers_filepath, mode="a", header=False, index=False)
             # update camps_file.csv
@@ -424,14 +421,6 @@ class Volunteer_Register:
         matching_row = login_details.loc[(login_details['Username'] == username)]
         if not matching_row.empty:
             raise ValueError("This username already exists. Please try an alternative username.")
-
-        # with open(logindetails_filepath, "r") as file:
-        #     file_reader = csv.reader(file)
-        #     next(file_reader)
-        #     for row in file_reader:
-        #         if username == row[0]:
-        #         else:
-        #             continue
             
         if " " in username:
             raise ValueError("Do not enter spaces in your username.")
