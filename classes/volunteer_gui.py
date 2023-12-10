@@ -23,9 +23,7 @@ class VolunteerGui:
         screen_height = self.root.winfo_screenheight()
         self.root.minsize(1200,600)
 
-        #Print the screen size
-        # print("Screen width:", screen_width)
-        # print("Screen height:", screen_height)
+
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.95*screen_height)
@@ -172,8 +170,6 @@ class VolunteerGui:
         availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 14))
         availability_lbl.pack(pady=10)
         volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
-        # print(volunteer_availability)
-        # print(type(volunteer_availability))
         availability_array = []
         for c in volunteer_availability:
             if c == "1":
@@ -244,7 +240,7 @@ class VolunteerGui:
                 availability += "1"
             else:
                 availability += "0"
-        # print(availability)
+
         res = self.volunteer.edit_volunteer_details(fname,lname,phone,age,availability)
         if res == True:
             self.first_name_error.config(text="First Name Saved", fg="green")
@@ -469,14 +465,14 @@ class VolunteerGui:
     def submit_resource_request(self, username, camp_id, food, medical_supplies, tents):
         res = self.volunteer.edit_resources_req_details(username, camp_id, food, medical_supplies, tents)
         if res == True:
-            # print("request was success")
+
             self.food_error.config(text="Food request Saved", fg="green")
             self.medical_sup_error.config(text="Medical Supplies request Saved", fg="green")
             self.tents_error.config(text="Tents request Saved", fg="green")
             messagebox.showinfo("Success", "Request successfully submitted!")
             self.welcome_message()
         else:
-            # print("request failed")
+
             self.food_error.config(text=res[0])
             self.medical_sup_error.config(text=res[1])
             self.tents_error.config(text=res[2])
@@ -553,13 +549,12 @@ class VolunteerGui:
             # self.content_frame.bind('<Configure>', resize)
 
         except Exception as e:
-            # print("Failed to display camp resources:", e)
+
             error_label = tk.Label(self.content_frame, text="Error displaying camp resources.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
 
 
     def show_pie_chart_of_resources(self,volunteer_camp_id):
-        # print("Create Pie Chart")
         # Retrieve values for food_pac, medical_sup, tents from the Treeview
         # Assume the Treeview has one row with these values at indices 4, 5, 6
         item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
@@ -770,7 +765,7 @@ class VolunteerGui:
                 self.tree_view.insert("", 'end', values=list(row))
 
         except Exception as e:
-            # print("Failed to display refugee data:", e)
+
             error_label = tk.Label(self.content_frame, text="Error displaying refugee data.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
 

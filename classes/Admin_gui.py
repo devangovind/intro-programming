@@ -26,9 +26,6 @@ class AdminGui:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
-        #Print the screen size
-        # print("Screen width:", screen_width)
-        # print("Screen height:", screen_height)
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.9*screen_height)
@@ -982,7 +979,7 @@ class AdminGui:
     def filter_volunteers(self, event=None):
         for item in self.volun_tree.get_children():
             self.volun_tree.delete(item)
-        # print(self.selected_camp.get())
+
         selected_camp = self.selected_camp.get()
         if selected_camp == "All Camps": filtered_data = self.volunteer_data
         else:

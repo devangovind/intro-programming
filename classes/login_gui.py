@@ -32,7 +32,7 @@ volunteers_filepath = "volunteers.csv"
 def user_valid(username, acct_type):
     login_details = pd.read_csv(logindetails_filepath)
     matching_row = login_details.loc[(login_details['Username'] == username)]
-    print(matching_row)
+
     if not matching_row.empty:
         if matching_row["Active"].iloc[0] == False:
             return "Account Inactive"
@@ -47,13 +47,13 @@ def user_valid(username, acct_type):
     # with open(logindetails_filepath, "r") as file:
     #     file_reader = csv.reader(file)
     #     for row in file_reader:
-    #         # print(row)
+
     #         if username == row[0]:
     #             # check if account is active first and is of correct account type
     #             if row[2] == 'False':
     #                 return "Account inactive"
     #             elif row[2] == 'True' and row[3] == acct_type:
-    #                 print(row)
+
     #                 return row
     #             else:
     #                 return ""
@@ -76,9 +76,7 @@ class Login:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         self.root.minsize(1000,600)
-        #Print the screen size
-        # print("Screen width:", screen_width)
-        # print("Screen height:", screen_height)
+
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.9*screen_height)
@@ -171,10 +169,9 @@ class Login:
         user_type = 'Admin'
         entered_username = self.username_entry.get()
         entered_password = self.password_entry.get()
-        print(entered_username)
-        print(entered_password)
+
         if entered_username != "" and entered_password != "":
-            print(user_valid(entered_username, user_type))
+
             if user_valid(entered_username, user_type) == "Account Inactive":
                 messagebox.showerror("Error", "User is inactive! Your account has been deactivated, contact the administrator!")
             elif user_valid(entered_username, user_type) == "Account does not exist":
@@ -236,11 +233,6 @@ class Login:
     def volunteer_register_page(self):
         Volunteer_Register()
 
-# class Admin_Menu for Admin page after successful login
-class Admin_Menu:
-    # Yan's portion
-    def __init__(self):
-        print("Test admin sign in button")
     
 # class Volunteer_Register for volunteer registration page when they select register
 class Volunteer_Register: 
@@ -382,7 +374,7 @@ class Volunteer_Register:
         age = self.age_entry.get()
         camp_id = str(self.camp_id_dropdown.get())
         availability_var = self.availability_variables
-        # print(availability_var)
+
         availability_bin = ""
         for var in availability_var:
 
@@ -390,7 +382,7 @@ class Volunteer_Register:
                 availability_bin += "1"
             else:
                 availability_bin += "0"
-        # print(availability_bin)
+
         password = self.password_entry.get()
         account_type = "Volunteer"
 
