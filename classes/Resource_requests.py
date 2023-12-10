@@ -15,6 +15,7 @@ class Resource_requests:
         return self.request_data
     def get_unresolved(self):
         self.request_data = pd.read_csv(self.resource_requests_file)
+        self.request_data = self.request_data.sort_values(by='date', ascending=True)
         return self.request_data[self.request_data['Resolved'] == False]
     def get_resolved(self):
         self.request_data = pd.read_csv(self.resource_requests_file)
