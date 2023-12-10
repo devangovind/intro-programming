@@ -277,10 +277,8 @@ class Volunteer:
                     req_df = req_df[(req_df['Camp_ID'] != str(volunteer_camp)) | (req_df['Resolved'] == True)]
                     req_df.to_csv(self.resource_req_path, index=False)
                
-
-            with open(self.resource_req_path, "a") as file:
-                file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{today},{responded}\n")
-
+            new_req_row = pd.DataFrame({'Volunteer': [volunteer_username], 'Camp_ID': [volunteer_camp], 'food_pac': [input_food], 'medical_sup': [input_medical_supplies], 'tents': [input_tents], 'date': [today], 'Resolved': [False]})
+            new_req_row.to_csv(self.resource_req_path, mode="a", header=False,)
             return True
         else:
             # print("inputs were not integers")

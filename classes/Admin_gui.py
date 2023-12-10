@@ -322,70 +322,37 @@ class AdminGui:
             if var_start_day == Start_date_ and var_end_day == End_date_ and not (
             self.admin.check_end_date(self.e_date, self.s_date)):
             ## check the status of this new plan-- onging or not started 
-                if self.s_date == date.today():
-                    Start_date_ = self.s_date.strftime('%d/%m/%Y')
-                    End_date_ = self.e_date.strftime('%d/%m/%Y')
-                    plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
-                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Ongoing'}
-                    plan_list = [
-                        {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
-                         'End Date': End_date_,'Status':'Ongoing'}]  
-                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                    with open(self.admin.plans_file, 'a', newline='', encoding='utf-8') as f:
-                        writer = csv.DictWriter(f, fieldnames=header)
-                        writer.writerows(plan_list)
-                    self.admin.insert_new_plan(plan_dic)
-                    # order all the plan after adding a new plan
-                    plan = pd.read_csv(self.admin.plans_file)  
-                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
-                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv(self.admin.plans_file, index=False)
-                    messagebox.showinfo('infor', 'Plan successfully created')
-                    self.Description.set('')
-                    self.Location.set('')
-                    self.start_date.delete(0, END)
-                    self.end_date.delete(0, END)
-                    self.e_date = None
-                    self.s_date = None
-                    self.plan_id_num_1 = int(self.plan_id[1:])+1
-                    self.plan_id = "P" + str(self.plan_id_num_1)
-                    self.plan_id_label.destroy()
-                    self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
-                    self.create_new_plan()
-                elif self.s_date > date.today():
-                    Start_date_ = self.s_date.strftime('%d/%m/%Y')
-                    End_date_ = self.e_date.strftime('%d/%m/%Y')
-                    plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
-                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Not Started'}
-                    plan_list = [
-                        {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
-                         'End Date': End_date_,'Status':'Not Started'}]  # 空字典
-                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-             
-                    with open(self.admin.plans_file, 'a', newline='', encoding='utf-8') as f:
-                        writer = csv.DictWriter(f, fieldnames=header)
-
-                        writer.writerows(plan_list)
-                    self.admin.insert_new_plan(plan_dic)
-                    ## Order plan using pandas
-                    plan = pd.read_csv(self.admin.plans_file) 
-                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
-                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv(self.admin.plans_file, index=False)
-                    ## reminde admin
-                    messagebox.showinfo('infor', 'Created a plan successfully')
-                    ## clean all the blank after add a plan successfully and show the plan ID 
-                    self.Description.set('')
-                    self.Location.set('')
-                    self.start_date.delete(0, END)
-                    self.end_date.delete(0, END)
-                    self.e_date = None
-                    self.s_date = None
-                    self.plan_id_num_1 = int(self.plan_id[1:])+1
-                    self.plan_id = "P" + str(self.plan_id_num_1)
-                    self.plan_id_label.destroy()
-                    self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
-                    self.create_new_plan()
+            
+                Start_date_ = self.s_date.strftime('%d/%m/%Y')
+                End_date_ = self.e_date.strftime('%d/%m/%Y')
+                if self.s_date == date.today(): status = 'Ongoing'
+                else: status = 'Not Started'
+                plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
+                            'Start Date': Start_date_, 'End Date': End_date_,'Status':status}
+                plan_list = pd.DataFrame({'Plan_ID': [Plan_ID_], 'Description': [Description_], 'Location': [Location_], 'Start Date': [Start_date_],
+                        'End Date': [End_date_],'Status': [status]})
+                header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
+                
+                self.plans.append_dateframe(plan_list)
+                self.admin.insert_new_plan(plan_dic)
+                # order all the plan after adding a new plan
+                # plan = pd.read_csv(self.admin.plans_file)  
+                # plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
+                # sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
+                # sorted_plan.to_csv(self.admin.plans_file, index=False)
+                messagebox.showinfo('Success', 'Plan successfully created')
+                # self.Description.set('')
+                # self.Location.set('')
+                # self.start_date.delete(0, END)
+                # self.end_date.delete(0, END)
+                # self.e_date = None
+                # self.s_date = None
+                # self.plan_id_num = int(self.plan_id[1:])+1
+                # self.plan_id = "P" + str(self.plan_id_num)
+                # self.plan_id_inp.configure
+                # self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
+                self.create_new_plan()
+                
             ## check the date 
             elif self.admin.check_end_date(self.e_date, self.s_date):
                 messagebox.showwarning(title='Choose start date', message='The end date cannot be before start date')
@@ -398,7 +365,7 @@ class AdminGui:
 
                 self.admin.is_date(var_start_day)
                 messagebox.showwarning(title='Create a new plan',
-                                       message='Please reuse the button to enter the date using the calendar')
+                                       message='Use calender to enter date')
                 self.start_date.delete(0, END)
                 self.end_date.delete(0, END)
                 self.e_date = None
@@ -437,21 +404,24 @@ class AdminGui:
         index = 0
         # with time passes, if start date arrives today, the status change from not starte to ongoing
         # with time passes, if end date arrives today, the status change from ongoing to finished
-        df = pd.read_csv(self.admin.plans_file)
-        df.set_index("Plan_ID", inplace=True)  
-        today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
-        df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Not started'), "Status"] = "Ongoing"
-        df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
-        df.to_csv(self.admin.plans_file)
-        # the update can be seen in table
-        index = 0
-        with open(self.admin.plans_file, 'r', encoding='utf-8') as plan_file:
-            read = csv.DictReader(plan_file)
-            self.plan_update_list = []
-            for row in read:
-                self.plan_update_list.append(row)
+        df = self.plans.get_data()
+        # df.set_index("Plan_ID", inplace=True)  
+        today_str = date.today()
 
-        for plan in self.plan_update_list:
+
+
+        
+        df['Start Date'] = pd.to_datetime(df['Start Date'], format='%d/%m/%Y')
+        df['End Date'] = pd.to_datetime(df['End Date'], format='%d/%m/%Y')
+
+        df.loc[(df['Start Date'].dt.date <= today_str) & (df['Status'] =='Not Started'), "Status"] = "Ongoing"
+        df.loc[(df['End Date'].dt.date < today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
+
+        df['Start Date'] = df['Start Date'].dt.strftime('%d/%m/%Y')
+        df['End Date'] = df['End Date'].dt.strftime('%d/%m/%Y')
+        self.plans.write_entire_dataframe(df)
+
+        for index, plan in (df.iterrows()):
             self.table.insert('', 'end', values=(plan['Plan_ID'], plan['Description'],
                                                           plan['Location'], plan['Start Date'], plan['End Date'],plan['Status']))
         vsb = ttk.Scrollbar(self.table, orient="vertical", command=self.table.yview)
@@ -508,38 +478,42 @@ class AdminGui:
                     end_date_today = time.strftime("%d/%m/%Y",time.localtime(time.time()))
                     number_id = int(temp[0][1:])
                         # add the new one (which has been edite based on the old one)
+                    plans_data = self.plans.get_data()
+                    plans_data.loc[plans_data["Plan_ID"] == temp[0], ["End Date", 'Status']] = [end_date_today, end_up]
+                    self.plans.write_entire_dataframe(plans_data)
                     self.table.item(selected, values=(temp[0], temp[1], temp[2], temp[3], end_date_today,end_up))
-                    plan_end_dic = {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2],
-                                    'Start Date': temp[3], 'End Date': end_date_today,'Status':end_up, 'Numeric_ID':number_id}
-                    plan_end_list = [
-                        {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2], 'Start Date': temp[3],
-                            'End Date': end_date_today,'Status':end_up,'Numeric_ID':number_id}]
-                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
-                    with open(self.admin.plans_file, 'a',
-                                newline='', encoding='utf-8') as f:
-                        writer = csv.DictWriter(f, fieldnames=header)
-                        writer.writerows(plan_end_list)
-                    self.admin.insert_new_plan(plan_end_dic)
-                    # delete the old one 
-                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
-                    for x in self.plan_data_:
-                        if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
-                                temp[4] == x['End Date'] and temp[5] == 'Ongoing':
-                            yy = self.plan_data_.remove(x)
-                    with open(self.admin.plans_file, 'w', newline='') as csvfile:
-                        fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status','Numeric_ID']
-                        writer = csv.DictWriter(csvfile, fieldnames=fields)
-                        writer.writeheader()
-                        for row in self.plan_data_:
-                            writer.writerow(row)
-                    plan = pd.read_csv(self.admin.plans_file)  
-                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
-                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv(self.admin.plans_file, index=False)
+                    # plan_end_dic = {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2],
+                    #                 'Start Date': temp[3], 'End Date': end_date_today,'Status':end_up, 'Numeric_ID':number_id}
+                    # plan_end_list = [
+                    #     {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2], 'Start Date': temp[3],
+                    #         'End Date': end_date_today,'Status':end_up,'Numeric_ID':number_id}]
+                    # header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
+                    # with open(self.admin.plans_file, 'a',
+                    #             newline='', encoding='utf-8') as f:
+                    #     writer = csv.DictWriter(f, fieldnames=header)
+                    #     writer.writerows(plan_end_list)
+                    # self.admin.insert_new_plan(plan_end_dic)
+                    # # delete the old one 
+                    # header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
+                    # for x in self.plan_data_:
+                    #     if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
+                    #             temp[4] == x['End Date'] and temp[5] == 'Ongoing':
+                    #         yy = self.plan_data_.remove(x)
+                    # with open(self.admin.plans_file, 'w', newline='') as csvfile:
+                    #     fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status','Numeric_ID']
+                    #     writer = csv.DictWriter(csvfile, fieldnames=fields)
+                    #     writer.writeheader()
+                    #     for row in self.plan_data_:
+                    #         writer.writerow(row)
+                    # plan = pd.read_csv(self.admin.plans_file)  
+                    # plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
+                    # sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
+                    # sorted_plan.to_csv(self.admin.plans_file, index=False)
                     # self.table.bind('<ButtonRelease-1>', update_item())
-                    messagebox.showinfo(title='Info', message='This plan has successfully been ended.')
+                    messagebox.showinfo(title='Info', message='Plan successfully ended.')
+                    self.display_plans()
             elif self.status == 'Finished':
-                messagebox.showerror(title='Info', message='This plan has already ended.')
+                messagebox.showerror(title='Info', message='Plan has already ended.')
                 self.display_plans()
         elif not item:
             messagebox.showerror(title='Info', message='Please choose a plan.')
@@ -554,10 +528,10 @@ class AdminGui:
         title.config(fg="medium slate blue")
         title.pack(pady=30)
         
-        tk.Label(self.root, text='Plan_ID:', font=('Arial', 14)).pack(pady=10)
+        tk.Label(self.root, text='Plan ID:', font=('Arial', 14)).pack(pady=10)
 
         if len(self.admin.valid_plan()) == 0 :
-            plan_lbl = tk.Label(self.root, text='No plan can be added camps', font=('Arial', 24))
+            plan_lbl = tk.Label(self.root, text='All plans have finished \n Create a new plan to add new camps', font=('Arial', 14))
             plan_lbl.pack(pady=30)
         else:
             self.OPTIONS = self.admin.valid_plan()
@@ -610,15 +584,15 @@ class AdminGui:
         elif int(Capacity_) >= 100 and int(Capacity_) <=10000:
             camp_plan_dic = {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
                         'Num_Of_Volunteers': Num_v, 'Plan_ID':Plan_ID_C, 'Capacity': Capacity_}
-            camp_plan_list = [
-                {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
-                 'Num_Of_Volunteers': Num_v, 'Plan_ID': Plan_ID_C, 'Capacity': Capacity_}]  
+            camp_plan_list = pd.DataFrame({'Camp_ID': [Camp_ID], 'Num_Of_Refugees': [Num_r],
+                 'Num_Of_Volunteers': [Num_v], 'Plan_ID': [Plan_ID_C], 'Capacity': [Capacity_]})
             header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'Capacity']
-            with open(self.admin.camps_file, 'a', newline='', encoding='utf-8') as f:
-                writer = csv.DictWriter(f, fieldnames=header)
-                writer.writerows(camp_plan_list)
+            # with open(self.admin.camps_file, 'a', newline='', encoding='utf-8') as f:
+            #     writer = csv.DictWriter(f, fieldnames=header)
+            #     writer.writerows(camp_plan_list)
+            camp_plan_list.to_csv(self.admin.camps_file, mode="a", header=False, index=False)
             self.admin.insert_new_plan(camp_plan_dic)
-            messagebox.showinfo('infor', 'Created a camp in a specific plan successfully')
+            messagebox.showinfo('Success', f'Camp added to Plan {Plan_ID_C}')
             self.capacity.set('')
             self.camp_id_num_1 = int(self.camp_id[1:])+1
             self.camp_id = "C" + str(self.camp_id_num_1)
