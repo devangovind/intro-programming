@@ -492,8 +492,8 @@ class AdminGui:
             w.config(width=20)
             w.pack(pady=25)
             
-            # Label for "Camp ID"
-            tk.Label(self.root, text='Camp ID:', font=('Arial', 14)).pack(pady=20)
+            # # Label for "Camp ID"
+            # tk.Label(self.root, text='Camp ID:', font=('Arial', 14)).pack(pady=20)
 
             # Calculate the camp ID
             self.camp_id_num = (self.admin.last_camp_id() + 1)
@@ -541,8 +541,14 @@ class AdminGui:
             self.capacity.set('')
             self.camp_id_num_1 = int(self.camp_id[1:])+1
             self.camp_id = "C" + str(self.camp_id_num_1)
-            self.camp_id_label.destroy()
-            self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 12))
+            # Entry widget for displaying the camp ID in a read-only mode
+            self.camp_id_inp.destroy()
+            self.camp_id_inp = ttk.Entry(self.root, width=25)
+            self.camp_id_inp.insert(0, self.camp_id)
+            self.camp_id_inp.configure(state='readonly')
+            self.camp_id_inp.pack(pady=10)
+            # self.camp_id_label.destroy()
+            # self.camp_id_label = tk.Label(self.root, text=self.camp_id,font=('Arial', 12))
 
             self.add_camp()
 

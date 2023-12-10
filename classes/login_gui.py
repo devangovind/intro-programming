@@ -238,10 +238,10 @@ class Login:
 class Volunteer_Register: 
     def __init__(self):
         self.register_window = tk.Tk()
-        self.register_window.geometry("800x700")
+        self.register_window.geometry("920x700")
         self.register_window.title("Volunteer Registration")
-        self.register_window.minsize(800, 700)
         self.camps = Camps()
+        self.register_window.minsize(920, 700)
 
         # Create a Main Frame
         main_frame = Frame(self.register_window)
@@ -257,6 +257,7 @@ class Volunteer_Register:
         
         # create another frame inside the canvas with scrollbar
         second_frame = Frame(my_canvas)
+        second_frame = Frame(my_canvas, padx=50)
         second_frame.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
         my_canvas.configure(yscrollcommand=my_scrollbar.set)
  
@@ -345,10 +346,10 @@ class Volunteer_Register:
         self.camp_id_dropdown.grid(row=11, column=1)
 
 
-        self.availability_label.grid(row=13, column=0, columnspan=2)
+        self.availability_label.grid(row=12, column=0, columnspan=2)
         for i, checkbox in enumerate(self.availability_checkboxes):
    #         if i <= 3:
-            checkbox.grid(row = 14 + i, column = 0, columnspan=2)
+            checkbox.grid(row = 13 + i, column = 0, columnspan=2)
   #         elif i > 3:
    #             checkbox.grid(row = 14 + i - 4, column = 1, pady=5)
         # self.avail_status.pack()
@@ -507,7 +508,7 @@ class Volunteer_Register:
         elif not any(c.isupper() for c in password):
             raise ValueError("Please ensure that your password contains at least one capital letter.")
         elif not re.match(pw_chars, password) or not re.search(punc_chars, password):
-            raise ValueError("Please ensure that your password contains only letters a-z, numbers 0-9, and at least one of '!' or '?'.")
+            raise ValueError("Please ensure that your password contains only letters a-z,\nnumbers 0-9, and at least one of '!' or '?'.")
     
     def validate_confirm_password(self, password, confirm_password):
         if password != confirm_password:
