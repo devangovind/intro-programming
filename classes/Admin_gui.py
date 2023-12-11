@@ -26,19 +26,16 @@ class AdminGui:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
-        #Print the screen size
-        # print("Screen width:", screen_width)
-        # print("Screen height:", screen_height)
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.9*screen_height)
         positioning_width = int(0.05*screen_width)
         positioning_height = int(0.01*screen_width)
         self.root.geometry(f"{width_to_use}x{height_to_use}+{positioning_width}+{positioning_height}")
-        # self.root.minsize(1000,800)
+
         self.root.title("Admin View")
         self.admin = admin
-        # self.volunteer_data = self.volunteer.get_volunteer_data()
+
         self.volunteer_file = "volunteers.csv"
         self.users_file = "logindetails.csv"
         self.countries_file = "countries.csv"
@@ -67,9 +64,7 @@ class AdminGui:
         # self.users = pd.read_csv(self.users_file)
         # self.countries_file = "../files/countries.csv"
         # countries_df = pd.read_csv(self.countries_file)
-        
-        # self.edit_details_button = tk.Button(self.root, text="Edit personal details", font=('Arial', 20))
-        # self.root.mainloop()
+
         
 
     def create_nav_bar(self):
@@ -84,40 +79,37 @@ class AdminGui:
         s = ttk.Style()
         s.configure('Nav.TButton', font=('Arial' ,11))
 
-        # self.home_btn = tk.Button(self.headerarea, text="Home", font=('Arial', 16), command=self.welcome_message)
-        # self.home_btn.grid(row=0, column=0)
-        # self.home_btn = ttk.Button(self.headerarea, text="Home", style='Nav.TButton', command=self.welcome_message)
         self.home_btn = ttk.Button(self.headerarea, text="Home", command=self.welcome_message)
 
         self.home_btn.grid(row=0, column=0, padx=10, pady=10,sticky="nsew")
 
         self.create_plan_btn = ttk.Button(self.headerarea, text="Create New Plan", command=self.create_new_plan)
-        # self.create_plan_btn = tk.Button(self.headerarea, text="Create New Plan", font=('Arial', 16),
-        #                                  command=self.create_new_plan)
+
+
         self.create_plan_btn.grid(row=0, column=1, padx=10, pady=10,sticky="nsew")
 
         self.display_plans_btn = ttk.Button(self.headerarea, text="Display Existing Plans", command=self.display_plans)
-        # self.display_plans_btn = tk.Button(self.headerarea, text="Display Existing Plans", font=('Arial', 16),
-        #                                    command=self.display_plans)
+
+
         self.display_plans_btn.grid(row=0, column=2, padx=10, pady=10,sticky="nsew")
 
         self.create_camp_btn = ttk.Button(self.headerarea, text="Create New Camp", command=self.add_camp)
-        # self.create_camp_btn = tk.Button(self.headerarea, text="Create New Camp", font=('Arial', 16),
-        #                             command=self.add_camp)
+
+
         self.create_camp_btn.grid(row=0, column=3, padx=10, pady=10,sticky="nsew")
 
         self.manage_camps_btn = ttk.Button(self.headerarea, text="Manage Camps", command=self.manage_camps)
-        # self.manage_camps_btn = tk.Button(self.headerarea, text="Manage Camps", font=('Arial', 16),
-        #                                   command=self.manage_camps)
+
+
         self.manage_camps_btn.grid(row=0, column=4, padx=10, pady=10,sticky="nsew")
 
         self.manage_volunteers_btn = ttk.Button(self.headerarea, text="Manage Volunteers", command=self.manage_volunteers)
-        # self.manage_volunteers_btn = tk.Button(self.headerarea, text="Manage Volunteers", font=('Arial', 16),
-        #                                        command=self.manage_volunteers)
+
+
         self.manage_volunteers_btn.grid(row=0, column=5, padx=10, pady=10,sticky="nsew")
 
         self.logout_btn = ttk.Button(self.headerarea, text="Logout", command=self.logout)
-        # self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 16))
+
         self.logout_btn.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
 
         self.headerarea.pack(fill ="both", padx=20)
@@ -145,7 +137,7 @@ class AdminGui:
         countries_df = pd.read_csv(self.countries_file)
         
         # for windows
-        # countries_df = pd.read_csv(self.countries_file)
+
         countries_list = countries_df["Location"].tolist()
         return countries_list
     
@@ -190,8 +182,7 @@ class AdminGui:
         # Pass countries list with unpacking (*)
         self.location_menu = tk.OptionMenu(self.root, self.selected_country, *countries_list)
         self.location_menu.pack(pady=10)
-        # self.loc_entry = tk.Entry(self.root, width=30, textvariable=self.Location)
-        # self.loc_entry.pack(pady=10)
+       
         date_frames = tk.Frame(self.root)
         date_frames.columnconfigure(1, weight=1)
         date_frames.columnconfigure(2, weight=1)
@@ -322,89 +313,23 @@ class AdminGui:
             if var_start_day == Start_date_ and var_end_day == End_date_ and not (
             self.admin.check_end_date(self.e_date, self.s_date)):
             ## check the status of this new plan-- onging or not started 
-                if self.s_date == date.today():
-                    Start_date_ = self.s_date.strftime('%d/%m/%Y')
-                    End_date_ = self.e_date.strftime('%d/%m/%Y')
-                    plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
-                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Ongoing'}
-                    plan_list = [
-                        {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
-                         'End Date': End_date_,'Status':'Ongoing'}]  
-                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                    with open(self.admin.plans_file, 'a', newline='', encoding='utf-8') as f:
-                        writer = csv.DictWriter(f, fieldnames=header)
-                        writer.writerows(plan_list)
-                    self.admin.insert_new_plan(plan_dic)
-                    # order all the plan after adding a new plan
-                    plan = pd.read_csv(self.admin.plans_file)  
-                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
-                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv(self.admin.plans_file, index=False)
-                    messagebox.showinfo('infor', 'Plan successfully created')
-                    self.Description.set('')
-                    self.Location.set('')
-                    self.start_date.delete(0, END)
-                    self.end_date.delete(0, END)
-                    self.e_date = None
-                    self.s_date = None
-                    self.plan_id_num_1 = int(self.plan_id[1:])+1
-                    self.plan_id = "P" + str(self.plan_id_num_1)
-                    # self.plan_id_label.destroy()
+            
+                Start_date_ = self.s_date.strftime('%d/%m/%Y')
+                End_date_ = self.e_date.strftime('%d/%m/%Y')
+                if self.s_date == date.today(): status = 'Ongoing'
+                else: status = 'Not Started'
+                plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
+                            'Start Date': Start_date_, 'End Date': End_date_,'Status':status}
+                plan_list = pd.DataFrame({'Plan_ID': [Plan_ID_], 'Description': [Description_], 'Location': [Location_], 'Start Date': [Start_date_],
+                        'End Date': [End_date_],'Status': [status]})
+                header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
+                
+                self.plans.append_dateframe(plan_list)
+                self.admin.insert_new_plan(plan_dic)
 
-                    # Displaying the plan_ID in a read-only Entry widget
-                    self.plan_id_inp.destroy()
-                    self.plan_id_inp = ttk.Entry(self.root)
-
-                    # Insert the plan ID and make the entry read-only
-                    self.plan_id_inp.insert(0, self.plan_id)
-                    self.plan_id_inp.configure(state='readonly')
-
-                    self.plan_id_inp.pack(pady=15)  
-                    # self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
-                    self.create_new_plan()
-                elif self.s_date > date.today():
-                    Start_date_ = self.s_date.strftime('%d/%m/%Y')
-                    End_date_ = self.e_date.strftime('%d/%m/%Y')
-                    plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
-                                'Start Date': Start_date_, 'End Date': End_date_,'Status':'Not Started'}
-                    plan_list = [
-                        {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_, 'Start Date': Start_date_,
-                         'End Date': End_date_,'Status':'Not Started'}]  # 空字典
-                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-             
-                    with open(self.admin.plans_file, 'a', newline='', encoding='utf-8') as f:
-                        writer = csv.DictWriter(f, fieldnames=header)
-
-                        writer.writerows(plan_list)
-                    self.admin.insert_new_plan(plan_dic)
-                    ## Order plan using pandas
-                    plan = pd.read_csv(self.admin.plans_file) 
-                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
-                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv(self.admin.plans_file, index=False)
-                    ## reminde admin
-                    messagebox.showinfo('infor', 'Created a plan successfully')
-                    ## clean all the blank after add a plan successfully and show the plan ID 
-                    self.Description.set('')
-                    self.Location.set('')
-                    self.start_date.delete(0, END)
-                    self.end_date.delete(0, END)
-                    self.e_date = None
-                    self.s_date = None
-                    self.plan_id_num_1 = int(self.plan_id[1:])+1
-                    self.plan_id = "P" + str(self.plan_id_num_1)
-                    # Displaying the plan_ID in a read-only Entry widget
-                    self.plan_id_inp.destroy()
-                    self.plan_id_inp = ttk.Entry(self.root)
-
-                    # Insert the plan ID and make the entry read-only
-                    self.plan_id_inp.insert(0, self.plan_id)
-                    self.plan_id_inp.configure(state='readonly')
-
-                    self.plan_id_inp.pack(pady=15) 
-                    # self.plan_id_label.destroy()
-                    # self.plan_id_label = tk.Label(self.root, text=self.plan_id,font = ('Arial',12))
-                    self.create_new_plan()
+                messagebox.showinfo('Success', 'Plan successfully created')
+                self.create_new_plan()
+                
             ## check the date 
             elif self.admin.check_end_date(self.e_date, self.s_date):
                 messagebox.showwarning(title='Choose start date', message='The end date cannot be before start date')
@@ -417,7 +342,7 @@ class AdminGui:
 
                 self.admin.is_date(var_start_day)
                 messagebox.showwarning(title='Create a new plan',
-                                       message='Please reuse the button to enter the date using the calendar')
+                                       message='Use calender to enter date')
                 self.start_date.delete(0, END)
                 self.end_date.delete(0, END)
                 self.e_date = None
@@ -456,21 +381,24 @@ class AdminGui:
         index = 0
         # with time passes, if start date arrives today, the status change from not starte to ongoing
         # with time passes, if end date arrives today, the status change from ongoing to finished
-        df = pd.read_csv(self.admin.plans_file)
-        df.set_index("Plan_ID", inplace=True)  
-        today_str = time.strftime("%d/%m/%Y", time.localtime(time.time()))
-        df.loc[(df["Start Date"] == today_str) & (df['Status'] =='Not started'), "Status"] = "Ongoing"
-        df.loc[(df["End Date"] == today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
-        df.to_csv(self.admin.plans_file)
-        # the update can be seen in table
-        index = 0
-        with open(self.admin.plans_file, 'r', encoding='utf-8') as plan_file:
-            read = csv.DictReader(plan_file)
-            self.plan_update_list = []
-            for row in read:
-                self.plan_update_list.append(row)
+        df = self.plans.get_data()
+  
+        today_str = date.today()
 
-        for plan in self.plan_update_list:
+
+
+        
+        df['Start Date'] = pd.to_datetime(df['Start Date'], format='%d/%m/%Y')
+        df['End Date'] = pd.to_datetime(df['End Date'], format='%d/%m/%Y')
+
+        df.loc[(df['Start Date'].dt.date <= today_str) & (df['Status'] =='Not Started'), "Status"] = "Ongoing"
+        df.loc[(df['End Date'].dt.date < today_str) & (df['Status'] == 'Ongoing'), "Status"] = "Finished"
+
+        df['Start Date'] = df['Start Date'].dt.strftime('%d/%m/%Y')
+        df['End Date'] = df['End Date'].dt.strftime('%d/%m/%Y')
+        self.plans.write_entire_dataframe(df)
+
+        for index, plan in (df.iterrows()):
             self.table.insert('', 'end', values=(plan['Plan_ID'], plan['Description'],
                                                           plan['Location'], plan['Start Date'], plan['End Date'],plan['Status']))
         vsb = ttk.Scrollbar(self.table, orient="vertical", command=self.table.yview)
@@ -485,21 +413,21 @@ class AdminGui:
 
         self.data_vis_title = tk.Label(self.root, text="To end a plan, select the plan above and click 'End a Plan'", font=('Arial', 14))
         self.data_vis_title.pack(pady=10)
-        # self.end_a_plan_btn = tk.Button(self.root, text='End a plan', font=('Arial',16), command=self.end_plan)
+
         self.end_a_plan_btn = ttk.Button(self.root, text='End a Plan', style='DisplayPlan.TButton', command=self.end_plan)
         self.end_a_plan_btn.pack()
 
         self.data_vis_title = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 14))
         self.data_vis_title.pack(pady=10)
-        # self.display_refugees_btn_plans = tk.Button(self.root, text="Refugees per plan", font=('Arial', 16), command=self.display_refugee_graph_plans)
+
         self.display_refugees_btn_plans = ttk.Button(self.root, text="Refugees per plan", style='DisplayPlan.TButton', command=self.display_refugee_graph_plans)
         self.display_refugees_btn_plans.pack(pady=10)
 
-        # self.display_volunteers_btn_plans = tk.Button(self.root, text="Volunteers per plan", font=('Arial', 16), command=self.display_volunteer_graph_plans) 
+
         self.display_volunteers_btn_plans = ttk.Button(self.root, text="Volunteers per plan", style='DisplayPlan.TButton', command=self.display_volunteer_graph_plans) 
         self.display_volunteers_btn_plans.pack(pady=10)
 
-        # self.display_world_map_button = tk.Button(self.root, text="Display world map of plans", font=('Arial', 16), command=self.display_world_map)
+
         self.display_world_map_button = ttk.Button(self.root, text="Display world map of plans", style='DisplayPlan.TButton', command=self.display_world_map)
         self.display_world_map_button.pack(pady=10)
 
@@ -514,8 +442,7 @@ class AdminGui:
             self.plan_edate = temp[-2]
             self.status = temp[-1]
             self.plan_sdate_date = datetime.datetime.strptime(self.plan_sdate, '%d/%m/%Y').date()
-                # self.plan_edate_date = datetime.datetime.strptime(self.plan_edate,'%d/%m/%Y').date()
-            # self.table.bind('<ButtonRelease-1>', valid_item_())
+
             if self.plan_sdate_date > date.today():
                 messagebox.showerror(title='Info', message='This plan has not started! It cannot be ended.')
             elif self.status == 'Ongoing':
@@ -527,38 +454,14 @@ class AdminGui:
                     end_date_today = time.strftime("%d/%m/%Y",time.localtime(time.time()))
                     number_id = int(temp[0][1:])
                         # add the new one (which has been edite based on the old one)
+                    plans_data = self.plans.get_data()
+                    plans_data.loc[plans_data["Plan_ID"] == temp[0], ["End Date", 'Status']] = [end_date_today, end_up]
+                    self.plans.write_entire_dataframe(plans_data)
                     self.table.item(selected, values=(temp[0], temp[1], temp[2], temp[3], end_date_today,end_up))
-                    plan_end_dic = {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2],
-                                    'Start Date': temp[3], 'End Date': end_date_today,'Status':end_up, 'Numeric_ID':number_id}
-                    plan_end_list = [
-                        {'Plan_ID': temp[0], 'Description': temp[1], 'Location': temp[2], 'Start Date': temp[3],
-                            'End Date': end_date_today,'Status':end_up,'Numeric_ID':number_id}]
-                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
-                    with open(self.admin.plans_file, 'a',
-                                newline='', encoding='utf-8') as f:
-                        writer = csv.DictWriter(f, fieldnames=header)
-                        writer.writerows(plan_end_list)
-                    self.admin.insert_new_plan(plan_end_dic)
-                    # delete the old one 
-                    header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status','Numeric_ID']
-                    for x in self.plan_data_:
-                        if temp[0] == x['Plan_ID'] and temp[1] == x['Description'] and temp[2] == x['Location'] and \
-                                temp[4] == x['End Date'] and temp[5] == 'Ongoing':
-                            yy = self.plan_data_.remove(x)
-                    with open(self.admin.plans_file, 'w', newline='') as csvfile:
-                        fields = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date', 'Status','Numeric_ID']
-                        writer = csv.DictWriter(csvfile, fieldnames=fields)
-                        writer.writeheader()
-                        for row in self.plan_data_:
-                            writer.writerow(row)
-                    plan = pd.read_csv(self.admin.plans_file)  
-                    plan['Numeric_ID'] = plan['Plan_ID'].str.extract(r'(\d+)').astype(int)
-                    sorted_plan = plan.sort_values(by='Numeric_ID', ascending=True)
-                    sorted_plan.to_csv(self.admin.plans_file, index=False)
-                    # self.table.bind('<ButtonRelease-1>', update_item())
-                    messagebox.showinfo(title='Info', message='This plan has successfully been ended.')
+                    messagebox.showinfo(title='Info', message='Plan successfully ended.')
+                    self.display_plans()
             elif self.status == 'Finished':
-                messagebox.showerror(title='Info', message='This plan has already ended.')
+                messagebox.showerror(title='Info', message='Plan has already ended.')
                 self.display_plans()
         elif not item:
             messagebox.showerror(title='Info', message='Please choose a plan.')
@@ -573,10 +476,10 @@ class AdminGui:
         title.config(fg="medium slate blue")
         title.pack(pady=30)
         
-        tk.Label(self.root, text='Plan_ID:', font=('Arial', 14)).pack(pady=10)
+        tk.Label(self.root, text='Plan ID:', font=('Arial', 14)).pack(pady=10)
 
         if len(self.admin.valid_plan()) == 0 :
-            plan_lbl = tk.Label(self.root, text='No plan can be added camps', font=('Arial', 24))
+            plan_lbl = tk.Label(self.root, text='All plans have finished \n Create a new plan to add new camps', font=('Arial', 14))
             plan_lbl.pack(pady=30)
         else:
             self.OPTIONS = self.admin.valid_plan()
@@ -609,7 +512,7 @@ class AdminGui:
                 validate="key",
                 validatecommand=(self.root.register(lambda P: P.isdigit() or P == ""), "%P",),
             )
-            # tk.Button(self.root, text='Save this camp',font=('Arial', 12),command=self.save_camp).place(x=300, y=430)
+
 
             s = ttk.Style()
             s.configure('AddCamp.TButton', font=('Arial',16))
@@ -629,15 +532,12 @@ class AdminGui:
         elif int(Capacity_) >= 100 and int(Capacity_) <=10000:
             camp_plan_dic = {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
                         'Num_Of_Volunteers': Num_v, 'Plan_ID':Plan_ID_C, 'Capacity': Capacity_}
-            camp_plan_list = [
-                {'Camp_ID': Camp_ID, 'Num_Of_Refugees': Num_r,
-                 'Num_Of_Volunteers': Num_v, 'Plan_ID': Plan_ID_C, 'Capacity': Capacity_}]  
-            header = ['Camp_ID', 'Num_Of_Refugees', 'Num_Of_Volunteers', 'Plan_ID', 'Capacity']
-            with open(self.admin.camps_file, 'a', newline='', encoding='utf-8') as f:
-                writer = csv.DictWriter(f, fieldnames=header)
-                writer.writerows(camp_plan_list)
+            camp_plan_list = pd.DataFrame({'Camp_ID': [Camp_ID], 'Num_Of_Refugees': [Num_r],
+                 'Num_Of_Volunteers': [Num_v], 'Plan_ID': [Plan_ID_C], 'Capacity': [Capacity_]})
+
+            camp_plan_list.to_csv(self.admin.camps_file, mode="a", header=False, index=False)
             self.admin.insert_new_plan(camp_plan_dic)
-            messagebox.showinfo('infor', 'Created a camp in a specific plan successfully')
+            messagebox.showinfo('Success', f'Camp added to Plan {Plan_ID_C}')
             self.capacity.set('')
             self.camp_id_num_1 = int(self.camp_id[1:])+1
             self.camp_id = "C" + str(self.camp_id_num_1)
@@ -688,7 +588,7 @@ class AdminGui:
         # Place the scrollbar on the right side of the Treeview
         self.camps_tree.pack(fill=tk.BOTH, expand=True)
         
-        # label.grid(row=0,column=1)
+
         scrollbar.pack(side="right", fill="y")
         self.data_vis_title = tk.Label(self.root, text="Resource Actions:", font=('Arial', 14))
         self.data_vis_title.pack(pady=10)
@@ -697,7 +597,7 @@ class AdminGui:
         s = ttk.Style()
         s.configure('ManageCamp.TButton', font=('Arial',14))
         request_btn_text = f'Resource Requests ({len(self.unresolved)})'
-        # request_btn = tk.Button(self.root, text=request_btn_text, font= ("Arial", 16), command=self.resource_requests_list)
+
         request_btn = ttk.Button(self.root, text=request_btn_text, style='ManageCamp.TButton', command=self.resource_requests_list)
         request_btn.pack()
         self.filter_camps()
@@ -705,22 +605,22 @@ class AdminGui:
         data_vis_label_res = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 14))
         data_vis_label_res.pack(pady=10)
         
-        # self.display_resources_btn_camps = tk.Button(self.root, text="Resources per camp", font=('Arial', 16), command=self.display_resources_camps)
+
         self.display_resources_btn_camps = ttk.Button(self.root, text="Resources per camp", style='ManageCamp.TButton', command=self.display_resources_camps)
         self.display_resources_btn_camps.pack(pady=10)
         
-        # self.display_refugees_btn_camps = tk.Button(self.root, text="Refugees per camp", font=('Arial', 16), command=self.display_refugee_graph_camps)
+
         self.display_refugees_btn_camps = ttk.Button(self.root, text="Refugees per camp", style='ManageCamp.TButton', command=self.display_refugee_graph_camps)
         self.display_refugees_btn_camps.pack(pady=10)
         
-        # self.display_volunteers_btn_camps = tk.Button(self.root, text="Volunteers per camp", font=('Arial', 16), command=self.display_volunteer_graph_camps) 
+
         self.display_volunteers_btn_camps = ttk.Button(self.root, text="Volunteers per camp", style='ManageCamp.TButton', command=self.display_volunteer_graph_camps) 
         self.display_volunteers_btn_camps.pack(pady=10)
         
         
         
-        # self.show_pie_chart_btn = tk.Button(self.root, text="Show Pie Chart of Resources", command=self.show_pie_chart_of_resources(CAMP_ID))
-        # self.show_pie_chart_btn.pack(pady=10)
+
+
         
     def filter_camps(self, event=None):
         for item in self.camps_tree.get_children():
@@ -753,13 +653,12 @@ class AdminGui:
         unresolved_columns = ["Camp ID", "Requester", "Food Packages Requested", "Medical Supplies Requested",
                               "Tents Requested", "Time Requested"]
         column_widths = [60, 120, 170, 170, 140, 100]
-        # refresh_btn = tk.Button(self.root, text="Refresh", command=self.resource_requests_list, font=('Arial', 16))
+
         refresh_btn = ttk.Button(self.root, text="Refresh", style='ResourceRequest.TButton', command=self.resource_requests_list)
         refresh_btn.pack(pady=2)
         grant_requests = ttk.Button(self.root, text="Allocate all requested resources", style='ResourceRequest.TButton', 
                                    command=self.grant_all_requests)
-        # grant_requests = tk.Button(self.root, text="Allocate all requested resources", font=('Arial', 16),
-        #                            command=self.grant_all_requests)
+      
         grant_requests.pack()
 
 
@@ -808,7 +707,7 @@ class AdminGui:
             self.resolved_tree.insert("", "end", values=values)
         
     def grant_all_requests(self):
-        # self.requests.write_all()
+
         curr_unresolved = self.unresolved.copy()
         self.unresolved = self.requests.get_unresolved()
         temporary_unresolved = pd.merge(self.unresolved,curr_unresolved, how="inner")
@@ -829,10 +728,10 @@ class AdminGui:
             self.unresolved = self.requests.get_unresolved()
             requested_resources = [row[2], row[3], row[4]]
             camp_id = row[0]
-
-            # row_df = pd.DataFrame([row], columns=self.unresolved.columns)
-            matching_rows = self.unresolved.loc[(self.unresolved["Camp_ID"] == row[0]) & (self.unresolved["Volunteer"] == row[1]) & (int(self.unresolved["food_pac"]) == int(row[2])) & (int(self.unresolved["medical_sup"]) == int(row[3])) & (int(self.unresolved["tents"]) == int(row[4])) & (self.unresolved["Resolved"] == False)]
-
+                
+            
+            matching_rows = self.unresolved.loc[(self.unresolved["Camp_ID"] == row[0]) & (self.unresolved["Volunteer"] == row[1]) & (self.unresolved["food_pac"].astype(int) == int(row[2])) & (self.unresolved["medical_sup"].astype(int)  == int(row[3])) & (self.unresolved["tents"].astype(int) == int(row[4])) & (self.unresolved["Resolved"] == False)]
+            
             if not matching_rows.empty:
 
                 can_allocate, suggest_resources_dict = self.admin.suggest_resources(row[0])
@@ -922,25 +821,17 @@ class AdminGui:
 
             s = ttk.Style()
             s.configure('AllocateResources.TButton', font=('Arial',20))
-            # cancel_btn = tk.Button(self.submitframe, text="Cancel", font=('Arial', 20), command=self.manage_camps) 
+
             cancel_btn = ttk.Button(self.submitframe, text="Cancel", style='AllocateResources.TButton', command=self.manage_camps)            
             cancel_btn.grid(row=0, column=0, padx=20)
-            # submit_suggest_btn = tk.Button(self.submitframe, text="Allocate Suggested Resources", font=('Arial', 20), 
-            #                                command=lambda: self.submit_resources(camp_id, 
-            #                                                                      str(suggest_resources_dict["food"]), 
-            #                                                                      str(suggest_resources_dict["medical"]), 
-            #                                                                      str(suggest_resources_dict["tent"])))
+
             submit_suggest_btn = ttk.Button(self.submitframe, text="Allocate Suggested Resources", style='AllocateResources.TButton', 
                                            command=lambda: self.submit_resources(camp_id, 
                                                                                  str(suggest_resources_dict["food"]), 
                                                                                  str(suggest_resources_dict["medical"]), 
                                                                                  str(suggest_resources_dict["tent"])))
             submit_suggest_btn.grid(row=0, column=1, padx=20)
-            # submit_btn = tk.Button(self.submitframe, text="Allocate Edited Resourece", font=('Arial', 20), 
-            #                        command=lambda: self.submit_resources(camp_id, 
-            #                                                              self.food_inp.get(), 
-            #                                                              self.med_inp.get(), 
-            #                                                              self.tents_inp.get()))
+
             submit_btn = ttk.Button(self.submitframe, text="Allocate Edited Resourece", style='AllocateResources.TButton',  
                                    command=lambda: self.submit_resources(camp_id, 
                                                                          self.food_inp.get(), 
@@ -999,8 +890,6 @@ class AdminGui:
         all_buttons = tk.Frame(self.root, pady=20)
         all_buttons.columnconfigure(1, weight=1)
         all_buttons.columnconfigure(2, weight=1)
-        # activate_all_btn = tk.Button(all_buttons, text="Activate All", font=('Arial', 16), command=self.activate_all)
-        # deactivate_all_btn = tk.Button(all_buttons, text="Deactivate All", font=('Arial', 16), command=self.deactivate_all)
         activate_all_btn = ttk.Button(all_buttons, text="Activate All", style='ManageVolunteer.TButton', command=self.activate_all)
         deactivate_all_btn = ttk.Button(all_buttons, text="Deactivate All", style='ManageVolunteer.TButton', command=self.deactivate_all)
         activate_all_btn.grid(row=0, column=0,padx=10)
@@ -1033,7 +922,7 @@ class AdminGui:
     def filter_volunteers(self, event=None):
         for item in self.volun_tree.get_children():
             self.volun_tree.delete(item)
-        # print(self.selected_camp.get())
+
         selected_camp = self.selected_camp.get()
         if selected_camp == "All Camps": filtered_data = self.volunteer_data
         else:
@@ -1147,6 +1036,3 @@ class AdminGui:
     
         self.root.mainloop()
 
-# dummy = Admin()
-# VGui = AdminGui(dummy)
-# VGui.run()

@@ -188,9 +188,7 @@ class Volunteer:
            self.volunteer_data['Camp_ID'] = camp_id
            self.volunteer_file.iloc[self.volunteer_index, :] = self.volunteer_data
            self.volunteer_file.to_csv(self.volunteer_path, index=False)
-        #    when csv is done maybe change to write_data function definition like this:
-        #    write_data(self, Camp_ID, Num_Of_Refugees=None, capacity=None). and then just specify which values are to be changed
-        #   call by saying camps.write_data(camp_id, capacity=capacity)
+
            
            camps_row = self.camps_data[self.camps_data['Camp_ID'] == camp_id].copy()
            camps_row['Capacity'] = int(capacity)
@@ -202,9 +200,6 @@ class Volunteer:
 
 
     def validate_camp_details(self, camp_id, capacity):
-        # print(self.camps_data[self.camps_data['Camp_ID'] == camp_id])
-        # print(self.camps_data[self.camps_data['Camp_ID'] == camp_id]['Num_Of_Refugees'])
-        # print(self.camps_data[self.camps_data['Camp_ID'] == camp_id].loc[:,'Num_Of_Refugees'].values[0])
         curr_num_refugees = self.camps_data[self.camps_data['Camp_ID'] == camp_id].loc[:,'Num_Of_Refugees'].values[0]
         self.camperrors = [""] 
         def capacity_validate():
@@ -260,11 +255,11 @@ class Volunteer:
         
         self.errors = validate_entries(food_entry, medical_supplies_entry, tents_entry) 
         if self.errors == ["", "", ""]:
-            print("inputs were integers")
+
             input_food = int(food_entry)
             input_medical_supplies = int(medical_supplies_entry)
             input_tents = int(tents_entry)
-            responded = 'False'
+
 
             # if volunteer alrd in camp with previous request, overwrite the previous request
             # if camp had not made previous request, write to csv
@@ -272,18 +267,16 @@ class Volunteer:
 
             if volunteer_camp in req_df.iloc[:,1].values:
                 camp_requests = req_df[req_df['Camp_ID'] == str(volunteer_camp)]
-                # print('here', camp_requests)
+
                 if (camp_requests['Resolved'] == False).any():
                     req_df = req_df[(req_df['Camp_ID'] != str(volunteer_camp)) | (req_df['Resolved'] == True)]
                     req_df.to_csv(self.resource_req_path, index=False)
                
-
-            with open(self.resource_req_path, "a") as file:
-                file.write(f"{volunteer_username},{volunteer_camp},{input_food},{input_medical_supplies},{input_tents},{today},{responded}\n")
-
+            new_req_row = pd.DataFrame({'Volunteer': [volunteer_username], 'Camp_ID': [volunteer_camp], 'food_pac': [input_food], 'medical_sup': [input_medical_supplies], 'tents': [input_tents], 'date': [today], 'Resolved': [False]})
+            new_req_row.to_csv(self.resource_req_path, mode="a", header=False, index=False)
             return True
         else:
-            # print("inputs were not integers")
+
             return self.errors
 
 

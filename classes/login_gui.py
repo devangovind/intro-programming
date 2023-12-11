@@ -30,21 +30,36 @@ volunteers_filepath = "volunteers.csv"
 
 
 def user_valid(username, acct_type):
-    with open(logindetails_filepath, "r") as file:
-        file_reader = csv.reader(file)
-        for row in file_reader:
-            # print(row)
-            if username == row[0]:
-                # check if account is active first and is of correct account type
-                if row[2] == 'False':
-                    return "Account inactive"
-                elif row[2] == 'True' and row[3] == acct_type:
-                    return row
-                else:
-                    return ""
-            else:
-                continue
+    login_details = pd.read_csv(logindetails_filepath)
+    matching_row = login_details.loc[(login_details['Username'] == username)]
+
+    if not matching_row.empty:
+        if matching_row["Active"].iloc[0] == False:
+            return "Account Inactive"
+        elif matching_row["Active"].iloc[0] == True and matching_row["Account Type"].iloc[0] == acct_type:
+
+            return matching_row.values.tolist()[0]
+        else:
+            return ""
+    else:
         return "Account does not exist"
+
+    # with open(logindetails_filepath, "r") as file:
+    #     file_reader = csv.reader(file)
+    #     for row in file_reader:
+
+    #         if username == row[0]:
+    #             # check if account is active first and is of correct account type
+    #             if row[2] == 'False':
+    #                 return "Account inactive"
+    #             elif row[2] == 'True' and row[3] == acct_type:
+
+    #                 return row
+    #             else:
+    #                 return ""
+    #         else:
+    #             continue
+    #     return "Account does not exist"
     
 def password_valid(password, credentials):
     if credentials[1] == password:
@@ -61,9 +76,7 @@ class Login:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         self.root.minsize(1000,600)
-        #Print the screen size
-        # print("Screen width:", screen_width)
-        # print("Screen height:", screen_height)
+
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.9*screen_height)
@@ -145,20 +158,21 @@ class Login:
 
     def show_pw(self):
         self.password_entry.configure(show='')
+        self.vol_password_entry.configure(show='')
         
     def hide_pw(self):
         self.password_entry.configure(show='*')
+        self.vol_password_entry.configure(show='*')
          
     # Validate if admin username and pw is correct
     def admin_validate(self):
         user_type = 'Admin'
         entered_username = self.username_entry.get()
         entered_password = self.password_entry.get()
-        print(entered_username)
-        print(entered_password)
+
         if entered_username != "" and entered_password != "":
-            print(user_valid(entered_username, user_type))
-            if user_valid(entered_username, user_type) == "Account inactive":
+
+            if user_valid(entered_username, user_type) == "Account Inactive":
                 messagebox.showerror("Error", "User is inactive! Your account has been deactivated, contact the administrator!")
             elif user_valid(entered_username, user_type) == "Account does not exist":
                 messagebox.showerror("Error", "Account doesn't exist!")
@@ -190,7 +204,7 @@ class Login:
         entered_password = self.vol_password_entry.get()
         if entered_username != "" and entered_password != "":
 
-            if user_valid(entered_username, user_type) == "Account inactive":
+            if user_valid(entered_username, user_type) == "Account Inactive":
                 messagebox.showerror("Error", "User is inactive! Your account has been deactivated, contact the administrator!")
             elif user_valid(entered_username, user_type) == "Account does not exist":
                 messagebox.showerror("Error", "Account doesn't exist!")
@@ -207,82 +221,54 @@ class Login:
                     VolunteerGui(create_volunteer, self.root)
                 else:
                     messagebox.showerror("Error", "Password is incorrect!")
-                    self.log_in_window.lift()
+                    
             else:
                 messagebox.showerror("Error", "Username is invalid!")
-                self.log_in_window.lift()
+                
         else:
             messagebox.showerror("Error", "You have not entered a username or password!")
-            self.log_in_window.lift()
+            
 
     # display volunteer registration window
     def volunteer_register_page(self):
         Volunteer_Register()
 
-# class Admin_Menu for Admin page after successful login
-class Admin_Menu:
-    # Yan's portion
-    def __init__(self):
-        print("Test admin sign in button")
     
 # class Volunteer_Register for volunteer registration page when they select register
 class Volunteer_Register: 
     def __init__(self):
         self.register_window = tk.Tk()
-        self.register_window.geometry("920x700")
+        self.register_window.geometry("1000x700")
         self.register_window.title("Volunteer Registration")
-        self.register_window.minsize(920, 700)
-
-        # Create a Main Frame
-        main_frame = Frame(self.register_window)
-        main_frame.pack(fill="both", expand=1)
-
-        # Create a canvas
-        my_canvas = Canvas(main_frame)
-        my_canvas.pack(side="left", fill="both", expand=1)
-
-        # Add scrollbar to canvas
-        my_scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=my_canvas.yview)
-        my_scrollbar.pack(side="right", fill=Y)
-        
-        # create another frame inside the canvas with scrollbar
-        second_frame = Frame(my_canvas)
-        second_frame = Frame(my_canvas, padx=50)
-        second_frame.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
-        my_canvas.configure(yscrollcommand=my_scrollbar.set)
- 
-        # add that new frame to a window in the canvas
-        my_canvas.create_window((0,0),window=second_frame, anchor="nw")
-        
-        self.register_label= tk.Label(second_frame, text = "Register as a Volunteer", fg="medium slate blue", font=('Arial', 18))
-        
-        self.username_label = tk.Label(second_frame, text = "Username:\nYour username should be between 8 and 16 characters long\nand only consist of letters a-z and numbers 0-9")
-        self.username_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_username_entry), "%P"))
-        self.username_status = tk.Label(second_frame, text="")
-
-        self.first_name_label = tk.Label(second_frame, text = "First Name:\nYour first name should be between 0 and 20 letters long\nand the first letter should be capitalized ")
-        self.first_name_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_first_name_entry), "%P"))
-        self.first_name_status = tk.Label(second_frame, text="")
-
-        self.last_name_label = tk.Label(second_frame, text = "Last Name:\nYour last name should be between 0 and 20 letters long\nand the first letter should be capitalized")
-        self.last_name_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_last_name_entry), "%P"))
-        self.last_name_status = tk.Label(second_frame, text="")
-
-        self.phone_label = tk.Label(second_frame, text = "Phone Number:\nYour phone number should be between 6 and 15 numbers long")
-        self.phone_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_phone_entry), "%P"))
-        self.phone_status = tk.Label(second_frame, text="")
-
-        self.age_label = tk.Label(second_frame, text = "Age:\nYour age should be a number between 0 and 140")
-        self.age_entry = ttk.Entry(second_frame, validate="key", validatecommand=(self.register_window.register(self.validate_age_entry), "%P"))
-        self.age_status = tk.Label(second_frame, text="")
-
-        self.camp_id_label = tk.Label(second_frame, text = "Camp_ID:\nChoose your Camp ID")
+        self.camps = Camps()
+        self.register_window.minsize(1000, 700)
+        self.register_window.columnconfigure(0, weight=1, minsize=500)
+        self.register_window.columnconfigure(1, weight=1, minsize=500)
+        self.register_label= tk.Label(self.register_window, text = "Register as a Volunteer", fg="medium slate blue", font=('Arial', 18))
+        self.username_label = tk.Label(self.register_window, text = "Username:\nYour username should be between 8 and 16 characters long\nand only consist of letters a-z and numbers 0-9")
+        self.username_entry = ttk.Entry(self.register_window, validate="key", validatecommand=(self.register_window.register(self.validate_username_entry), "%P"))
+        self.username_status = tk.Label(self.register_window, text="")
+        self.first_name_label = tk.Label(self.register_window, text = "First Name:\nYour first name should be between 0 and 20 letters long\nand the first letter should be capitalized ")
+        self.first_name_entry = ttk.Entry(self.register_window, validate="key", validatecommand=(self.register_window.register(self.validate_first_name_entry), "%P"))
+        self.first_name_status = tk.Label(self.register_window, text="")
+        self.last_name_label = tk.Label(self.register_window, text = "Last Name:\nYour last name should be between 0 and 20 letters long\nand the first letter should be capitalized")
+        self.last_name_entry = ttk.Entry(self.register_window, validate="key", validatecommand=(self.register_window.register(self.validate_last_name_entry), "%P"))
+        self.last_name_status = tk.Label(self.register_window, text="")
+        self.phone_label = tk.Label(self.register_window, text = "Phone Number:\nYour phone number should be between 6 and 15 numbers long")
+        self.phone_entry = ttk.Entry(self.register_window, validate="key", validatecommand=(self.register_window.register(self.validate_phone_entry), "%P"))
+        self.phone_status = tk.Label(self.register_window, text="")
+        self.age_label = tk.Label(self.register_window, text = "Age:\nYour age should be a number between 0 and 140")
+        self.age_entry = ttk.Entry(self.register_window, validate="key", validatecommand=(self.register_window.register(self.validate_age_entry), "%P"))
+        self.age_status = tk.Label(self.register_window, text="")
+        self.camp_id_label = tk.Label(self.register_window, text = "Camp_ID:\nChoose your Camp ID")
         self.camp_id_values = self.read_camp_id_values_from_csv()  
         self.selected_camp_id = tk.StringVar()
         self.selected_camp_id.set('')
-        self.camp_id_dropdown = ttk.Combobox(second_frame, textvariable=self.selected_camp_id, values=self.camp_id_values)
+        self.camp_id_dropdown = ttk.Combobox(self.register_window, textvariable=self.selected_camp_id, values=self.camp_id_values)
+        self.camp_id_dropdown.config(state="readonly")
 
-        self.availability_label = tk.Label(second_frame, text="\nAvailability:")
+        self.availability_label = tk.Label(self.register_window, text="\nAvailability:")
+        availability_frame = Frame(self.register_window)
         self.mon_var = tk.IntVar(value=0)
         self.tue_var = tk.IntVar(value=0)
         self.wed_var = tk.IntVar(value=0)
@@ -291,30 +277,36 @@ class Volunteer_Register:
         self.sat_var = tk.IntVar(value=0)
         self.sun_var = tk.IntVar(value=0)
         self.availability_variables = [self.mon_var, self.tue_var, self.wed_var, self.thu_var, self.fri_var, self.sat_var, self.sun_var]
-        mon_box = tk.Checkbutton(second_frame, text="Monday", variable=self.mon_var, command=lambda: self.mon_var.set(1) if self.mon_var.get() == False else self.mon_var.set(0))
-        tue_box = tk.Checkbutton(second_frame, text="Tuesday", variable=self.tue_var, command=lambda: self.tue_var.set(1) if self.tue_var.get() == False else self.tue_var.set(0))
-        wed_box = tk.Checkbutton(second_frame, text="Wednesday", variable=self.wed_var, command=lambda: self.wed_var.set(1) if self.wed_var.get() == False else self.wed_var.set(0))
-        thu_box = tk.Checkbutton(second_frame, text="Thursday", variable=self.thu_var, command=lambda: self.thu_var.set(1) if self.thu_var.get() == False else self.thu_var.set(0))
-        fri_box = tk.Checkbutton(second_frame, text="Friday", variable=self.fri_var, command=lambda: self.fri_var.set(1) if self.fri_var.get() == False else self.fri_var.set(0))
-        sat_box = tk.Checkbutton(second_frame, text="Saturday", variable=self.sat_var, command=lambda: self.sat_var.set(1) if self.sat_var.get() == False else self.sat_var.set(0))
-        sun_box = tk.Checkbutton(second_frame, text="Sunday", variable=self.sun_var, command=lambda: self.sun_var.set(1) if self.sun_var.get() == False else self.sun_var.set(0))
+        mon_box = tk.Checkbutton(availability_frame, text="Monday", variable=self.mon_var, command=lambda: self.mon_var.set(1) if self.mon_var.get() == False else self.mon_var.set(0))
+        tue_box = tk.Checkbutton(availability_frame, text="Tuesday", variable=self.tue_var, command=lambda: self.tue_var.set(1) if self.tue_var.get() == False else self.tue_var.set(0))
+        wed_box = tk.Checkbutton(availability_frame, text="Wednesday", variable=self.wed_var, command=lambda: self.wed_var.set(1) if self.wed_var.get() == False else self.wed_var.set(0))
+        thu_box = tk.Checkbutton(availability_frame, text="Thursday", variable=self.thu_var, command=lambda: self.thu_var.set(1) if self.thu_var.get() == False else self.thu_var.set(0))
+        fri_box = tk.Checkbutton(availability_frame, text="Friday", variable=self.fri_var, command=lambda: self.fri_var.set(1) if self.fri_var.get() == False else self.fri_var.set(0))
+        sat_box = tk.Checkbutton(availability_frame, text="Saturday", variable=self.sat_var, command=lambda: self.sat_var.set(1) if self.sat_var.get() == False else self.sat_var.set(0))
+        sun_box = tk.Checkbutton(availability_frame, text="Sunday", variable=self.sun_var, command=lambda: self.sun_var.set(1) if self.sun_var.get() == False else self.sun_var.set(0))
+        mon_box.grid(row=0, column=0, sticky='w')
+        tue_box.grid(row=0, column=1, sticky='w')
+        wed_box.grid(row=0, column=2, sticky='w')
+        thu_box.grid(row=0, column=3, sticky='w')
+        fri_box.grid(row=1, column=0, sticky='w')
+        sat_box.grid(row=1, column=1, sticky='w')
+        sun_box.grid(row=1, column=2, sticky='w')
         self.availability_checkboxes = [
             mon_box, tue_box, wed_box, thu_box, fri_box, sat_box, sun_box ]
-    
-        self.password_label = tk.Label(second_frame, text = "Password:\nYour password should contain at least one capital letter,\nat least one of '?' or '!', letters a-z and numbers 0-9\nand be between 8 and 16 characters long", anchor="w")
-        self.password_entry = ttk.Entry(second_frame, show = "*",validate="key", validatecommand=(self.register_window.register(self.validate_password_entry), "%P"))
-        self.password_status = tk.Label(second_frame, text="")
-
-        self.confirm_password_label = tk.Label(second_frame, text="Confirm your password:")
-        self.confirm_password_entry = ttk.Entry(second_frame, show="*", validate="key", validatecommand=(self.register_window.register(self.validate_confirm_password_entry), "%P"))
-        self.confirm_password_status = tk.Label(second_frame, text="")
-
-        self.register_button = ttk.Button(second_frame, text = "Register", command=self.register)
-
+        
+        self.password_label = tk.Label(self.register_window, text = "Password:\nYour password should contain at least one capital letter,\nat least one of '?' or '!', letters a-z and numbers 0-9\nand be between 8 and 16 characters long", anchor="w")
+        self.password_entry = ttk.Entry(self.register_window, show = "*",validate="key", validatecommand=(self.register_window.register(self.validate_password_entry), "%P"))
+        
+        self.password_entry.bind("<KeyRelease>", self.on_password_change) 
+        self.password_status = tk.Label(self.register_window, text="")
+        self.confirm_password_label = tk.Label(self.register_window, text="Confirm your password:")
+        self.confirm_password_entry = ttk.Entry(self.register_window, show="*", validate="key", validatecommand=(self.register_window.register(self.validate_confirm_password_entry), "%P"))
+        self.confirm_password_status = tk.Label(self.register_window, text="")
+        self.register_button = ttk.Button(self.register_window, text = "Register", command=self.register)
         self.register_label.grid(row=0, column=0, columnspan=2)
-        self.username_label.grid(row=1, column=0)
+        self.username_label.grid(row=1, column=0, sticky="nsew")
         self.username_entry.grid(row=2, column=0)
-        self.username_status.grid(row=3, column=0)
+        self.username_status.grid(row=3, column=0, sticky="nsew")
         
         self.first_name_label.grid(row=4, column=0)
         self.first_name_entry.grid(row=5, column=0)
@@ -337,12 +329,7 @@ class Volunteer_Register:
 
 
         self.availability_label.grid(row=12, column=0, columnspan=2)
-        for i, checkbox in enumerate(self.availability_checkboxes):
-   #         if i <= 3:
-            checkbox.grid(row = 13 + i, column = 0, columnspan=2)
-  #         elif i > 3:
-   #             checkbox.grid(row = 14 + i - 4, column = 1, pady=5)
-        # self.avail_status.pack()
+        availability_frame.grid(row=13, column=0, columnspan=2,pady=5)
 
         self.password_label.grid(row=1, column=1)
         self.password_entry.grid(row=2, column=1)
@@ -356,7 +343,8 @@ class Volunteer_Register:
         
         self.register_window.mainloop()
 
-    def register (self):
+    def register(self):
+
         username = self.username_entry.get()
         first_name = self.first_name_entry.get()
         last_name = self.last_name_entry.get()
@@ -364,15 +352,15 @@ class Volunteer_Register:
         age = self.age_entry.get()
         camp_id = str(self.camp_id_dropdown.get())
         availability_var = self.availability_variables
-        # print(availability_var)
+
         availability_bin = ""
         for var in availability_var:
-            print(var.get())
+
             if var.get():
                 availability_bin += "1"
             else:
                 availability_bin += "0"
-        # print(availability_bin)
+
         password = self.password_entry.get()
         account_type = "Volunteer"
 
@@ -385,12 +373,12 @@ class Volunteer_Register:
             self.validate_availability(availability_bin) 
             self.validate_password(password)
 
-            with open (logindetails_filepath, "a") as file:
-                file.write(f"{username},{password},{True},{account_type}\n")
+   
+            new_row_login = pd.DataFrame({'Username': [username], 'Password': [password], 'Active': [True], 'Account Type': [account_type]})
+            new_row_login.to_csv(logindetails_filepath, mode="a", header=False, index=False)
 
-            with open (volunteers_filepath, "a") as file:
-                file.write(f"{username},{first_name},{last_name},{phone},{age},{camp_id},{availability_bin}\n")
-
+            new_row_volun = pd.DataFrame({"Username": [username], "First Name": [first_name], "Last Name": [last_name], "Phone": [phone], "Age": [age], "CampID": [camp_id], "Availability": [availability_bin]})
+            new_row_volun.to_csv(volunteers_filepath, mode="a", header=False, index=False)
             # update camps_file.csv
             self.camp_df = pd.read_csv(camps_filepath)
             self.camp_data = self.camp_df[self.camp_df['Camp_ID'] == camp_id].copy()
@@ -407,14 +395,10 @@ class Volunteer_Register:
             self.register_window.lift()
 
     def validate_username(self, username):
-        with open(logindetails_filepath, "r") as file:
-            file_reader = csv.reader(file)
-            next(file_reader)
-            for row in file_reader:
-                if username == row[0]:
-                    raise ValueError("This username already exists. Please try an alternative username.")
-                else:
-                    continue
+        login_details = pd.read_csv(logindetails_filepath)
+        matching_row = login_details.loc[(login_details['Username'] == username)]
+        if not matching_row.empty:
+            raise ValueError("This username already exists. Please try an alternative username.")
             
         if " " in username:
             raise ValueError("Do not enter spaces in your username.")
@@ -484,12 +468,9 @@ class Volunteer_Register:
 
     def read_camp_id_values_from_csv(self):
         camp_id_values = []
+        
         try:
-            with open(camps_filepath, "r") as file:
-                reader = csv.reader(file)
-                next(reader)  
-                for row in reader:
-                    camp_id_values.append(row[0])  
+            camp_id_values = self.camps.get_camp_ids() 
         except FileNotFoundError:
             messagebox.showerror("Error", "Camp ID CSV file not found.")
         return camp_id_values
@@ -557,6 +538,9 @@ class Volunteer_Register:
         except ValueError as e:
             self.password_status.config(text=str(e), fg="red")
         return True
+    
+    def on_password_change(self, *args):
+        self.validate_confirm_password_entry(self.confirm_password_entry.get())
     
     def validate_confirm_password_entry(self, value):
         try:

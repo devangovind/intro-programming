@@ -12,7 +12,11 @@ class Plans:
         # self.plans_filepath = '../files/plans_file.csv'
         # self.plans_data = pd.read_csv(self.plans_filepath)
     def get_data(self):
+        self.plans_data = pd.read_csv(self.plans_file)
         return self.plans_data
+    def get_plan_ids(self):
+        self.plans_data = pd.read_csv(self.plans_file)
+        return self.plans_data['Plan_ID'].tolist()
     def write_data(self, plan_id, new_row):
         camp_index = self.plans_data.index[self.plans_data['plan_id'] == plan_id]
         self.plans_data.iloc[camp_index, :] = new_row
@@ -20,10 +24,12 @@ class Plans:
         # for mac
         self.plans_data.to_csv(self.plans_file, index=False)
         
-        # for windows
-        # self.plans_data.to_csv(self.plans_filepath, index=False)
-        
+
         return True
+    def write_entire_dataframe(self, df):
+        df.to_csv(self.plans_file, index=False)
+    def append_dateframe(self, df):
+        df.to_csv(self.plans_file, mode="a", header=False, index=False)
 
 
 class humanitarian_plan:

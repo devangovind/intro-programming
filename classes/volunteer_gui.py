@@ -23,9 +23,7 @@ class VolunteerGui:
         screen_height = self.root.winfo_screenheight()
         self.root.minsize(1200,600)
 
-        #Print the screen size
-        # print("Screen width:", screen_width)
-        # print("Screen height:", screen_height)
+
 
         width_to_use = int(0.85*screen_width)
         height_to_use = int(0.95*screen_height)
@@ -61,53 +59,40 @@ class VolunteerGui:
         s = ttk.Style()
         s.configure('Nav.TButton', font=('Arial',11))
 
-        # self.home_btn = tk.Button(self.headerarea, text="Home", font=('Arial', 11), command=self.welcome_message)
+
         self.home_btn = ttk.Button(self.headerarea, text="Home", style='Nav.TButton', command=self.welcome_message)
         self.home_btn.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        # self.edit_details_btn = tk.Button(self.headerarea, text="Edit Personal Details", font=('Arial', 11), command=self.edit_details)
+
         self.edit_details_btn = ttk.Button(self.headerarea, text="Edit Personal Details", style='Nav.TButton', command=self.edit_details)
         self.edit_details_btn.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-        # self.edit_camp_btn = tk.Button(self.headerarea, text="Edit Camp Details", font=('Arial', 11), command=self.edit_camp)
+
         self.edit_camp_btn = ttk.Button(self.headerarea, text="Edit Camp Details", style='Nav.TButton', command=self.edit_camp)
         self.edit_camp_btn.grid(row=0, column=2, padx=10, pady=10, sticky="nsew")
 
-        # self.view_camp_btn = tk.Button(self.headerarea, text="View Camp Details", font=('Arial', 11), command=self.display_resources)
+
         self.view_camp_btn = ttk.Button(self.headerarea, text="View Camp Details", style='Nav.TButton', command=self.display_resources)
         self.view_camp_btn.grid(row=0, column=3, padx=10, pady=10, sticky="nsew")
 
-        # self.add_refugee_btn = tk.Button(self.headerarea, text="Create Refugee Profile", font=('Arial', 11), command=self.add_refugee) 
+
         self.add_refugee_btn = ttk.Button(self.headerarea, text="Create Refugee Profile", style='Nav.TButton', command=self.add_refugee) 
         self.add_refugee_btn.grid(row=0, column=4, padx=10, pady=10, sticky="nsew")
 
-        # self.view_refugees_btn = tk.Button(self.headerarea, text="View Refugees", font=('Arial', 11), command=self.view_refugee) 
+
         self.view_refugees_btn = ttk.Button(self.headerarea, text="View Refugees", style='Nav.TButton', command=self.view_refugee) 
         self.view_refugees_btn.grid(row=0, column=5, padx=10, pady=10, sticky="nsew")
 
         self.chat_btn = ttk.Button(self.headerarea, text="Chat", style='Nav.TButton', command=self.chat) 
         self.chat_btn.grid(row=0, column=6, padx=10, pady=10, sticky="nsew")
 
-        # self.logout_btn = tk.Button(self.headerarea, text="Logout", font=('Arial', 11), command=self.logout)
+
         self.logout_btn = ttk.Button(self.headerarea, text="Logout", style='Nav.TButton', command=self.logout)
         self.logout_btn.grid(row=0, column=7, padx=10, pady=10, sticky="nsew")
 
         self.headerarea.pack(fill ="both", padx=20)
         self.nav_bar = [self.headerarea, self.home_btn,self.edit_camp_btn, self.edit_details_btn, self.view_camp_btn, self.add_refugee_btn, self.view_refugees_btn, self.logout_btn]
 
-        # def resize(e):
-        #     size = e.width / 1000
-        #     s.configure('Nav.TButton', font=('Arial', 3))
-        # #     self.home_btn.config(font=('Arial', int(size)))
-        # #     self.edit_camp_btn.config(font=('Arial', int(size)))
-        # #     self.edit_details_btn.config(font=('Arial', int(size)))
-        # #     self.view_camp_btn.config(font=('Arial', int(size)))
-        # #     self.add_refugee_btn.config(font=('Arial', int(size)))
-        #     #   self.view_refugees_btn.config(font=('Arial', int(size)))
-        # #     self.logout_btn.config(font=('Arial', int(size)))
-
-        # self.headerarea.bind('<Configure>', resize)
-        # self.root.bind('<Configure>', resize)
 
     def create_content_frame(self):
         self.content_frame = tk.Frame(self.root)
@@ -124,10 +109,6 @@ class VolunteerGui:
         label_option.config(fg="medium slate blue")
         label_option.pack(pady=50)
 
-        # option_label_text = 'Please choose an option in the navigation bar above to begin'
-        # label_option = tk.Label(self.root, text=option_label_text, font=('Arial', 18))
-        # label_option.config(fg="medium slate blue")
-        # label_option.pack(pady=50)
 
     def edit_details(self):
         self.clear_content()
@@ -172,8 +153,6 @@ class VolunteerGui:
         availability_lbl = tk.Label(self.content_frame, text="Edit Availability:", font=('Arial', 14))
         availability_lbl.pack(pady=10)
         volunteer_availability = str(self.volunteer_data['Availability'].values[0]).zfill(7)
-        # print(volunteer_availability)
-        # print(type(volunteer_availability))
         availability_array = []
         for c in volunteer_availability:
             if c == "1":
@@ -223,19 +202,13 @@ class VolunteerGui:
 
         s = ttk.Style()
         s.configure('EditPersonalDetails.TButton', font=('Arial',13))
-        # cancel_btn = tk.Button(self.content_frame, text="Cancel", font=('Arial', 13), command=self.welcome_message)
+
         cancel_btn = ttk.Button(self.content_frame, text="Cancel", style= 'EditPersonalDetails.TButton', command=self.welcome_message)
         cancel_btn.pack(pady=20)
-        # submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 13), command=lambda: self.submit_details(first_name_inp.get(), last_name_inp.get(), phone_inp.get(), age_inp.get()))
+
         submit_btn = ttk.Button(self.content_frame, text="Submit", style= 'EditPersonalDetails.TButton', command=lambda: self.submit_details(first_name_inp.get(), last_name_inp.get(), phone_inp.get(), age_inp.get()))
         submit_btn.pack()
-        
-        # def resize(e):
-        #     size = e.width / 70
-        #     cancel_btn.config(font=('Arial', int(size)))
-        #     submit_btn.config(font=('Arial', int(size)))
-            
-        # self.content_frame.bind('<Configure>', resize)
+    
 
     def submit_details(self, fname, lname, phone, age):
         availability = ""
@@ -244,7 +217,7 @@ class VolunteerGui:
                 availability += "1"
             else:
                 availability += "0"
-        # print(availability)
+
         res = self.volunteer.edit_volunteer_details(fname,lname,phone,age,availability)
         if res == True:
             self.first_name_error.config(text="First Name Saved", fg="green")
@@ -305,10 +278,10 @@ class VolunteerGui:
         change_camps_menu.pack()
 
     
-        # cancel_btn = tk.Button(self.content_frame, text="Cancel", font=('Arial', 13), command=self.welcome_message)
+
         cancel_btn = ttk.Button(self.content_frame, text="Cancel", style='EditCamp.TButton', command=self.welcome_message)
         cancel_btn.pack(pady=5)
-        # submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 13), command=lambda: self.submit_switch_camp())
+
         submit_btn = ttk.Button(self.content_frame, text="Submit",style='EditCamp.TButton', command=lambda: self.submit_switch_camp())
         submit_btn.pack()
 
@@ -353,10 +326,10 @@ class VolunteerGui:
         self.capacity_error.config(fg="red")
         self.capacity_error.pack()
         
-        # cancel_btn2 = tk.Button(self.content_frame, text="Cancel", font=('Arial', 13), command=self.welcome_message)
+
         cancel_btn2 = ttk.Button(self.content_frame, text="Cancel", style='EditCamp.TButton', command=self.welcome_message)
         cancel_btn2.pack()
-        # submit_btn2 = tk.Button(self.content_frame, text="Submit", font=('Arial', 13), command=lambda: self.submit_camp(selected_camp.get(), capacity_inp.get()))
+
         submit_btn2 = ttk.Button(self.content_frame, text="Submit", style='EditCamp.TButton', command=lambda: self.submit_camp(selected_camp.get(), capacity_inp.get()))
         submit_btn2.pack(pady=5)
 
@@ -402,16 +375,6 @@ class VolunteerGui:
         submit_request_btn = ttk.Button(resource_request_frame, text="Submit Request", style='EditCamp.TButton', command=lambda: self.submit_resource_request(curr_volunteer, volunteer_curr_camp, food_entry.get(), medical_sup_entry.get(), tents_entry.get()))
         submit_request_btn.grid(row=4, column=1)
 
-        # def resize(e):
-        #     size = e.width / 70
-        #     cancel_btn.config(font=('Arial', int(size)))
-        #     cancel_btn2.config(font=('Arial', int(size)))
-        #     submit_btn.config(font=('Arial', int(size)))
-        #     submit_btn2.config(font=('Arial', int(size)))
-        #     submit_request_btn.config(font=('Arial', int(size)))
-            
-        # self.content_frame.bind('<Configure>', resize)
-
     def submit_switch_camp(self):
         # Obtain the new camp ID from the OptionMenu widget
         new_camp_id = self.selected_camp_change_camp.get()
@@ -432,27 +395,14 @@ class VolunteerGui:
                 # Provide feedback to the user
                 messagebox.showinfo("Success", "Your current camp has been successfully updated!")
                 self.welcome_message()
-                # self.str_out_change_camp.set(f"Camp changed successfully to {new_camp_id}.")
-                # self.change_camps_error.config(text="Camp changed successfully", fg="green")
-                # self.change_camp_menu_lbl.config(text=f"Your camp has been changed to {new_camp_id}.")
-                
-                # Reset the OptionMenu to the new camp ID or update the camp list
-                # You'll need to update the 'camps_ids' list and then reset the OptionMenu
-                # This is an example and may need adjustment based on your actual UI setup
-                # self.camps_ids = [camp_id for camp_id in self.camps_ids if camp_id != new_camp_id]
-                # self.change_camps_menu['menu'].delete(0, 'end')
-                # for camp_id in self.camps_ids:
-                #     self.change_camps_menu['menu'].add_command(label=camp_id, 
-                #                                             command=lambda value=camp_id: self.selected_camp_change_camp.set(value))
-                # self.selected_camp_change_camp.set(new_camp_id)
     
             else:
                 # Provide feedback about the failure
-                # self.str_out_change_camp.set("Failed to change camp. Please try again.")
+
                 messagebox.showerror("Error", "Failed to change camp. Please try again.")
         else:
             # Provide feedback if the selected camp is the same as the current camp
-            # self.str_out_change_camp.set("You are already in this camp.")
+
             messagebox.showerror("Error", "You are already in this camp.")
             
 
@@ -469,14 +419,14 @@ class VolunteerGui:
     def submit_resource_request(self, username, camp_id, food, medical_supplies, tents):
         res = self.volunteer.edit_resources_req_details(username, camp_id, food, medical_supplies, tents)
         if res == True:
-            # print("request was success")
+
             self.food_error.config(text="Food request Saved", fg="green")
             self.medical_sup_error.config(text="Medical Supplies request Saved", fg="green")
             self.tents_error.config(text="Tents request Saved", fg="green")
             messagebox.showinfo("Success", "Request successfully submitted!")
             self.welcome_message()
         else:
-            # print("request failed")
+
             self.food_error.config(text=res[0])
             self.medical_sup_error.config(text=res[1])
             self.tents_error.config(text=res[2])
@@ -546,20 +496,13 @@ class VolunteerGui:
 
             self.tree_view.bind('<<TreeviewSelect>>', on_treeview_select)
 
-            # def resize(e):
-            #     size = e.width / 70
-            #     show_chart_btn.config(font=('Arial', int(size)))
-
-            # self.content_frame.bind('<Configure>', resize)
-
         except Exception as e:
-            # print("Failed to display camp resources:", e)
+
             error_label = tk.Label(self.content_frame, text="Error displaying camp resources.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
 
 
     def show_pie_chart_of_resources(self,volunteer_camp_id):
-        # print("Create Pie Chart")
         # Retrieve values for food_pac, medical_sup, tents from the Treeview
         # Assume the Treeview has one row with these values at indices 4, 5, 6
         item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
@@ -678,16 +621,6 @@ class VolunteerGui:
         num_relatives_lbl.pack()
         num_relatives_inp.pack()
         self.num_relatives_error.pack(pady=3)
-
-        # Submit Button
-        # submit_btn = tk.Button(self.content_frame, text="Submit", font=('Arial', 12), 
-        #                     command=lambda: self.submit_refugee_profile(
-        #                         refugee_id_inp.get(),
-        #                         Camp_ID_var.get(),
-        #                         medical_status_var.get(),
-        #                         medical_conditions_var.get(),
-        #                         medical_description_inp.get(),
-        #                         num_relatives_inp.get()))
         submit_btn = ttk.Button(self.content_frame, text="Submit", 
                             command=lambda: self.submit_refugee_profile(
                                 refugee_id_inp.get(),
@@ -697,12 +630,6 @@ class VolunteerGui:
                                 medical_description_inp.get(),
                                 num_relatives_inp.get()))
         submit_btn.pack(pady=10)
-
-        # def resize(e):
-        #     size = e.width / 70
-        #     submit_btn.config(font=('Arial', int(size)))
-            
-        # self.content_frame.bind('<Configure>', resize)
                     
 
     def submit_refugee_profile(self, refugee_id, Camp_ID, medical_status, medical_condition, medical_description, num_relatives):
@@ -733,44 +660,30 @@ class VolunteerGui:
         title = tk.Label(self.content_frame, text="View Refugee Details", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=(20, 10))
-
-        # self.headerarea.pack(fill ="both", padx=20)
-
         if self.tree_view is None:
             self.tree_view_frame = tk.Frame(self.content_frame)
             self.tree_view_frame.pack(fill='both', expand=True, pady=10)
-
             tree_scroll = tk.Scrollbar(self.tree_view_frame)
             tree_scroll.pack(side='right', fill='y')
             tree_xscroll = tk.Scrollbar(self.tree_view_frame, orient='horizontal')
             tree_xscroll.pack(side='bottom', fill='x')
-
             self.tree_view = ttk.Treeview(self.tree_view_frame, yscrollcommand=tree_scroll.set, 
                                         xscrollcommand=tree_xscroll.set, selectmode='browse', show='headings')
             self.tree_view.pack(side='left', fill='both', expand=True)
-
             tree_scroll.config(command=self.tree_view.yview)
             tree_xscroll.config(command=self.tree_view.xview)
-
             columns = ['Refugee_ID', 'Camp_ID', 'Medical Status', 'Medical Condition', 'Medical Description', 'Number of Relatives']
             self.tree_view['columns'] = columns
-
             for col in columns:
                 self.tree_view.heading(col, text=col, anchor='center')
                 self.tree_view.column(col, anchor='center', width=tkFont.Font().measure(col) + 20)
-
-
         for item in self.tree_view.get_children():
             self.tree_view.delete(item)
-
         try:
             refugee_data = self.refugee.display_all_refugees()  # Call the function to get refugee data
-
             for index, row in refugee_data.iterrows():
                 self.tree_view.insert("", 'end', values=list(row))
-
         except Exception as e:
-            # print("Failed to display refugee data:", e)
             error_label = tk.Label(self.content_frame, text="Error displaying refugee data.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
 
@@ -781,10 +694,7 @@ class VolunteerGui:
         title.config(fg="medium slate blue")
         title.pack(pady=(20, 10))
         tk.Label(self.content_frame, text="Select another active volunteer to chat to", font=('Arial', 14)).pack()
-        # self.all_messages = self.messages.get_all()
         self.all_users = self.volunteer.get_other_volunteers()
-        
-
         volunteers_array = []
         for volun in self.all_users['Username']:
             volunteers_array.append(volun)
@@ -794,8 +704,6 @@ class VolunteerGui:
         receipiant_drop_down.pack()
         ttk.Button(self.content_frame, text="Refresh", command=self.filter_chats).pack()
         self.chat_frame = tk.Frame(self.content_frame)
-        
-        
         self.message_box = tk.Text(self.content_frame, wrap=tk.WORD, font=('Courier New', 16))
         self.message_box.tag_config('sent', foreground="green")
         self.message_box.pack(fill=tk.BOTH, expand=True, padx=200, pady=20)
@@ -839,7 +747,6 @@ class VolunteerGui:
             self.messages.send_message(self.volunteer.username, self.receipiant, curr_time, message)
         self.message_box.config(state=tk.DISABLED)
         self.message_box.see("end")
-
 
 
     # When click logout button, destory volunteer menu
