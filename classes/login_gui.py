@@ -244,22 +244,6 @@ class Volunteer_Register:
         self.register_window.minsize(1000, 700)
         self.register_window.columnconfigure(0, weight=1, minsize=500)
         self.register_window.columnconfigure(1, weight=1, minsize=500)
-        # Create a Main Frame
-        # main_frame = Frame(self.register_window)
-        # main_frame.pack(fill="both", expand=True)
-        # # Create a canvas
-        # my_canvas = Canvas(main_frame)
-        # my_canvas.pack(fill="both", expand=True)
-        # # Add scrollbar to canvas
-        # my_scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=my_canvas.yview)
-        # my_scrollbar.pack(side="right", fill=Y)
-        # create another frame inside the canvas with scrollbar
-        # second_frame= Frame(my_canvas)
-        # # second_frame = Frame(my_canvas, padx=50)
-        # second_frame.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
-        # my_canvas.configure(yscrollcommand=my_scrollbar.set)
-        # add that new frame to a window in the canvas
-        # my_canvas.create_window((0,0),window=second_frame)
         self.register_label= tk.Label(self.register_window, text = "Register as a Volunteer", fg="medium slate blue", font=('Arial', 18))
         self.username_label = tk.Label(self.register_window, text = "Username:\nYour username should be between 8 and 16 characters long\nand only consist of letters a-z and numbers 0-9")
         self.username_entry = ttk.Entry(self.register_window, validate="key", validatecommand=(self.register_window.register(self.validate_username_entry), "%P"))
@@ -346,9 +330,6 @@ class Volunteer_Register:
 
         self.availability_label.grid(row=12, column=0, columnspan=2)
         availability_frame.grid(row=13, column=0, columnspan=2,pady=5)
-  #         elif i > 3:
-   #             checkbox.grid(row = 14 + i - 4, column = 1, pady=5)
-        # self.avail_status.pack()
 
         self.password_label.grid(row=1, column=1)
         self.password_entry.grid(row=2, column=1)
