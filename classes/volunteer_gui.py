@@ -268,10 +268,10 @@ class VolunteerGui:
 
         curr_volunteer = self.volunteer.username
         volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0]
-        self.new_options_list = self.admin.valid_camp()
-        # for id in camps_ids:
-        #     if id != volunteer_curr_camp:
-        #         self.new_options_list.append(id)
+        self.new_options_list = []
+        for id in camps_ids:
+            if id != volunteer_curr_camp:
+                self.new_options_list.append(id)
         self.change_camp_menu = f'Change your Camp from {volunteer_curr_camp} (current) to:'
         self.change_camp_menu_lbl = tk.Label(self.content_frame, text=self.change_camp_menu, font=('Arial', 14))
         # in options, show all camps except current one because if volunteer were to change camps, cannot change to their current camp
