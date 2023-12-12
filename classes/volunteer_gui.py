@@ -10,8 +10,6 @@ from Refugee import Refugee
 from Messages import Messages
 import datetime
 # from main_gui import run
-from Data_visualisation import create_pie_chart
-import matplotlib.pyplot as plt
 import pandas as pd
 
 
@@ -480,7 +478,7 @@ class VolunteerGui:
         title.config(fg="medium slate blue")
         title.pack(pady=(20, 10))
         # Add the explanation label here, right below the title
-        explanation_label = tk.Label(self.content_frame, text="Your camp is highlighted. Select it and use 'Show Pie Chart' to view its resources in pie chart.",
+        explanation_label = tk.Label(self.content_frame, text="Your camp is highlighted.",
                                      font=('Arial', 14), fg="gray")
         explanation_label.pack(pady=(5, 10))
 
@@ -531,31 +529,12 @@ class VolunteerGui:
                 selected_item = self.tree_view.focus()
                 self.selected_camp = self.tree_view.item(selected_item, 'values')
                 self.tree_view.item(selected_item, 'tags') == ('current_camp',)
-                
-            show_chart_btn = ttk.Button(self.content_frame, text="Show Pie Chart",
-                                    command=lambda: self.show_pie_chart_of_resources(self.selected_camp),
-                                    state='normal')
-            show_chart_btn.pack(pady=10)
 
             self.tree_view.bind('<<TreeviewSelect>>', is_current_camp_selected)
 
         except Exception as e:
-
             error_label = tk.Label(self.content_frame, text="Error displaying camp resources.", background='#f0f0f0', font=('Arial', 10))
             error_label.pack(pady=10)
-
-
-    def show_pie_chart_of_resources(self, selected_row):
-        # Retrieve values for food_pac, medical_sup, tents from the Treeview
-        # Assume the Treeview has one row with these values at indices 4, 5, 6
-        resource_values = [int(selected_row[5]), int(selected_row[6]), int(selected_row[7])]  # Convert to int
-        resource_labels = ['food_pac', 'medical_sup', 'tents']
-        if resource_values == [0,0,0]:
-            messagebox.showerror(title="Error", message="Chosen camp has no resources")
-        else:
-        # Call the create_pie_chart function
-            create_pie_chart(resource_values, resource_labels, 'Camp Resource Distribution')
-
 
     def add_refugee(self):
         self.clear_content()
