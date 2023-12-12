@@ -280,7 +280,7 @@ class VolunteerGui:
             self.avail_error.config(text="Availability Saved", fg="green")
             self.root.update_idletasks() 
             messagebox.showinfo("Success", "Details successfully updated!")
-            self.welcome_message()
+            self.edit_details()
             
         else:
             self.first_name_error.config(text=res[0])
@@ -436,7 +436,7 @@ class VolunteerGui:
 
                 # Provide feedback to the user
                 messagebox.showinfo("Success", "Your current camp has been successfully updated!")
-                self.welcome_message()
+                self.edit_camp()
     
             else:
                 # Provide feedback about the failure
@@ -454,7 +454,7 @@ class VolunteerGui:
             self.capacity_error.config(text="Capacity Saved", fg="green")
             self.content_frame.update_idletasks()
             messagebox.showinfo("Success", "Camp details successfully updated!")
-            self.welcome_message()
+            self.edit_camp()
         else:
             self.capacity_error.config(text=res[0])
 
@@ -466,7 +466,7 @@ class VolunteerGui:
             self.medical_sup_error.config(text="Medical Supplies request Saved", fg="green")
             self.tents_error.config(text="Tents request Saved", fg="green")
             messagebox.showinfo("Success", "Request successfully submitted!")
-            self.welcome_message()
+            self.edit_camp()
         else:
 
             self.food_error.config(text=res[0])
@@ -685,7 +685,7 @@ class VolunteerGui:
             self.med_status_error.config(text="Medical Status Saved Successfully", fg="green")
             self.num_relatives_error.config(text="Number of Relatives Saved Successfully", fg="green")
             messagebox.showinfo("Result", result)
-            self.welcome_message()
+            self.add_refugee()
         elif result == "Failed to write refugee profile to CSV":
             messagebox.showerror("Error", "Failed to create refugee profile. Please try again.")
         elif result == "Refugee already exists":
