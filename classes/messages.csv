@@ -1,42 +1,5 @@
 volunteer_sender,volunteer_receiver,timestamp,message
 volunteer1,volunteer2,2023-12-01 10:00,Hello!
 volunteer2,volunteer1,2023-12-01 10:01,Hi
-volunteer2,volunteer1,2023-12-08 23:42,hello 
-volunteer2,volunteer4,2023-12-08 23:43,YOOOOOOO
-volunteer2,volunteer4,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,YOOOOOOO
-volunteer4,volunteer2,2023-12-08 23:43,hiya
-volunteer2,volunteer4,2023-12-09 00:02,wassup
-volunteer2,volunteer4,2023-12-09 00:03,huh
-volunteer2,volunteer4,2023-12-09 00:03,gaps?
-volunteer4,volunteer2,2023-12-09 00:03,test
-volunteer2,volunteer4,2023-12-09 00:21,test
-volunteer2,volunteer4,2023-12-09 00:27,scrolls to bottom nicely
-volunteer2,volunteer4,2023-12-09 00:27,cool
-volunteer2,volunteer4,2023-12-09 00:27,what if i click off
-volunteer2,volunteer1,2023-12-09 00:28,nicely
-volunteer2,volunteer4,2023-12-09 00:28,scrolls to bottom on message send?
-volunteer2,volunteer4,2023-12-09 00:28,perfect
+volunteer2,volunteer1,2023-12-08 23:42,hello
+

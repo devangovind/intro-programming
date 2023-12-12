@@ -6,10 +6,10 @@ import tkinter as tk
 import geopandas
 import pandas as pd
 # for mac
-camps_filepath = 'camps_file.csv'
-resource_file = 'resources.csv'
-plans_filepath = 'plans_file.csv'
-countries_filepath = "countries.csv"
+# camps_filepath = 'camps_file.csv'
+# resource_file = 'resources.csv'
+# plans_filepath = 'plans_file.csv'
+# countries_filepath = "countries.csv"
 
 def create_pie_chart(data, labels, title):
     colors =  ['#1f77b466', '#ff7f0e66', '#2ca02c66']   # Adjusted opacity
@@ -93,7 +93,7 @@ def create_bar_graph(camps_or_plans, vol_or_ref):
     y_axis_variable = []
     
     try:
-        with open(camps_filepath) as file:
+        with open("camps_file.csv") as file:
             csv_reader = csv.reader(file)
             next(csv_reader) # Skips header row
             for row in csv_reader:
@@ -134,15 +134,17 @@ def create_resources_bar_graph():
     tents = []
     
     try:
-        with open(resource_file) as file:
-            csv_reader = csv.reader(file)
-            next(csv_reader) # Skips header row
-            for row in csv_reader:
-                Camp_ID,food_pac,medical_sup,tent = row
-                camps.append(Camp_ID)
-                food_packs.append(int(food_pac))
-                medical_sups.append(int(medical_sup))
-                tents.append(int(tent))
+        df = pd.read_csv("resources.csv")
+        
+        # sorting - need to sort by the integer so use regex to convert camp to int and then sort by the int - if camps not in order
+        df['Camp_ID_Num'] = df['Camp_ID'].str.extract('(\d+)').astype(int)
+        df = df.sort_values(by='Camp_ID_Num')
+        df.drop('Camp_ID_Num', axis=1, inplace=True)
+        
+        camps = df['Camp_ID'].tolist()
+        food_packs = df['food_pac'].astype(int).tolist()
+        medical_sups = df['medical_sup'].astype(int).tolist()
+        tents = df['tents'].astype(int).tolist()
     except FileNotFoundError:
         return None
     
@@ -152,21 +154,25 @@ def create_resources_bar_graph():
     axs[0].set_title("Food Packs")
     axs[0].set_xlabel("Camp ID")
     axs[0].set_ylabel("Number")
+    axs[0].set_xticks(range(len(camps)))
     axs[0].set_xticklabels(camps,rotation=45, ha="center")
 
     axs[1].bar(camps, medical_sups, color="red")
     axs[1].set_title('Medical Supplies')
     axs[1].set_xlabel("Camp ID")
     axs[1].set_ylabel("Number")
+    axs[1].set_xticks(range(len(camps)))
     axs[1].set_xticklabels(camps,rotation=45, ha="center")
     
     axs[2].bar(camps, tents, color="purple")
     axs[2].set_title("Tents")
     axs[2].set_xlabel("Camp ID")
     axs[2].set_ylabel("Number")
+    axs[2].set_xticks(range(len(camps)))
     axs[2].set_xticklabels(camps,rotation=45, ha="center")
     
     plt.tight_layout()
+    
 
     return fig
 
@@ -174,9 +180,9 @@ def create_resources_bar_graph():
 
 def create_world_map():
 
-    df_plans = pd.read_csv(plans_filepath) # Load data
+    df_plans = pd.read_csv("plans_file.csv") # Load data
 
-    df_locations = pd.read_csv(countries_filepath)
+    df_locations = pd.read_csv("countries.csv")
     
     df_merged = pd.merge(df_plans, df_locations, on='Location') # Merge data
     worldmap = geopandas.read_file(geopandas.datasets.get_path("naturalearth_lowres")) # Load world map

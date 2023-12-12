@@ -1,18 +1,20 @@
 Plan_ID,Description,Location,Start Date,End Date,Status,Numeric_ID
-P1,Provide aid to refugees,Singapore,01/01/2023,10/01/2023,Finished,1.0
-P2,Community support project,Malaysia,15/02/2023,05/12/2023,Finished,2.0
-P3,Medical assistance program,Greece,20/03/2023,07/12/2023,Finished,3.0
-P4,Education outreach initiative,Iraq,05/04/2023,15/04/2023,Finished,4.0
-P5,Food distribution campaign,Italy,10/05/2023,25/12/2023,Finished,5.0
-P6,Shelter building project,China,25/06/2023,07/12/2023,Finished,6.0
-P7,Environmental sustainability effort,Russia,08/08/2023,18/08/2023,Finished,7.0
-P8,Disaster relief program,Canada,12/09/2023,22/09/2023,Finished,8.0
-P9,Crisis counseling services,Iran,18/10/2023,28/10/2023,Finished,9.0
-P10,Crisis counseling services,Iran,23/12/2023,25/12/2023,Not Started,10.0
-P11,Crisis counseling services,Iran,28/12/2023,25/12/2023,Not Started,11.0
-P12,Crisis counseling services,Iran,28/12/2023,25/12/2023,Not Started,12.0
+P1,Refugee camps,Singapore,01/01/2023,10/01/2023,Finished,1.0
+P2,Community-run refugee camps,Malaysia,15/02/2023,05/12/2023,Finished,2.0
+P3,Accommodation provision,Greece,20/03/2023,07/12/2023,Finished,3.0
+P4,Family refugee camps,Iraq,05/04/2023,15/04/2023,Finished,4.0
+P5,Sicily refugee network,Italy,10/05/2023,25/12/2023,Finished,5.0
+P6,Shelter building project,Nigeria,25/06/2023,07/12/2023,Finished,6.0
+P7,Refugee camps with medical centre,China,08/08/2023,18/08/2023,Finished,7.0
+P8,Disaster relief program,Jordan,12/09/2023,22/09/2023,Finished,8.0
+P9,Crisis response,Iran,18/10/2023,28/10/2023,Finished,9.0
+P10,Family refugee camp network,Colombia,07/12/2023,08/12/2023,Finished,13.0
+P11,Refugee camp network,Haiti,28/12/2023,14/02/2024,Not Started,
+P12,Refugee camp network,Nicaragua,28/12/2023,22/02/2024,Not Started,
 P13,Provide Aid to Refugees,Brazil,07/12/2023,08/12/2023,Finished,13.0
-P14,Test,Belize,08/12/2023,09/12/2023,Finished,14.0
-P15,Test,Andorra,07/12/2023,08/12/2023,Finished,15.0
-P16,Cool Plan,Andorra,09/12/2023,10/12/2023,Finished,
-P17,Cool Plan 2,Andorra,10/12/2023,11/12/2023,Ongoing,
+P14,Shelter network,Belize,08/12/2023,09/12/2023,Finished,14.0
+P15,Plan for camps,Andorra,07/12/2023,08/12/2023,Finished,15.0
+P16,Crisis response shelters,Andorra,09/12/2023,10/12/2023,Finished,
+P17,Child refugee centres,Andorra,10/12/2023,11/12/2023,Finished,
+P18,Refugee camp network,Italy,29/12/2023,29/03/2024,Not Started,
+P19,Family refugee camps,Turkey,12/12/2023,12/12/2023,Finished,
