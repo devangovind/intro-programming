@@ -472,29 +472,29 @@ class VolunteerGui:
             self.tree_view.delete(item)
 
         try:
+            
             all_camps_df = self.camps.display_all_camp_resources()  # Adjust this line to fetch data for all camps
 
             for index, row in all_camps_df.iterrows():
                 camp_id = row['Camp_ID']
                 inserted = self.tree_view.insert("", 'end', values=list(row))
                 if camp_id == self.volunteer_camp_id:
+                    self.selected_camp = list(row)
                     self.tree_view.item(inserted, tags=('current_camp',))
 
             self.tree_view.tag_configure('current_camp', background='#007bff')
 
             def is_current_camp_selected(event):
                 selected_item = self.tree_view.focus()
-                return self.tree_view.item(selected_item, 'tags') == ('current_camp',)
-
+                self.selected_camp = self.tree_view.item(selected_item, 'values')
+                self.tree_view.item(selected_item, 'tags') == ('current_camp',)
+                
             show_chart_btn = ttk.Button(self.content_frame, text="Show Pie Chart",
-                                    command=lambda: self.show_pie_chart_of_resources(self.volunteer_camp_id),
-                                    state='disabled')
+                                    command=lambda: self.show_pie_chart_of_resources(self.selected_camp),
+                                    state='normal')
             show_chart_btn.pack(pady=10)
 
-            def on_treeview_select(event):
-                show_chart_btn['state'] = 'normal' if is_current_camp_selected(event) else 'disabled'
-
-            self.tree_view.bind('<<TreeviewSelect>>', on_treeview_select)
+            self.tree_view.bind('<<TreeviewSelect>>', is_current_camp_selected)
 
         except Exception as e:
 
@@ -502,12 +502,10 @@ class VolunteerGui:
             error_label.pack(pady=10)
 
 
-    def show_pie_chart_of_resources(self,volunteer_camp_id):
+    def show_pie_chart_of_resources(self, selected_row):
         # Retrieve values for food_pac, medical_sup, tents from the Treeview
         # Assume the Treeview has one row with these values at indices 4, 5, 6
-        item = self.tree_view.get_children()[0]  # Get the first (and only) row in Treeview
-        row = self.tree_view.item(item, 'values')
-        resource_values = [int(row[5]), int(row[6]), int(row[7])]  # Convert to int
+        resource_values = [int(selected_row[5]), int(selected_row[6]), int(selected_row[7])]  # Convert to int
         resource_labels = ['food_pac', 'medical_sup', 'tents']
 
         # Call the create_pie_chart function

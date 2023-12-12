@@ -1,10 +1,12 @@
 # Plans Class File
 import pandas as pd
 import csv
+from FileManager import FileManager
 class Plans:
     def __init__(self):
         # for Mac
-        self.plans_file = 'plans_file.csv'
+        csv_manager = FileManager()
+        self.plans_file = csv_manager.get_file_path('plans_file.csv')
         self.plans_data = pd.read_csv(self.plans_file)
         
         # for windows:

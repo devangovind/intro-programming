@@ -13,6 +13,7 @@ import csv
 import datetime
 import time
 from datetime import date
+from FileManager import FileManager
 
 
 class AdminGui:
@@ -35,10 +36,10 @@ class AdminGui:
 
         self.root.title("Admin View")
         self.admin = admin
-
-        self.volunteer_file = "volunteers.csv"
-        self.users_file = "logindetails.csv"
-        self.countries_file = "countries.csv"
+        csv_manager = FileManager()
+        self.volunteer_file = csv_manager.get_file_path("volunteers.csv")
+        self.users_file  = csv_manager.get_file_path("logindetails.csv")  
+        self.countries_file = csv_manager.get_file_path("countries.csv")
         # for mac
         # self.volunteer_file = "./files/volunteers.csv"
         # self.users_file = "./files/logindetails.csv"
@@ -492,8 +493,8 @@ class AdminGui:
             w.config(width=20)
             w.pack(pady=25)
             
-            # # Label for "Camp ID"
-            # tk.Label(self.root, text='Camp ID:', font=('Arial', 14)).pack(pady=20)
+            # Label for "Camp ID"
+            tk.Label(self.root, text='Camp ID:', font=('Arial', 14)).pack(pady=20)
 
             # Calculate the camp ID
             self.camp_id_num = (self.admin.last_camp_id() + 1)
@@ -535,7 +536,9 @@ class AdminGui:
             camp_plan_list = pd.DataFrame({'Camp_ID': [Camp_ID], 'Num_Of_Refugees': [Num_r],
                  'Num_Of_Volunteers': [Num_v], 'Plan_ID': [Plan_ID_C], 'Capacity': [Capacity_]})
 
-            camp_plan_list.to_csv(self.admin.camps_file, mode="a", header=False, index=False)
+            self.camps.append_df(camp_plan_list)
+            new_resource = pd.DataFrame({'Camp_ID': [Camp_ID], 'food_pac': [0], 'medical_sup': [0], 'tents': [0]})
+            self.admin.insert_empty_resource(new_resource)
             self.admin.insert_new_plan(camp_plan_dic)
             messagebox.showinfo('Success', f'Camp added to Plan {Plan_ID_C}')
             self.capacity.set('')
