@@ -527,7 +527,7 @@ class VolunteerGui:
         
         # Dropdown for Camp ID
         Camp_ID_lbl = tk.Label(self.content_frame, text="Camp ID:*", font=('Arial', 14))
-        Camp_IDs = self.camps.get_camp_ids()  # Get the list of camp IDs
+        Camp_IDs = self.admin.valid_camp()  # Get the list of camp IDs
         camp_df = self.camps.get_data()
         # get list of camp IDs that have yet to reach capacity; user can only select from these camps
         avail_Camp_IDs = []
