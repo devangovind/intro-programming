@@ -549,9 +549,11 @@ class VolunteerGui:
         # Assume the Treeview has one row with these values at indices 4, 5, 6
         resource_values = [int(selected_row[5]), int(selected_row[6]), int(selected_row[7])]  # Convert to int
         resource_labels = ['food_pac', 'medical_sup', 'tents']
-
+        if resource_values == [0,0,0]:
+            messagebox.showerror(title="Error", message="Chosen camp has no resources")
+        else:
         # Call the create_pie_chart function
-        create_pie_chart(resource_values, resource_labels, 'Camp Resource Distribution')
+            create_pie_chart(resource_values, resource_labels, 'Camp Resource Distribution')
 
 
     def add_refugee(self):
