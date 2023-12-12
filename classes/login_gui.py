@@ -44,22 +44,6 @@ def user_valid(username, acct_type):
     else:
         return "Account does not exist"
 
-    # with open(logindetails_filepath, "r") as file:
-    #     file_reader = csv.reader(file)
-    #     for row in file_reader:
-
-    #         if username == row[0]:
-    #             # check if account is active first and is of correct account type
-    #             if row[2] == 'False':
-    #                 return "Account inactive"
-    #             elif row[2] == 'True' and row[3] == acct_type:
-
-    #                 return row
-    #             else:
-    #                 return ""
-    #         else:
-    #             continue
-    #     return "Account does not exist"
     
 def password_valid(password, credentials):
     if credentials[1] == password:
@@ -241,7 +225,6 @@ class Volunteer_Register:
         self.register_window.geometry("1000x700")
         self.register_window.title("Volunteer Registration")
         self.camps = Camps()
-        self.admin = Admin(None)
         self.register_window.minsize(1000, 700)
         self.register_window.columnconfigure(0, weight=1, minsize=500)
         self.register_window.columnconfigure(1, weight=1, minsize=500)
@@ -469,11 +452,10 @@ class Volunteer_Register:
 
     def read_camp_id_values_from_csv(self):
         camp_id_values = []
-        
         try:
-            camp_id_values = self.admin.valid_camp()
+            camp_id_values = self.camps.valid_camps_ids()
         except FileNotFoundError:
-            messagebox.showerror("Error", "Camp ID CSV file not found.")
+            messagebox.showerror("Error", "Camps file not found.")
         return camp_id_values
 
     def validate_password(self, password):

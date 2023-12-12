@@ -25,6 +25,7 @@ class Admin:
         self.volunteer_file = 'volunteers.csv'
         self.camp_id = None
         self.Plans = Plans()
+        self.Camps = Camps()
         self.users = pd.read_csv(self.login_file)
         self.plans_data = pd.read_csv(self.plans_file)
         # for mac
@@ -105,40 +106,13 @@ class Admin:
         self.plan_list.append(new_plan)
 ## This is to choose the plan which can be added a new camp 
     def valid_plan(self):
-        plans_data = self.Plans.get_data()
-        valid_plans = plans_data.loc[(plans_data['Status'] == 'Ongoing') | (plans_data['Status'] == 'Not Started')]
-        return valid_plans['Plan_ID'].values.tolist()
-# def valid_plan(self):
-#         column_to_check = 5  
-#         condition_value = 'Ongoing'
-#         condition_value_2 = 'Not Started'  
-#         target_column_index = 0  
-#         column_values = []
-#         with open(self.plans_file, 'r', newline='') as input_file:
-#             csv_reader = csv.reader(input_file)
-#             for row in csv_reader:
-#                 # print("row is", row)
-#                 # print("status is", row[column_to_check] )
-#                 if (row[column_to_check] == condition_value or row[column_to_check] == condition_value_2):
-#                     print("status is: " , row[target_column_index])
-#                     column_values.append(row[target_column_index])
-#         print("column vals is",column_values)
-#         return column_values
+        return self.Plans.valid_plans_ids()
+
+        
     
     def valid_camp(self):
-        with open(self.camps_file, 'r', newline='') as input_file:
-            csv_reader = csv.reader(input_file)
-            column_values_camp = []
-            target_column_index = 0  
-            for row in csv_reader:
-                # print("row is", row)
-                # print("status is", row[column_to_check] )
-                column_to_check = 3
-                if (row[column_to_check] in self.valid_plan()):
-                    print("camp is: " , row[target_column_index])
-                    column_values_camp.append(row[target_column_index])
-            print("column valid camp is",column_values_camp)
-            return column_values_camp
+        return self.Camps.valid_camps_ids()
+       
     
 # FOR (D) ACCOUNT ACTIVATION
     def save_changes(self):
