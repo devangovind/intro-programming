@@ -13,7 +13,6 @@ import datetime
 from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
 import pandas as pd
-from Admin import Admin
 
 
 class VolunteerGui:
