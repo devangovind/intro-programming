@@ -241,6 +241,7 @@ class Volunteer_Register:
         self.register_window.geometry("1000x700")
         self.register_window.title("Volunteer Registration")
         self.camps = Camps()
+        self.admin = Admin(None)
         self.register_window.minsize(1000, 700)
         self.register_window.columnconfigure(0, weight=1, minsize=500)
         self.register_window.columnconfigure(1, weight=1, minsize=500)
@@ -470,7 +471,7 @@ class Volunteer_Register:
         camp_id_values = []
         
         try:
-            camp_id_values = self.camps.get_camp_ids() 
+            camp_id_values = self.admin.valid_camp()
         except FileNotFoundError:
             messagebox.showerror("Error", "Camp ID CSV file not found.")
         return camp_id_values
