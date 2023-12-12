@@ -77,18 +77,6 @@ def create_pie_chart(data, labels, title):
     
     
 def create_bar_graph(camps_or_plans, vol_or_ref):
-    """ Takes camps or plans and volunteers or refugees as arguments and displays volunteers or refugees (y axis) plotted against camps or plans (x axis).
-    Can use plt.show or wire into Tkinter using FigureCanvasTkAgg from matplotlib backends
-
-    Args:
-        camps_or_plans (str): specifies camps or plans as the x axis
-        vol_or_ref (str): specifies volunteers or refugees as the y axis
-
-    Returns:
-        bar graph figure
-    """
-    
-    # Takes camps or plans and volunteers or refugees and outputs a figure into tkinter
     x_axis_variable = []
     y_axis_variable = []
     
@@ -97,19 +85,29 @@ def create_bar_graph(camps_or_plans, vol_or_ref):
             csv_reader = csv.reader(file)
             next(csv_reader) # Skips header row
             for row in csv_reader:
-                camp, refugee, volunteer, plan, camp_capacity = row
-                if camps_or_plans == "camps":
+                camp, refugee, volunteer, plan, _ = row
+                
+                if camps_or_plans == "plans": # plans
+                    if plan not in x_axis_variable:
+                        x_axis_variable.append(plan)
+                        y_axis_variable.append(0) # set 0 start point for y axis to add subsequent refugees / volunteers
+                    
+                    plan_index = x_axis_variable.index(plan) # create index for updating variables if multiple camps per plan
+                    if vol_or_ref == "refugees":
+                        y_axis_variable[plan_index] += int(refugee)
+                    elif vol_or_ref == "volunteers":
+                        y_axis_variable[plan_index] += int(volunteer)
+                        
+                elif camps_or_plans == "camps": # camps
                     x_axis_variable.append(camp)
-                elif camps_or_plans == "plans":
-                    x_axis_variable.append(plan)
-                if vol_or_ref == "refugees":
-                    y_axis_variable.append(int(refugee))
-                elif vol_or_ref == "volunteers":
-                    y_axis_variable.append(int(volunteer))
+                    if vol_or_ref == "refugees":
+                        y_axis_variable.append(int(refugee))
+                    elif vol_or_ref == "volunteers":
+                        y_axis_variable.append(int(volunteer))
     except FileNotFoundError:
         return None
     
-    # plt.bar(x_axis_variable, y_axis_variable, width=0.8)
+    # plt.bar(x_axis_variable, y_axis_variable, width=0.8) OLD CODE USING PLT
     # plt.xlabel(camps_or_plans.capitalize())
     # plt.xticks(rotation=45, ha='left')
     # plt.ylabel(vol_or_ref.capitalize())
@@ -120,6 +118,8 @@ def create_bar_graph(camps_or_plans, vol_or_ref):
     ax = fig.add_subplot(111)
     ax.bar(x_axis_variable, y_axis_variable, width=0.8)
     ax.set_xlabel(camps_or_plans.capitalize())
+    ax.set_xticks(range(len(x_axis_variable))) # required to avoid warning UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+    ax.set_xticklabels(x_axis_variable, rotation=45, ha="center")
     ax.set_xticklabels(x_axis_variable, rotation=45, ha="center")
     ax.set_ylabel(vol_or_ref.capitalize())
     ax.set_title(f"{vol_or_ref.capitalize()} within each of the {camps_or_plans}")
