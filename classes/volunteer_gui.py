@@ -13,6 +13,7 @@ import datetime
 from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
 import pandas as pd
+from Admin import Admin
 
 
 class VolunteerGui:
@@ -38,6 +39,7 @@ class VolunteerGui:
         self.camps = Camps()
         self.refugee = Refugee()
         self.messages = Messages()
+        self.admin = Admin(None)
         self.volunteer_data = self.volunteer.get_volunteer_data()
         self.create_nav_bar() # Creates the navigation bar at the top
         self.create_content_frame()  # Creates the content frame below the navigation bar
@@ -246,17 +248,17 @@ class VolunteerGui:
 
         camps = Camps()
         camps_data = camps.get_data()
-        camps_ids = []
+        camps_ids = self.admin.valid_camp()
         i = 0
         saved_idx = 0
-        for val in camps_data['Camp_ID']:
-            if val in camps_ids:
-                continue
-            else:
-                if val == self.volunteer_data['CampID'].values[0]:
-                    saved_idx= i
-                camps_ids.append(val)
-                i += 1
+        # for val in camps_data['Camp_ID']:
+        #     if val in camps_ids:
+        #         continue
+        #     else:
+        #         if val == self.volunteer_data['CampID'].values[0]:
+        #             saved_idx= i
+        #         camps_ids.append(val)
+        #         i += 1
 
         # Change current camp section
         self.selected_camp_change_camp = tk.StringVar(self.content_frame)
@@ -266,10 +268,10 @@ class VolunteerGui:
 
         curr_volunteer = self.volunteer.username
         volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0]
-        self.new_options_list = []
-        for id in camps_ids:
-            if id != volunteer_curr_camp:
-                self.new_options_list.append(id)
+        self.new_options_list = self.admin.valid_camp()
+        # for id in camps_ids:
+        #     if id != volunteer_curr_camp:
+        #         self.new_options_list.append(id)
         self.change_camp_menu = f'Change your Camp from {volunteer_curr_camp} (current) to:'
         self.change_camp_menu_lbl = tk.Label(self.content_frame, text=self.change_camp_menu, font=('Arial', 14))
         # in options, show all camps except current one because if volunteer were to change camps, cannot change to their current camp
