@@ -154,7 +154,7 @@ class AdminGui:
         title.config(fg="medium slate blue")
         title.pack(pady=30)
 
-        plan_ID = tk.Label(self.root, text='Plan_ID:',font = ('Arial',14))
+        plan_ID = tk.Label(self.root, text='Plan ID (cannot be edited):',font = ('Arial',14))
         plan_ID.pack(pady=10)
         # Get the plan_ID automatically
         self.plan_id_num = (self.admin.last_plan_id() + 1)
@@ -477,7 +477,7 @@ class AdminGui:
         title.config(fg="medium slate blue")
         title.pack(pady=30)
         
-        tk.Label(self.root, text='Plan ID:', font=('Arial', 14)).pack(pady=10)
+        tk.Label(self.root, text='Plan ID (choose from ongoing plans):', font=('Arial', 14)).pack(pady=10)
 
         if len(self.admin.valid_plan()) == 0 :
             plan_lbl = tk.Label(self.root, text='All plans have finished \n Create a new plan to add new camps', font=('Arial', 14))
@@ -493,8 +493,8 @@ class AdminGui:
             w.config(width=20)
             w.pack(pady=25)
             
-            # Label for "Camp ID"
-            tk.Label(self.root, text='Camp ID:', font=('Arial', 14)).pack(pady=20)
+            # # Label for "Camp ID"
+            tk.Label(self.root, text='Camp ID (cannot be changed):', font=('Arial', 14)).pack(pady=20)
 
             # Calculate the camp ID
             self.camp_id_num = (self.admin.last_camp_id() + 1)
@@ -835,7 +835,7 @@ class AdminGui:
                                                                                  str(suggest_resources_dict["tent"])))
             submit_suggest_btn.grid(row=0, column=1, padx=20)
 
-            submit_btn = ttk.Button(self.submitframe, text="Allocate Edited Resourece", style='AllocateResources.TButton',  
+            submit_btn = ttk.Button(self.submitframe, text="Allocate Edited Resources", style='AllocateResources.TButton',  
                                    command=lambda: self.submit_resources(camp_id, 
                                                                          self.food_inp.get(), 
                                                                          self.med_inp.get(), 

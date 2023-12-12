@@ -5,15 +5,15 @@ R003,C3,Needs attention,Hypothermia,,1
 R004,C4,Healthy,No Condition,,2
 R005,C5,Healthy,No Condition,,3
 R006,C6,Healthy,No Condition,,4
-R007,C7,Critial,Others,,5
-R008,C2,Critial,,,6
-R009,C2,Critial,,,7
-R010,C2,Critial,,,8
-R011,C4,Needs attention,Others,urgh,1
-R012,C4,Healthy,Minor injuries,please work,4
-R013,C4,Needs attention,Seizure/Epilepsy,please work omg,5
-R014,C4,Healthy,Stroke,rrrrrr,5
-R015,C7,Critical,Heart Attack,NIL,3
-R016,C3,Needs attention,Sepsis,test,2
-R017,C12,Healthy,Tuberculosis,,5
-R018,C12,Needs attention,Heart Attack,,5
+R007,C7,Critical,Others,,5
+R008,C2,Critical,,,6
+R009,C2,Critical,,,7
+R010,C2,Critical,,,8
+R011,C4,Needs attention,Others,,1
+R012,C4,Healthy,Minor injuries,head graze,4
+R013,C4,Needs attention,Seizure/Epilepsy,,5
+R014,C4,Healthy,Stroke,,5
+R015,C7,Critical,Heart Attack,serious condition,3
+R016,C3,Needs attention,Sepsis,,2
+R017,C7,Needs attention,No Condition,,4
+R018,C7,Needs attention,Starvation,,5

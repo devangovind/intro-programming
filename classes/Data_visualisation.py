@@ -5,13 +5,17 @@ import csv
 import tkinter as tk
 import geopandas
 import pandas as pd
-from FileManager import FileManager
+# from FileManager import FileManager
 # for mac
-csv_manager = FileManager()
-camps_filepath = csv_manager.get_file_path('camps_file.csv')
-resource_file = csv_manager.get_file_path('resources.csv')
-plans_filepath = csv_manager.get_file_path('plans_file.csv')
-countries_filepath = csv_manager.get_file_path("countries.csv")
+# camps_filepath = 'camps_file.csv'
+# resource_file = 'resources.csv'
+# plans_filepath = 'plans_file.csv'
+# countries_filepath = "countries.csv"
+# csv_manager = FileManager()
+# camps_filepath = csv_manager.get_file_path('camps_file.csv')
+# resource_file = csv_manager.get_file_path('resources.csv')
+# plans_filepath = csv_manager.get_file_path('plans_file.csv')
+# countries_filepath = csv_manager.get_file_path("countries.csv")
 
 
 def create_pie_chart(data, labels, title):
@@ -80,39 +84,37 @@ def create_pie_chart(data, labels, title):
     
     
 def create_bar_graph(camps_or_plans, vol_or_ref):
-    """ Takes camps or plans and volunteers or refugees as arguments and displays volunteers or refugees (y axis) plotted against camps or plans (x axis).
-    Can use plt.show or wire into Tkinter using FigureCanvasTkAgg from matplotlib backends
-
-    Args:
-        camps_or_plans (str): specifies camps or plans as the x axis
-        vol_or_ref (str): specifies volunteers or refugees as the y axis
-
-    Returns:
-        bar graph figure
-    """
-    
-    # Takes camps or plans and volunteers or refugees and outputs a figure into tkinter
     x_axis_variable = []
     y_axis_variable = []
     
     try:
-        with open(camps_filepath) as file:
+        with open("camps_file.csv") as file:
             csv_reader = csv.reader(file)
             next(csv_reader) # Skips header row
             for row in csv_reader:
-                camp, refugee, volunteer, plan, camp_capacity = row
-                if camps_or_plans == "camps":
+                camp, refugee, volunteer, plan, _ = row
+                
+                if camps_or_plans == "plans": # plans
+                    if plan not in x_axis_variable:
+                        x_axis_variable.append(plan)
+                        y_axis_variable.append(0) # set 0 start point for y axis to add subsequent refugees / volunteers
+                    
+                    plan_index = x_axis_variable.index(plan) # create index for updating variables if multiple camps per plan
+                    if vol_or_ref == "refugees":
+                        y_axis_variable[plan_index] += int(refugee)
+                    elif vol_or_ref == "volunteers":
+                        y_axis_variable[plan_index] += int(volunteer)
+                        
+                elif camps_or_plans == "camps": # camps
                     x_axis_variable.append(camp)
-                elif camps_or_plans == "plans":
-                    x_axis_variable.append(plan)
-                if vol_or_ref == "refugees":
-                    y_axis_variable.append(int(refugee))
-                elif vol_or_ref == "volunteers":
-                    y_axis_variable.append(int(volunteer))
+                    if vol_or_ref == "refugees":
+                        y_axis_variable.append(int(refugee))
+                    elif vol_or_ref == "volunteers":
+                        y_axis_variable.append(int(volunteer))
     except FileNotFoundError:
         return None
     
-    # plt.bar(x_axis_variable, y_axis_variable, width=0.8)
+    # plt.bar(x_axis_variable, y_axis_variable, width=0.8) OLD CODE USING PLT
     # plt.xlabel(camps_or_plans.capitalize())
     # plt.xticks(rotation=45, ha='left')
     # plt.ylabel(vol_or_ref.capitalize())
@@ -123,6 +125,8 @@ def create_bar_graph(camps_or_plans, vol_or_ref):
     ax = fig.add_subplot(111)
     ax.bar(x_axis_variable, y_axis_variable, width=0.8)
     ax.set_xlabel(camps_or_plans.capitalize())
+    ax.set_xticks(range(len(x_axis_variable))) # required to avoid warning UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+    ax.set_xticklabels(x_axis_variable, rotation=45, ha="center")
     ax.set_xticklabels(x_axis_variable, rotation=45, ha="center")
     ax.set_ylabel(vol_or_ref.capitalize())
     ax.set_title(f"{vol_or_ref.capitalize()} within each of the {camps_or_plans}")
@@ -137,15 +141,17 @@ def create_resources_bar_graph():
     tents = []
     
     try:
-        with open(resource_file) as file:
-            csv_reader = csv.reader(file)
-            next(csv_reader) # Skips header row
-            for row in csv_reader:
-                Camp_ID,food_pac,medical_sup,tent = row
-                camps.append(Camp_ID)
-                food_packs.append(int(food_pac))
-                medical_sups.append(int(medical_sup))
-                tents.append(int(tent))
+        df = pd.read_csv("resources.csv")
+        
+        # sorting - need to sort by the integer so use regex to convert camp to int and then sort by the int - if camps not in order
+        df['Camp_ID_Num'] = df['Camp_ID'].str.extract('(\d+)').astype(int)
+        df = df.sort_values(by='Camp_ID_Num')
+        df.drop('Camp_ID_Num', axis=1, inplace=True)
+        
+        camps = df['Camp_ID'].tolist()
+        food_packs = df['food_pac'].astype(int).tolist()
+        medical_sups = df['medical_sup'].astype(int).tolist()
+        tents = df['tents'].astype(int).tolist()
     except FileNotFoundError:
         return None
     
@@ -155,21 +161,25 @@ def create_resources_bar_graph():
     axs[0].set_title("Food Packs")
     axs[0].set_xlabel("Camp ID")
     axs[0].set_ylabel("Number")
+    axs[0].set_xticks(range(len(camps)))
     axs[0].set_xticklabels(camps,rotation=45, ha="center")
 
     axs[1].bar(camps, medical_sups, color="red")
     axs[1].set_title('Medical Supplies')
     axs[1].set_xlabel("Camp ID")
     axs[1].set_ylabel("Number")
+    axs[1].set_xticks(range(len(camps)))
     axs[1].set_xticklabels(camps,rotation=45, ha="center")
     
     axs[2].bar(camps, tents, color="purple")
     axs[2].set_title("Tents")
     axs[2].set_xlabel("Camp ID")
     axs[2].set_ylabel("Number")
+    axs[2].set_xticks(range(len(camps)))
     axs[2].set_xticklabels(camps,rotation=45, ha="center")
     
     plt.tight_layout()
+    
 
     return fig
 
@@ -177,9 +187,9 @@ def create_resources_bar_graph():
 
 def create_world_map():
 
-    df_plans = pd.read_csv(plans_filepath) # Load data
+    df_plans = pd.read_csv("plans_file.csv") # Load data
 
-    df_locations = pd.read_csv(countries_filepath)
+    df_locations = pd.read_csv("countries.csv")
     
     df_merged = pd.merge(df_plans, df_locations, on='Location') # Merge data
     worldmap = geopandas.read_file(geopandas.datasets.get_path("naturalearth_lowres")) # Load world map
