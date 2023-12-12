@@ -5,10 +5,6 @@ from Camps import Camps
 from Plans import Plans
 from Resource_requests import Resource_requests
 import pandas as pd
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from Data_visualisation import create_bar_graph, create_resources_bar_graph, create_world_map
-from tkcalendar import *
 import csv
 import datetime
 import time
@@ -288,18 +284,6 @@ class AdminGui:
             self.create_new_plan()
                 
 
-    def display_world_map(self):
-        new_window = tk.Toplevel(self.root)
-        new_window.title("Geographical Plans Visualisation")
-        new_window.geometry("1200x800")
-        
-        fig = create_world_map()
-        
-        if fig is not None:
-            canvas = FigureCanvasTkAgg(fig, master=new_window)
-            canvas.draw()
-            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
     ## This is to show the plan by table
 
     def display_plans(self):
@@ -355,21 +339,7 @@ class AdminGui:
         self.data_vis_title.pack(pady=10)
 
         self.end_a_plan_btn = ttk.Button(self.root, text='End a Plan', style='DisplayPlan.TButton', command=self.end_plan)
-        self.end_a_plan_btn.pack()
-
-        self.data_vis_title = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 14))
-        self.data_vis_title.pack(pady=10)
-
-        self.display_refugees_btn_plans = ttk.Button(self.root, text="Refugees per plan", style='DisplayPlan.TButton', command=self.display_refugee_graph_plans)
-        self.display_refugees_btn_plans.pack(pady=10)
-
-
-        self.display_volunteers_btn_plans = ttk.Button(self.root, text="Volunteers per plan", style='DisplayPlan.TButton', command=self.display_volunteer_graph_plans) 
-        self.display_volunteers_btn_plans.pack(pady=10)
-
-
-        self.display_world_map_button = ttk.Button(self.root, text="Display world map of plans", style='DisplayPlan.TButton', command=self.display_world_map)
-        self.display_world_map_button.pack(pady=10)
+        self.end_a_plan_btn.pack(pady=25)
 
     def end_plan(self):
         item = self.table.selection()
@@ -495,7 +465,6 @@ class AdminGui:
             self.add_camp()
 
     def manage_camps(self):
-        # when data visualisation is ready. we can have each camp name be clickable to bring up a new screen with the data visualised
         self.clear_content()
 
         title = tk.Label(self.root, text="Manage Camps", font=('Arial', 18))
@@ -541,28 +510,8 @@ class AdminGui:
         request_btn_text = f'Resource Requests ({len(self.unresolved)})'
 
         request_btn = ttk.Button(self.root, text=request_btn_text, style='ManageCamp.TButton', command=self.resource_requests_list)
-        request_btn.pack()
+        request_btn.pack(pady=25)
         self.filter_camps()
-        
-        data_vis_label_res = tk.Label(self.root, text="Data Visualisation:", font=('Arial', 14))
-        data_vis_label_res.pack(pady=10)
-        
-
-        self.display_resources_btn_camps = ttk.Button(self.root, text="Resources per camp", style='ManageCamp.TButton', command=self.display_resources_camps)
-        self.display_resources_btn_camps.pack(pady=10)
-        
-
-        self.display_refugees_btn_camps = ttk.Button(self.root, text="Refugees per camp", style='ManageCamp.TButton', command=self.display_refugee_graph_camps)
-        self.display_refugees_btn_camps.pack(pady=10)
-        
-
-        self.display_volunteers_btn_camps = ttk.Button(self.root, text="Volunteers per camp", style='ManageCamp.TButton', command=self.display_volunteer_graph_camps) 
-        self.display_volunteers_btn_camps.pack(pady=10)
-        
-        
-        
-
-
         
     def filter_camps(self, event=None):
         for item in self.camps_tree.get_children():
@@ -923,47 +872,6 @@ class AdminGui:
             self.admin.delete_account(username,camp_id)
             # self.root.update_idletasks()
             self.manage_volunteers()
-
-    def display_resources_graph(self):
-        new_window = tk.Toplevel(self.root)
-        new_window.title("Resources Data Visualisation")
-        new_window.geometry("1400x800")
-        
-        fig = create_resources_bar_graph()
-        
-        if fig is not None:
-            canvas = FigureCanvasTkAgg(fig, master=new_window)
-            canvas.draw()
-            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    
-    def display_refugee_graph_camps(self):
-        self.display_graphs("camps","refugees")
-
-    def display_volunteer_graph_camps(self):
-        self.display_graphs("camps","volunteers")
-        
-    def display_refugee_graph_plans(self):
-        self.display_graphs("plans","refugees")
-
-    def display_volunteer_graph_plans(self):
-        self.display_graphs("plans","volunteers")
-        
-    def display_resources_camps(self):
-        self.display_resources_graph()
-
-    def display_graphs(self, camps_or_plans, volunteers_or_refugees):
-        self.camps_or_plans = camps_or_plans
-        self.volunteers_or_refugees = volunteers_or_refugees
-        new_window = tk.Toplevel(self.root)
-        new_window.title("Camp Data Visualisation")
-        new_window.geometry("800x800")
-        
-        fig = create_bar_graph(self.camps_or_plans, self.volunteers_or_refugees)
-        
-        if fig is not None:
-            canvas = FigureCanvasTkAgg(fig, master=new_window)
-            canvas.draw()
-            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
     
     def clear_content(self):
         for widget in self.root.winfo_children():
