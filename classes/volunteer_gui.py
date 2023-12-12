@@ -619,7 +619,7 @@ class VolunteerGui:
         # Dropdown for Medical Condition
         medical_condition_lbl = tk.Label(self.content_frame,
                   text="Primary Medical Condition (if applicable):",
-                  font=('Arial', 16))
+                  font=('Arial', 14))
         medical_conditions = ["No Condition", "Diabetes", "Heart Attack", "Physical Trauma", "Sepsis", "Haemorrhage", "Stroke",
                                   "Seizure/Epilepsy", "Dengue", "Malaria", "Tuberculosis", "AIDS/HIV", "COVID-19", 
                                   "Starvation", "Hypothermia", "Major injuries", "Minor injuries", "Others"]
