@@ -60,6 +60,7 @@ def user_valid(username, acct_type):
     else:
         return "Account does not exist"
 
+    
 def password_valid(password, credentials):
     if credentials[1] == password:
         return True
@@ -467,11 +468,10 @@ class Volunteer_Register:
 
     def read_camp_id_values_from_csv(self):
         camp_id_values = []
-        
         try:
-            camp_id_values = self.camps.get_camp_ids() 
+            camp_id_values = self.camps.valid_camps_ids()
         except FileNotFoundError:
-            messagebox.showerror("Error", "Camp ID CSV file not found.")
+            messagebox.showerror("Error", "Camps file not found.")
         return camp_id_values
 
     def validate_password(self, password):

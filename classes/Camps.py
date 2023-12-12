@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from FileManager import FileManager
+from Plans import Plans
 
 class Camps:
     def __init__(self):
@@ -23,6 +24,15 @@ class Camps:
     def get_camp_ids(self):
         camps_df = pd.read_csv(self.camps_filepath)
         return camps_df['Camp_ID'].tolist()
+    def valid_camps_ids(self):
+        self.camps_data = pd.read_csv(self.camps_filepath)
+        self.Plans = Plans()
+        valid_plans = self.Plans.valid_plans_ids()
+        valid_camps = []
+        for index, row in self.camps_data.iterrows():
+            if row['Plan_ID'] in valid_plans:
+                valid_camps.append(row['Camp_ID'])
+        return valid_camps
         
     def write_data(self, camp_id, new_row):
         self.camps_data = pd.read_csv(self.camps_filepath)  # Ensure the DataFrame is up-to-date

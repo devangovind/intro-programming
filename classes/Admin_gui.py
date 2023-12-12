@@ -969,20 +969,20 @@ class AdminGui:
             volunteer_choice = messagebox.askyesno(title="Manage Volunteer", message=f"Deactivate {username}'s Account:\n")
             if volunteer_choice == True:
                 self.admin.deactivate_account(username)
-                self.root.update_idletasks()
+                # self.root.update_idletasks()
                 self.manage_volunteers()
         else:
             volunteer_choice = messagebox.askyesno(title="Manage Volunteer", message=f"Activate {username}'s Account:\n")
             if volunteer_choice == True:
                 self.admin.activate_account(username)
-                self.root.update_idletasks()
+                # self.root.update_idletasks()
                 self.manage_volunteers()
             
     def delete_volunteer(self, username,camp_id):
         volunteer_choice = messagebox.askyesno(title="Manage Volunteer", message=f"Delete {username}'s Account:\n" )
         if volunteer_choice == True:
             self.admin.delete_account(username,camp_id)
-            self.root.update_idletasks()
+            # self.root.update_idletasks()
             self.manage_volunteers()
 
     def display_resources_graph(self):

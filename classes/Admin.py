@@ -107,10 +107,14 @@ class Admin:
 
 ## This is to choose the plan which can be added a new camp 
     def valid_plan(self):
-        plans_data = self.Plans.get_data()
-        valid_plans = plans_data.loc[(plans_data['Status'] == 'Ongoing') | (plans_data['Status'] == 'Not Started')]
-        return valid_plans['Plan_ID'].values.tolist()
+        return self.Plans.valid_plans_ids()
 
+        
+    
+    def valid_camp(self):
+        return self.Camps.valid_camps_ids()
+       
+    
 # FOR (D) ACCOUNT ACTIVATION
     def save_changes(self):
         self.users.to_csv(self.login_file, sep=',', index=False, encoding='utf-8')

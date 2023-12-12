@@ -13,6 +13,7 @@ import datetime
 from Data_visualisation import create_pie_chart
 import matplotlib.pyplot as plt
 import pandas as pd
+from Admin import Admin
 
 
 class VolunteerGui:
@@ -39,14 +40,67 @@ class VolunteerGui:
         self.refugee = Refugee()
         self.messages = Messages()
         self.volunteer_data = self.volunteer.get_volunteer_data()
-        self.create_nav_bar() # Creates the navigation bar at the top
-        self.create_content_frame()  # Creates the content frame below the navigation bar
-        self.welcome_message() # Adds the welcome message to the content frame
+        
+        volunteer_data = self.volunteer.get_volunteer_data()
+        valid_camps = self.camps.valid_camps_ids()
+
+        
+
         self.tree_view = None
         self.loginwindow = loginwindow
+        if volunteer_data['CampID'].values[0] not in valid_camps:
+            self.starting_invalid_camp()
+        else:
+            self.create_nav_bar() # Creates the navigation bar at the top
+            self.create_content_frame()  # Creates the content frame below the navigation bar
+            self.welcome_message() # Adds the welcome message to the content frame
         
+    def starting_invalid_camp(self):
+        welcome_back = f'Welcome Back, {self.volunteer.username}'
+        label = tk.Label(self.root, text=welcome_back, font=('Arial', 24))
+        label.config(fg="medium slate blue")
+        label.pack(pady=5)
+
+        title = tk.Label(self.root, text="Your current camp was part of a plan that has now ended.", font=('Arial', 18))
+
+        title.pack(pady=9)
+
+        s = ttk.Style()
+        s.configure('EditCamp.TButton', font=('Arial',13))
+        self.logout_btn = ttk.Button(self.root, text="Logout", style='EditCamp.TButton', command=self.logout)
+        self.logout_btn.pack()
+
+        self.camps = Camps()
+        camps_ids = self.camps.valid_camps_ids()
+
+        saved_idx = 0
+        self.selected_camp_change_camp = tk.StringVar(self.root)
+        self.selected_camp_change_camp.set(camps_ids[saved_idx])
+        str_out_change_camp = tk.StringVar(self.root)
+        str_out_change_camp.set('Output')
+        curr_volunteer = self.volunteer.username
+        volunteer_curr_camp = self.volunteer_data.loc[self.volunteer_data['Username']==curr_volunteer, 'CampID'].values[0]
+        self.new_options_list = []
+        for id in camps_ids:
+            if id != volunteer_curr_camp:
+                self.new_options_list.append(id)
+        self.change_camp_menu = f'Change your Camp from {volunteer_curr_camp} to an active camp to use the system:'
+        self.change_camp_menu_lbl = tk.Label(self.root, text=self.change_camp_menu, font=('Arial', 14))
+        # in options, show all camps except current one because if volunteer were to change camps, cannot change to their current camp
+        change_camps_menu = tk.OptionMenu(self.root, self.selected_camp_change_camp, *self.new_options_list) 
+        self.change_camp_menu_lbl.pack(pady=5)
+        change_camps_menu.pack(pady=5)
+        submit_btn = ttk.Button(self.root, text="Submit",style='EditCamp.TButton', command=lambda: self.force_switch())
+        submit_btn.pack(pady=5)
         
-    
+    def force_switch(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
+            self.root.update()  # Allow GUI to update     
+        self.create_nav_bar()
+        self.create_content_frame()
+        self.submit_switch_camp()
+        
     def create_nav_bar(self):
         self.headerarea = tk.Frame(self.root)
         self.headerarea.columnconfigure(0, weight=1)
@@ -243,22 +297,11 @@ class VolunteerGui:
         title.pack(pady=9)
         s = ttk.Style()
         s.configure('EditCamp.TButton', font=('Arial',13))
+        self.camps = Camps()
+        camps_data = self.camps.get_data()
+        camps_ids = self.camps.valid_camps_ids()
 
-        camps = Camps()
-        camps_data = camps.get_data()
-        camps_ids = []
-        i = 0
         saved_idx = 0
-        for val in camps_data['Camp_ID']:
-            if val in camps_ids:
-                continue
-            else:
-                if val == self.volunteer_data['CampID'].values[0]:
-                    saved_idx= i
-                camps_ids.append(val)
-                i += 1
-
-        # Change current camp section
         self.selected_camp_change_camp = tk.StringVar(self.content_frame)
         self.selected_camp_change_camp.set(camps_ids[saved_idx])
         str_out_change_camp = tk.StringVar(self.content_frame)
@@ -523,7 +566,7 @@ class VolunteerGui:
         
         # Dropdown for Camp ID
         Camp_ID_lbl = tk.Label(self.content_frame, text="Camp ID:*", font=('Arial', 14))
-        Camp_IDs = self.camps.get_camp_ids()  # Get the list of camp IDs
+        Camp_IDs = self.camps.valid_camps_ids()  # Get the list of camp IDs
         camp_df = self.camps.get_data()
         # get list of camp IDs that have yet to reach capacity; user can only select from these camps
         avail_Camp_IDs = []
