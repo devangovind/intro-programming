@@ -53,7 +53,6 @@ def user_valid(username, acct_type):
         if matching_row["Active"].iloc[0] == False:
             return "Account Inactive"
         elif matching_row["Active"].iloc[0] == True and matching_row["Account Type"].iloc[0] == acct_type:
-
             return matching_row.values.tolist()[0]
         else:
             return ""
@@ -62,7 +61,7 @@ def user_valid(username, acct_type):
 
     
 def password_valid(password, credentials):
-    if credentials[1] == password:
+    if credentials[1] == int(password):
         return True
     else:
         return False
