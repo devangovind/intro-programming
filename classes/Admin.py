@@ -2,7 +2,7 @@
 
 from Plans import humanitarian_plan
 from Plans import Plans
-
+from FileManager import FileManager
 import datetime
 import csv
 import pandas as pd
@@ -18,16 +18,14 @@ class Admin:
     # remember for functions added the first parameter has to be a self
     def __init__(self, username):
         self.username = username
-        self.plans_file = 'plans_file.csv'
-        self.camps_file = 'camps_file.csv'
-        self.resources_file = 'resources.csv'
-        self.login_file = 'logindetails.csv'
-        self.volunteer_file = 'volunteers.csv'
-        self.camp_id = None
+        csv_manager = FileManager()
+        self.resources_file = csv_manager.get_file_path("resources.csv")
+        self.login_file = csv_manager.get_file_path('logindetails.csv')
+        self.volunteer_file = csv_manager.get_file_path('volunteers.csv')
         self.Plans = Plans()
         self.Camps = Camps()
         self.users = pd.read_csv(self.login_file)
-        self.plans_data = pd.read_csv(self.plans_file)
+        self.plans_data = self.Plans.get_data()
         # for mac
         # self.plans_file = './files/plans_file.csv'
         # self.camps_file = './files/camps_file.csv'
@@ -53,7 +51,7 @@ class Admin:
 
 
     def check_event_ended(self, plan_id):
-        plans = pd.read_csv(self.plans_file)
+        plans = self.Plans.get_data()
         plan_details = plans[plans["Plan_ID"]== plan_id]
         plan_end_date_str = plan_details.iloc[0,-1]
         today = datetime.date.today()
@@ -76,7 +74,7 @@ class Admin:
         return num_
     
     def last_camp_id(self):
-        camps = pd.read_csv(self.camps_file)
+        camps = self.Camps.get_data()
         camps['Numeric_ID'] = camps['Camp_ID'].str.extract(r'(\d+)').astype(int)
         last_plan = camps.loc[camps['Numeric_ID'].idxmax()]
         last_plan_id = last_plan['Camp_ID']
@@ -104,6 +102,9 @@ class Admin:
 ## This is to refresh the plan after creating a plan 
     def insert_new_plan(self, new_plan):
         self.plan_list.append(new_plan)
+    def insert_empty_resource(self, df):
+        df.to_csv(self.resources_file, mode="a", index=False, header=False)
+
 ## This is to choose the plan which can be added a new camp 
     def valid_plan(self):
         return self.Plans.valid_plans_ids()
@@ -153,12 +154,12 @@ class Admin:
                 self.users = self.users[self.users['Username'] != username]  # Filter out the user to be deleted
                 self.save_changes()
                 # update camps_file.csv to decrement volunteers
-                self.camp_df = pd.read_csv(self.camps_file)
+                self.camp_df = self.Camps.get_data()
                 self.camp_data = self.camp_df[self.camp_df['Camp_ID'] == camp_id].copy()
                 self.camp_index = self.camp_data.index
                 self.camp_data['Num_Of_Volunteers'] -= 1
                 self.camp_df.iloc[self.camp_index, :] = self.camp_data
-                self.camp_df.to_csv(self.camps_file, index=False)
+                self.Camps.write_data_frame(self.camp_df)
                 return f"Account {username} deleted"
             else:
                 return "Account doesn't exist"

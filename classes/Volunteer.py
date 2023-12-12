@@ -5,7 +5,7 @@ from Camps import Camps
 import csv
 from datetime import date
 from datetime import datetime
-
+from FileManager import FileManager
 
 # need to work on how we are to set this out
 # the variables self.volunteer_file and self.volunteer_data i think should be part of the __init__
@@ -27,12 +27,12 @@ class Volunteer:
         # self.volunteer_path = "../files/volunteers.csv" 
         # self.resource_req_path = "../files/resource_request.csv"
         # self.volunteer_file = None
-
-        self.camp_path = "camps_file.csv"  
-        self.resource_path = "resources.csv"  
-        self.volunteer_path = "volunteers.csv" 
-        self.resource_req_path = "resource_request.csv"
-        self.login_details = "logindetails.csv"
+        csv_manager = FileManager()
+        self.camp_path = csv_manager.get_file_path("camps_file.csv")
+        self.resource_path = csv_manager.get_file_path("resources.csv") 
+        self.volunteer_path = csv_manager.get_file_path("volunteers.csv") 
+        self.resource_req_path = csv_manager.get_file_path("resource_request.csv")
+        self.login_details = csv_manager.get_file_path("logindetails.csv")
         self.volunteer_file = None
 
     def get_other_volunteers(self):

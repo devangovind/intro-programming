@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from FileManager import FileManager
 from Plans import Plans
 
 class Camps:
@@ -11,9 +12,10 @@ class Camps:
         # Filepaths for windows
         # self.camps_filepath = "../files/camps_file.csv"  # Update to the path where camps.csv is located
         # self.resource_filepath = "../files/resources.csv"
-
-        self.camps_filepath = "camps_file.csv"  # Update to the path where camps.csv is located
-        self.resource_filepath = "resources.csv"
+        csv_manager = FileManager()
+        self.camps_filepath = csv_manager.get_file_path('camps_file.csv')  # Update to the path where camps.csv is located
+        self.resource_filepath = csv_manager.get_file_path('resources.csv')
+        
 
     def get_data(self):
         self.camps_data = pd.read_csv(self.camps_filepath)
@@ -41,6 +43,10 @@ class Camps:
             return True
         else:
             return False
+    def write_data_frame(self, df):
+        df.to_csv(self.camps_filepath, index=False)
+    def append_df(self, df):
+        df.to_csv(self.camps_filepath, mode="a", index=False, header=False)
     
     def display_camp_resources(self, camp_id):
         # Load the data from both CSV files
