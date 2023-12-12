@@ -11,6 +11,9 @@ from Admin_gui import AdminGui
 from Admin import Admin
 from Camps import Camps
 import pandas as pd
+import os
+import sys
+from FileManager import FileManager
 
 # these functions are NOT in class because they are used in different classes to validate admin and volunteers
 
@@ -24,9 +27,22 @@ import pandas as pd
 # camps_filepath = "../files/camps_file.csv"  
 # volunteers_filepath = "../files/volunteers.csv" 
 
-logindetails_filepath = "logindetails.csv"  
-camps_filepath = "camps_file.csv"  
-volunteers_filepath = "volunteers.csv" 
+# logindetails_filepath = "logindetails.csv"  
+# camps_filepath = "camps_file.csv"  
+# volunteers_filepath = "volunteers.csv" 
+csv_manager = FileManager()
+logindetails_filepath = csv_manager.get_file_path("logindetails.csv")
+camps_filepath = csv_manager.get_file_path("camps_file.csv")  
+volunteers_filepath = csv_manager.get_file_path("volunteers.csv")
+
+
+# print("Current working directory:", os.getcwd())
+# print("sys._MEIPASS:", sys._MEIPASS)
+
+
+# csv_path = os.path.join(sys._MEIPASS, logindetails_filepath)
+
+# print("Constructed CSV path:", csv_path)
 
 
 def user_valid(username, acct_type):
@@ -44,22 +60,6 @@ def user_valid(username, acct_type):
     else:
         return "Account does not exist"
 
-    # with open(logindetails_filepath, "r") as file:
-    #     file_reader = csv.reader(file)
-    #     for row in file_reader:
-
-    #         if username == row[0]:
-    #             # check if account is active first and is of correct account type
-    #             if row[2] == 'False':
-    #                 return "Account inactive"
-    #             elif row[2] == 'True' and row[3] == acct_type:
-
-    #                 return row
-    #             else:
-    #                 return ""
-    #         else:
-    #             continue
-    #     return "Account does not exist"
     
 def password_valid(password, credentials):
     if credentials[1] == password:
@@ -468,11 +468,10 @@ class Volunteer_Register:
 
     def read_camp_id_values_from_csv(self):
         camp_id_values = []
-        
         try:
-            camp_id_values = self.camps.get_camp_ids() 
+            camp_id_values = self.camps.valid_camps_ids()
         except FileNotFoundError:
-            messagebox.showerror("Error", "Camp ID CSV file not found.")
+            messagebox.showerror("Error", "Camps file not found.")
         return camp_id_values
 
     def validate_password(self, password):

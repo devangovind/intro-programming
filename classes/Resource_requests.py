@@ -1,9 +1,11 @@
 import pandas as pd
+from FileManager import FileManager
 class Resource_requests:
     def __init__(self):
         
         # for mac
-        self.resource_requests_file = 'resource_request.csv'
+        csv_manager =FileManager()
+        self.resource_requests_file = csv_manager.get_file_path('resource_request.csv')
 
         # for windows
         # self.resource_requests_file = '../files/resource_request.csv'

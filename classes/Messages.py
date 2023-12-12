@@ -2,10 +2,12 @@
 import pandas as pd
 import csv
 import datetime
+from FileManager import FileManager
 class Messages:
     def __init__(self):
         # for Mac
-        self.messages_file = 'messages.csv'
+        csv_manager = FileManager()
+        self.messages_file = csv_manager.get_file_path('messages.csv')
         self.messages_data = pd.read_csv(self.messages_file)
         
         # for windows:
