@@ -165,6 +165,7 @@ class VolunteerGui:
 
     def edit_details(self):
         self.clear_content()
+        self.volunteer_data = self.volunteer.get_volunteer_data()
         title = tk.Label(self.content_frame, text="Edit Personal Details", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=9)        
