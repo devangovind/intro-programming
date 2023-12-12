@@ -61,7 +61,7 @@ def user_valid(username, acct_type):
 
     
 def password_valid(password, credentials):
-    if credentials[1] == password:
+    if str(credentials[1]) == password:
         return True
     else:
         return False
