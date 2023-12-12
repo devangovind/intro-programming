@@ -14,6 +14,7 @@ import datetime
 import time
 from datetime import date
 from FileManager import FileManager
+import re
 
 
 class AdminGui:
@@ -154,7 +155,7 @@ class AdminGui:
         title.config(fg="medium slate blue")
         title.pack(pady=30)
 
-        plan_ID = tk.Label(self.root, text='Plan_ID:',font = ('Arial',14))
+        plan_ID = tk.Label(self.root, text='Plan ID:',font = ('Arial',14))
         plan_ID.pack(pady=10)
         # Get the plan_ID automatically
         self.plan_id_num = (self.admin.last_plan_id() + 1)
@@ -184,170 +185,108 @@ class AdminGui:
         self.location_menu = tk.OptionMenu(self.root, self.selected_country, *countries_list)
         self.location_menu.pack(pady=10)
        
-        date_frames = tk.Frame(self.root)
-        date_frames.columnconfigure(1, weight=1)
-        date_frames.columnconfigure(2, weight=1)
-        date_frames.columnconfigure(3,weight=1)
-        date_frames.rowconfigure(1, weight=1)
-        date_frames.rowconfigure(2, weight=1)
-        plan_start = tk.Label(date_frames, text='Start Date:',font = ('Arial',14))
-        plan_start.grid(row=1, column=1, sticky="e")
-        plan_end = tk.Label(date_frames, text='End Date:',font = ('Arial',14))
-        plan_end.grid(row=2, column=1, sticky="e")
-    
-        # Build the button
         s = ttk.Style()
         s.configure('CreatePlan.TButton', font=('Arial',14))
-        sdate_button = ttk.Button(date_frames, text='Choose the start date', style='CreatePlan.TButton', command=self.pick_sdate, width=15)
-        sdate_button.grid(row=1, column=3, sticky="w")
-        edate_button = ttk.Button(date_frames, text='Choose the end date',style='CreatePlan.TButton', command=self.pick_edate, width=15)
-        edate_button.grid(row=2, column=3, sticky="w")
-        date_frames.pack(pady=20)
 
-
+        plan_start = tk.Label(self.root, text='Start Date:',font = ('Arial',14))
+        plan_start.pack(pady=10)
+        self.plan_start = tk.StringVar(self.root)
+        plan_start_help = tk.Label(self.root, text='Enter dates with form DD/MM/YYYY',font = ('Arial',12))
+        plan_start_help.config(fg="grey")
+        plan_start_help.pack()
+        self.plan_start_entry = ttk.Entry(self.root)
+        self.plan_start_entry.pack()
+        self.plan_start_entry.bind("<KeyRelease>", self.on_sdate_change)
+        self.plan_start_status = tk.Label(self.root, text="")
+        self.plan_start_status.pack()
+        plan_end = tk.Label(self.root, text='End Date:',font = ('Arial',14))
+        plan_end.pack(pady=10)
+        self.plan_end = tk.StringVar(self.root)
+        self.plan_end_entry = ttk.Entry(self.root)
+        self.plan_end_entry.bind("<KeyRelease>", self.on_sdate_change)
+        self.plan_end_entry.pack()
+        self.plan_end_status = tk.Label(self.root, text="")
+        self.plan_end_status.pack()
         ttk.Button(self.root, text='Save this plan', command=self.save_data,style='CreatePlan.TButton').pack()
 
-        # When admin click the entry date, admin will be informed that they need to use calendar
-        def stest(content, reason, name):
-            if self.start_date.get() is not None:
-                messagebox.showwarning(title='Create a new plan - start date',
-                                       message='Please use the button to choose the start date')
-                # return False
-        self.valid_input_sdate = tk.StringVar(self.root)
-        sCMD = self.root.register(stest)
-        self.start_date = ttk.Entry(date_frames, textvariable=self.valid_input_sdate, validate='focusin',
-                                   validatecommand=(sCMD, '%P', '%V', '%W'))
+    def validate_sdate(self, value):
+        pattern = re.compile(r'\d{2}/\d{2}/\d{4}')
+        if bool(pattern.match(value)):
+            try:
+                sdate_obj = datetime.datetime.strptime(value, '%d/%m/%Y')
+                today = datetime.datetime.now()
+                if sdate_obj >= today:
+                    self.plan_start_status.config(text="Date Saved", fg="green")
+                    return True
+                else:
 
-        self.start_date.grid(row=1, column=2)
-
-        def etest(content, reason, name):
-            if self.end_date.get() is not None:
-                messagebox.showwarning(title='Create a new plan - end date',
-                                       message='Please use the button to choose the end date')
-        self.valid_input_edate = tk.StringVar(self.root)
-        eCMD = self.root.register(etest)
-        self.end_date = ttk.Entry(date_frames, textvariable=self.valid_input_edate, validate='focusin',
-                                 validatecommand=(eCMD, '%P', '%V', '%W'))
-
-        self.end_date.grid(row=2, column=2)
-
-    #  This method is to get the date using calendar and judge whether it is valid or not
-    def pick_sdate(self):
-        today = datetime.datetime.today()
-        yr = today.year
-        mth = today.month
-        day = today.day
-        self.date_window = tk.Toplevel(self.root)
-        self.date_window.grab_set()
-        self.date_window.geometry('230x230+590+370')
-        self.cal = Calendar(self.date_window, selectmode='day', year=yr, month=mth, day=day, background='white', foreground='black', selectforeground='red', normalbackground = 'gray')
-        self.date_window.resizable(False, False)
-        self.cal.place(x=0, y=0)
-        submit_btn = tk.Button(self.date_window, text='Submit', command=self.grab_sdate, font=('Arial', 16))
-        submit_btn.place(x=80, y=190)
-
-    def pick_edate(self):
-        today = datetime.datetime.today()
-        yr = today.year
-        mth = today.month
-        day = today.day + 1
-        if len(self.start_date.get()) == 0 or self.s_date is None:
-            messagebox.showwarning(title='Choose start date',
-                                   message='Please choose a start date using calendar')
+                    self.plan_start_status.config(text="Error, start date must after today", fg="red")
+                    return False
+            except:
+                return False
         else:
-            self.date_window = tk.Toplevel(self.root)
-            self.date_window.grab_set()
-            self.date_window.geometry('230x230+590+370')
-            self.date_window.resizable(False, False)
-            self.cal = Calendar(self.date_window, selectmode='day', year=yr, month=mth, day=day, background='white', foreground='black', selectforeground='red', normalbackground = 'gray')
-            self.cal.place(x=0, y=0)
-            submit_btn = tk.Button(self.date_window, text='Submit', command=self.grab_edate)
-            submit_btn.place(x=80, y=190)
 
-    def grab_sdate(self):
-        self.s_date = self.cal.selection_get()
-        if self.admin.check_start_day(self.s_date):
-            messagebox.showwarning(title='Choose a start date', message='The start date cannot be before today')
+            self.plan_start_status.config(text="Error, date input needs to be of form DD/MM/YYYY", fg="red")
+            return False
 
+    def on_sdate_change(self, *args):
+        self.validate_sdate(self.plan_start_entry.get())
+        self.validate_edate(self.plan_end_entry.get())
+
+    def validate_edate(self,value):
+        pattern = re.compile(r'\d{2}/\d{2}/\d{4}')
+        if bool(pattern.match(value)):
+            try:
+                edate_obj = datetime.datetime.strptime(value, '%d/%m/%Y')
+                sdate = self.plan_start_entry.get()
+                if self.validate_sdate(sdate):
+                    if edate_obj > datetime.datetime.strptime(sdate, '%d/%m/%Y'):
+                        self.plan_end_status.config(text="Date Saved", fg="green")
+                        return True
+                    else:
+                        self.plan_end_status.config(text="Error, end date needs to be after start", fg="red")
+                        return False
+            except:
+                return False
         else:
-            self.start_date.delete(0, END)
-            self.start_date.insert(0, self.s_date)
-            self.date_window.destroy()
-            # date = self.cal.get_date()
-       
-            return self.s_date
-
-    def grab_edate(self):
-        self.e_date = self.cal.selection_get()
-        if self.admin.check_end_date(self.e_date, self.s_date):
-            messagebox.showwarning(title='Choose start date', message='The end date should be after the start date')
-        else:
-            self.end_date.delete(0, END)
-            self.end_date.insert(0, self.e_date)
-            self.date_window.destroy()
-
-        return self.e_date
+            self.plan_end_status.config(text="Error, date input needs to be of form DD/MM/YYYY", fg="red")
+            return False
+    
 
     ## This is to save the new plan to csv file and it can be show directly later
     def save_data(self):
         Plan_ID_ = self.plan_id
         Description_ = self.Description.get()
         Location_ = self.selected_country.get()
-        Start_date_ = self.s_date
-        End_date_ = self.e_date
-        var_start_day = self.valid_input_sdate.get()
-        var_end_day = self.valid_input_edate.get()
+        sdate = self.plan_start_entry.get()
+        edate = self.plan_end_entry.get()
         # ensure all the blank is not empty
-        if len(self.des_entry.get()) == 0 or len(self.selected_country.get()) == 0 or len(self.start_date.get()) == 0 or len(
-                self.end_date.get()) == 0:
+        if len(self.des_entry.get()) == 0 or len(self.selected_country.get()) == 0 or len(sdate) == 0 or len(edate) == 0:
             messagebox.showwarning(title='Create a new plan', message='Please fill in all the entries')
         # ensure choosing the date using calendar
-        elif Start_date_ == None or End_date_ == None:
-            messagebox.showwarning(title='Create a new plan', message='Use buttons to choose start and end date')
-            self.start_date.delete(0, END)
-            self.end_date.delete(0, END)
-            self.e_date = None
-            self.s_date = None
-        elif Start_date_ is not None or End_date_ is not None:
-            Start_date_ = self.s_date.strftime('%Y-%m-%d')
-            End_date_ = self.e_date.strftime('%Y-%m-%d')
-            if var_start_day == Start_date_ and var_end_day == End_date_ and not (
-            self.admin.check_end_date(self.e_date, self.s_date)):
+        elif not self.validate_sdate(sdate):
+            messagebox.showwarning(title='Create a new plan', message='Error in selected start date')
+            self.plan_start_entry.focus_set()
+        elif not self.validate_edate(edate):
+            messagebox.showwarning(title='Create a new plan', message='Error in selected end date')
+            self.plan_end_entry.focus_set()
+
+        else:
             ## check the status of this new plan-- onging or not started 
+            if sdate == date.today().strftime("%d/%m/%Y"): status = 'Ongoing'
+            else: status = 'Not Started'
+            plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
+                        'Start Date': sdate, 'End Date': edate,'Status':status}
+            plan_list = pd.DataFrame({'Plan_ID': [Plan_ID_], 'Description': [Description_], 'Location': [Location_], 'Start Date': [sdate],
+                    'End Date': [edate],'Status': [status]})
+            header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
             
-                Start_date_ = self.s_date.strftime('%d/%m/%Y')
-                End_date_ = self.e_date.strftime('%d/%m/%Y')
-                if self.s_date == date.today(): status = 'Ongoing'
-                else: status = 'Not Started'
-                plan_dic = {'Plan_ID': Plan_ID_, 'Description': Description_, 'Location': Location_,
-                            'Start Date': Start_date_, 'End Date': End_date_,'Status':status}
-                plan_list = pd.DataFrame({'Plan_ID': [Plan_ID_], 'Description': [Description_], 'Location': [Location_], 'Start Date': [Start_date_],
-                        'End Date': [End_date_],'Status': [status]})
-                header = ['Plan_ID', 'Description', 'Location', 'Start Date', 'End Date','Status']
-                
-                self.plans.append_dateframe(plan_list)
-                self.admin.insert_new_plan(plan_dic)
+            self.plans.append_dateframe(plan_list)
+            self.admin.insert_new_plan(plan_dic)
 
-                messagebox.showinfo('Success', 'Plan successfully created')
-                self.create_new_plan()
+            messagebox.showinfo('Success', 'Plan successfully created')
+            self.create_new_plan()
                 
-            ## check the date 
-            elif self.admin.check_end_date(self.e_date, self.s_date):
-                messagebox.showwarning(title='Choose start date', message='The end date cannot be before start date')
-                self.start_date.delete(0, END)
-                self.end_date.delete(0, END)
-                self.e_date = None
-                self.s_date = None
-            ## check the data if using calendar 
-            else:
-
-                self.admin.is_date(var_start_day)
-                messagebox.showwarning(title='Create a new plan',
-                                       message='Use calender to enter date')
-                self.start_date.delete(0, END)
-                self.end_date.delete(0, END)
-                self.e_date = None
-                self.s_date = None
 
     def display_world_map(self):
         new_window = tk.Toplevel(self.root)
