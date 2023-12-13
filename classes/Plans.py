@@ -4,15 +4,10 @@ import csv
 from FileManager import FileManager
 class Plans:
     def __init__(self):
-        # for Mac
         csv_manager = FileManager()
         self.plans_file = csv_manager.get_file_path('plans_file.csv')
         self.plans_data = pd.read_csv(self.plans_file)
         
-        # for windows:
-        # self.plans_file = 'files\\plan_file.csv'
-        # self.plans_filepath = '../files/plans_file.csv'
-        # self.plans_data = pd.read_csv(self.plans_filepath)
     def get_data(self):
         self.plans_data = pd.read_csv(self.plans_file)
         return self.plans_data

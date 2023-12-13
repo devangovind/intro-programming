@@ -4,13 +4,6 @@ from FileManager import FileManager
 
 class Refugee:
     def __init__(self) -> None:
-        # Filepaths for MAC
-        # self.refugee_path = "files\\refugee.csv"
-
-        # Filepaths for windows
-        # self.refugee_path = "../files/refugee.csv"  
-        # self.camps_path = "../files/camps_file.csv"
-        # self.volunteers_path = "../files/volunteers.csv"
         csv_manager = FileManager()
         self.refugee_path = csv_manager.get_file_path("refugee.csv") 
         self.camps_path = csv_manager.get_file_path("camps_file.csv")

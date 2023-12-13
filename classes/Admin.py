@@ -13,9 +13,6 @@ from Plans import Plans
 
 
 class Admin:
-
-    # add functions here
-    # remember for functions added the first parameter has to be a self
     def __init__(self, username):
         self.username = username
         csv_manager = FileManager()
@@ -26,24 +23,6 @@ class Admin:
         self.Camps = Camps()
         self.users = pd.read_csv(self.login_file)
         self.plans_data = self.Plans.get_data()
-        # for mac
-        # self.plans_file = './files/plans_file.csv'
-        # self.camps_file = './files/camps_file.csv'
-        # self.resources_file = './files/resources.csv'
-        # self.login_file = './files/logindetails.csv'
-        # self.volunteer_file = './files/volunteers.csv'
-        # self.camp_id = None
-        # self.users = pd.read_csv(self.login_file)
-        # self.plans_data = pd.read_csv(self.plans_file)
-
-        # file path for windows
-        # self.plans_file = '../files/plans_file.csv'
-        # self.camps_file = '../files/camps_file.csv'
-        # self.resources_file = '../files/resources.csv'
-        # self.login_file = '../files/logindetails.csv'
-        # self.volunteer_file = '../files/volunteers.csv'
-        # self.camp_id = None
-
         self.plan_list = self.Plans.get_plan_ids()
 
 

@@ -17,19 +17,6 @@ from FileManager import FileManager
 
 # these functions are NOT in class because they are used in different classes to validate admin and volunteers
 
-# Filepaths for MAC
-# logindetails_filepath = "files\\logindetails.csv"
-# camps_filepath = "files\\camps_file.csv"  
-# volunteers_filepath = "files\\volunteers.csv" 
-
-# Filepaths for windows
-# logindetails_filepath = "../files/logindetails.csv"  
-# camps_filepath = "../files/camps_file.csv"  
-# volunteers_filepath = "../files/volunteers.csv" 
-
-# logindetails_filepath = "logindetails.csv"  
-# camps_filepath = "camps_file.csv"  
-# volunteers_filepath = "volunteers.csv" 
 csv_manager = FileManager()
 logindetails_filepath = csv_manager.get_file_path("logindetails.csv")
 camps_filepath = csv_manager.get_file_path("camps_file.csv")  

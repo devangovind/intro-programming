@@ -5,13 +5,6 @@ from Plans import Plans
 
 class Camps:
     def __init__(self):
-        # Filepaths for MAC
-        # self.camps_filepath = "files\\camps_file.csv"  # Update to the path where camps.csv is located
-        # self.resource_filepath = "files\\resources.csv"
-
-        # Filepaths for windows
-        # self.camps_filepath = "../files/camps_file.csv"  # Update to the path where camps.csv is located
-        # self.resource_filepath = "../files/resources.csv"
         csv_manager = FileManager()
         self.camps_filepath = csv_manager.get_file_path('camps_file.csv')  # Update to the path where camps.csv is located
         self.resource_filepath = csv_manager.get_file_path('resources.csv')
