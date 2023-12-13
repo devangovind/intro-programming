@@ -477,10 +477,6 @@ class VolunteerGui:
         title = tk.Label(self.content_frame, text="View Camp Details", font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=(20, 10))
-        # Add the explanation label here, right below the title
-        explanation_label = tk.Label(self.content_frame, text="Your camp is highlighted.",
-                                     font=('Arial', 14), fg="gray")
-        explanation_label.pack(pady=(5, 10))
 
         curr_volunteer = self.volunteer.username
         self.volunteer_camp_id = str(self.volunteer_data.loc[self.volunteer_data['Username'] == curr_volunteer, 'CampID'].values[0])

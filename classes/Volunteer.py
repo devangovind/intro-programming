@@ -13,20 +13,6 @@ from FileManager import FileManager
 class Volunteer:
     def __init__(self, username):
         self.username = username
-
-        # Filepaths for MAC
-        # self.camp_path = "files\\camps_file.csv"
-        # self.resource_path = "files\\resources.csv"
-        # self.volunteer_path = 'files\\volunteers.csv'
-        # self.resource_req_path = "files\\resource_request.csv"
-        # self.volunteer_file = None
-
-        # Filepaths for windows
-        # self.camp_path = "../files/camps_file.csv"  
-        # self.resource_path = "../files/resources.csv"  
-        # self.volunteer_path = "../files/volunteers.csv" 
-        # self.resource_req_path = "../files/resource_request.csv"
-        # self.volunteer_file = None
         csv_manager = FileManager()
         self.camp_path = csv_manager.get_file_path("camps_file.csv")
         self.resource_path = csv_manager.get_file_path("resources.csv") 

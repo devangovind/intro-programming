@@ -5,15 +5,9 @@ import datetime
 from FileManager import FileManager
 class Messages:
     def __init__(self):
-        # for Mac
         csv_manager = FileManager()
         self.messages_file = csv_manager.get_file_path('messages.csv')
         self.messages_data = pd.read_csv(self.messages_file)
-        
-        # for windows:
-        # self.plans_file = 'files\\plan_file.csv'
-        # self.plans_filepath = '../files/plans_file.csv'
-        # self.plans_data = pd.read_csv(self.plans_filepath)
    
     def get_recieved_messages(self, volunteer):
         self.messages_data = pd.read_csv(self.messages_file)

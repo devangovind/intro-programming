@@ -37,14 +37,6 @@ class AdminGui:
         self.volunteer_file = csv_manager.get_file_path("volunteers.csv")
         self.users_file  = csv_manager.get_file_path("logindetails.csv")  
         self.countries_file = csv_manager.get_file_path("countries.csv")
-        # for mac
-        # self.volunteer_file = "./files/volunteers.csv"
-        # self.users_file = "./files/logindetails.csv"
-        # self.countries_file = "./files/countries.csv"
-        
-        # for windows
-        # self.users_file = 'files\\logindetails.csv'
-        # self.volunteer_file = 'files\\volunteers.csv'
         
         self.create_nav_bar()
         self.welcome_message()
@@ -54,16 +46,7 @@ class AdminGui:
         self.camps_data = self.camps.get_data()
         self.plan_data_ = self.admin.plan_list
         self.loginwindow = loginwindow
-        
-        #for windows:
-        # self.volunteer_file = "../files/volunteers.csv"
-        # self.volunteer_data = pd.read_csv(self.volunteer_file)
-        # self.users_file = "../files/logindetails.csv"
-        # self.users = pd.read_csv(self.users_file)
-        # self.countries_file = "../files/countries.csv"
-        # countries_df = pd.read_csv(self.countries_file)
 
-        
 
     def create_nav_bar(self):
         self.headerarea = tk.Frame(self.root)
@@ -131,10 +114,10 @@ class AdminGui:
     # Function to create a list of countries
     def get_countries_list(self):
         
-        # for mac
+
         countries_df = pd.read_csv(self.countries_file)
         
-        # for windows
+
 
         countries_list = countries_df["Location"].tolist()
         return countries_list
@@ -779,8 +762,8 @@ class AdminGui:
         s = ttk.Style()
         s.configure('ManageVolunteer.TButton', font=('Arial',17))
         all_buttons = tk.Frame(self.root, pady=20)
-        activate_all_btn = ttk.Button(all_buttons, text="Activate All", style='ManageVolunteer.TButton', command=self.activate_all, width = 10)
-        deactivate_all_btn = ttk.Button(all_buttons, text="Deactivate All", style='ManageVolunteer.TButton', command=self.deactivate_all, width = 10)
+        activate_all_btn = ttk.Button(all_buttons, text="Activate All", style='ManageVolunteer.TButton', command=self.activate_all, width = 15)
+        deactivate_all_btn = ttk.Button(all_buttons, text="Deactivate All", style='ManageVolunteer.TButton', command=self.deactivate_all, width = 15)
         activate_all_btn.pack(side=tk.LEFT)
         deactivate_all_btn.pack(side=tk.LEFT)
         all_buttons.pack()
