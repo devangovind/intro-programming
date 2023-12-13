@@ -385,7 +385,7 @@ class AdminGui:
         title = tk.Label(self.root, text='Add a New Camp', font=('Arial', 18))
         title.config(fg="medium slate blue")
         title.pack(pady=30)
-        
+  
         tk.Label(self.root, text='Plan ID (choose from Ongoing / Not Started plans):', font=('Arial', 14)).pack(pady=10)
 
         if len(self.admin.valid_plan()) == 0 :
@@ -403,7 +403,7 @@ class AdminGui:
             w.pack(pady=25)
             
             # # Label for "Camp ID"
-            tk.Label(self.root, text='Camp ID (cannot be changed):', font=('Arial', 14)).pack(pady=20)
+            tk.Label(self.root, text='Camp ID (cannot be edited):', font=('Arial', 14)).pack(pady=20)
 
             # Calculate the camp ID
             self.camp_id_num = (self.admin.last_camp_id() + 1)
