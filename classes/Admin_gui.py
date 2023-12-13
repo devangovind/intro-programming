@@ -386,7 +386,7 @@ class AdminGui:
         title.config(fg="medium slate blue")
         title.pack(pady=30)
         
-        tk.Label(self.root, text='Plan ID (choose from ongoing plans):', font=('Arial', 14)).pack(pady=10)
+        tk.Label(self.root, text='Plan ID (choose from Ongoing / Not Started plans):', font=('Arial', 14)).pack(pady=10)
 
         if len(self.admin.valid_plan()) == 0 :
             plan_lbl = tk.Label(self.root, text='All plans have finished \n Create a new plan to add new camps', font=('Arial', 14))
@@ -779,13 +779,12 @@ class AdminGui:
         s = ttk.Style()
         s.configure('ManageVolunteer.TButton', font=('Arial',17))
         all_buttons = tk.Frame(self.root, pady=20)
-        all_buttons.columnconfigure(1, weight=1)
-        all_buttons.columnconfigure(2, weight=1)
-        activate_all_btn = ttk.Button(all_buttons, text="Activate All", style='ManageVolunteer.TButton', command=self.activate_all)
-        deactivate_all_btn = ttk.Button(all_buttons, text="Deactivate All", style='ManageVolunteer.TButton', command=self.deactivate_all)
-        activate_all_btn.grid(row=0, column=0,padx=10)
-        deactivate_all_btn.grid(row=0, column=1)
+        activate_all_btn = ttk.Button(all_buttons, text="Activate All", style='ManageVolunteer.TButton', command=self.activate_all, width = 10)
+        deactivate_all_btn = ttk.Button(all_buttons, text="Deactivate All", style='ManageVolunteer.TButton', command=self.deactivate_all, width = 10)
+        activate_all_btn.pack(side=tk.LEFT)
+        deactivate_all_btn.pack(side=tk.LEFT)
         all_buttons.pack()
+        
         info_lbl  = tk.Label(self.root, text="Click on items within a State or Delete column to activate / deactivate / delete an individual volunteer", font=('Arial', 14), fg="gray")
         info_lbl.pack()
         camp_columns = ["Camp ID", "Username", "First Name", "Surname", "Phone", "Age", "Availability", "State", "Delete"]
